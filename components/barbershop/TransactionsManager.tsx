@@ -1,0 +1,444 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { formatCurrency, formatDateTime } from "@/lib/utils";
+import { Plus, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
+
+interface Transaction {
+  id: string;
+  transaction_date: string;
+  customer_phone: string;
+  customer_name: string;
+  service_tier: string;
+  upsell_items: string | null;
+  atv_amount: number;
+  discount_amount: number;
+  net_revenue: number;
+  is_coupon_redeemed: boolean;
+  is_google_review_asked: boolean;
+  customer_area: string | null;
+  capster_name: string | null;
+}
+
+export default function TransactionsManager() {
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [formData, setFormData] = useState({
+    transaction_date: new Date().toISOString().slice(0, 16),
+    customer_phone: "",
+    customer_name: "",
+    service_tier: "",
+    upsell_items: "",
+    atv_amount: "",
+    discount_amount: "0",
+    customer_area: "",
+    capster_name: "",
+    is_coupon_redeemed: false,
+    is_google_review_asked: false,
+  });
+
+  useEffect(() => {
+    fetchTransactions(currentPage);
+  }, [currentPage]);
+
+  async function fetchTransactions(page: number) {
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/transactions?page=${page}&limit=10`);
+      const result = await response.json();
+
+      if (result.success) {
+        setTransactions(result.data);
+        setTotalPages(result.pagination.pages);
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching transactions:", error);
+      setLoading(false);
+    }
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    
+    try {
+      const response = await fetch("/api/transactions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        alert("✅ Transaksi berhasil ditambahkan!");
+        setShowModal(false);
+        fetchTransactions(currentPage);
+        resetForm();
+      } else {
+        alert("❌ Error: " + result.error);
+      }
+    } catch (error: any) {
+      alert("❌ Error: " + error.message);
+    }
+  }
+
+  async function handleDelete(id: string) {
+    if (!confirm("Yakin ingin menghapus transaksi ini?")) return;
+
+    try {
+      const response = await fetch(`/api/transactions/${id}`, {
+        method: "DELETE",
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        alert("✅ Transaksi berhasil dihapus!");
+        fetchTransactions(currentPage);
+      } else {
+        alert("❌ Error: " + result.error);
+      }
+    } catch (error: any) {
+      alert("❌ Error: " + error.message);
+    }
+  }
+
+  function resetForm() {
+    setFormData({
+      transaction_date: new Date().toISOString().slice(0, 16),
+      customer_phone: "",
+      customer_name: "",
+      service_tier: "",
+      upsell_items: "",
+      atv_amount: "",
+      discount_amount: "0",
+      customer_area: "",
+      capster_name: "",
+      is_coupon_redeemed: false,
+      is_google_review_asked: false,
+    });
+  }
+
+  if (loading && transactions.length === 0) {
+    return (
+      <div className="bg-white rounded-lg shadow p-6">
+        <div className="animate-pulse space-y-4">
+          <div className="h-6 bg-gray-200 rounded w-1/3"></div>
+          <div className="h-32 bg-gray-200 rounded"></div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-green-600 to-teal-600 px-6 py-4 flex justify-between items-center">
+        <div>
+          <h2 className="text-xl font-bold text-white">📋 Data Transaksi</h2>
+          <p className="text-green-100 text-sm mt-1">Kelola semua transaksi barbershop</p>
+        </div>
+        <button
+          onClick={() => setShowModal(true)}
+          className="bg-white text-green-600 px-4 py-2 rounded-lg font-medium hover:bg-green-50 transition-colors flex items-center gap-2"
+        >
+          <Plus size={20} />
+          Tambah Transaksi
+        </button>
+      </div>
+
+      {/* Transactions Table */}
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead className="bg-gray-100 border-b border-gray-200">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Tanggal
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Customer
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Service
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                ATV
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Net Revenue
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {transactions.map((tx) => (
+              <tr key={tx.id} className="hover:bg-gray-50">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {formatDateTime(tx.transaction_date)}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm font-medium text-gray-900">{tx.customer_name}</div>
+                  <div className="text-sm text-gray-500">{tx.customer_phone}</div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                    tx.service_tier === "Basic" ? "bg-blue-100 text-blue-800" :
+                    tx.service_tier === "Premium" ? "bg-purple-100 text-purple-800" :
+                    "bg-green-100 text-green-800"
+                  }`}>
+                    {tx.service_tier}
+                  </span>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                  {formatCurrency(tx.atv_amount)}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-green-600">
+                  {formatCurrency(tx.net_revenue)}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm">
+                  <button
+                    onClick={() => handleDelete(tx.id)}
+                    className="text-red-600 hover:text-red-800 transition-colors"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Pagination */}
+      <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-between items-center">
+        <div className="text-sm text-gray-600">
+          Halaman {currentPage} dari {totalPages}
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+          >
+            <ChevronLeft size={16} />
+            Previous
+          </button>
+          <button
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+          >
+            Next
+            <ChevronRight size={16} />
+          </button>
+        </div>
+      </div>
+
+      {/* Add Transaction Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-2xl font-bold text-gray-900">
+                  Tambah Transaksi Baru
+                </h3>
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="text-gray-500 hover:text-gray-700 text-2xl"
+                >
+                  ×
+                </button>
+              </div>
+
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Tanggal & Waktu *
+                    </label>
+                    <input
+                      type="datetime-local"
+                      required
+                      value={formData.transaction_date}
+                      onChange={(e) => setFormData({ ...formData, transaction_date: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      No. HP Customer *
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      pattern="[0-9]{10,15}"
+                      value={formData.customer_phone}
+                      onChange={(e) => setFormData({ ...formData, customer_phone: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Nama Customer *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.customer_name}
+                    onChange={(e) => setFormData({ ...formData, customer_name: e.target.value })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Service Tier *
+                    </label>
+                    <select
+                      required
+                      value={formData.service_tier}
+                      onChange={(e) => setFormData({ ...formData, service_tier: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      <option value="">Pilih Service</option>
+                      <option value="Basic">Basic</option>
+                      <option value="Premium">Premium</option>
+                      <option value="Mastery">Mastery</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Capster
+                    </label>
+                    <select
+                      value={formData.capster_name}
+                      onChange={(e) => setFormData({ ...formData, capster_name: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      <option value="">Pilih Capster</option>
+                      <option value="Owner">Owner</option>
+                      <option value="Staff 1">Staff 1</option>
+                      <option value="Staff 2">Staff 2</option>
+                      <option value="Staff 3">Staff 3</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Upsell Items (optional)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g., Hair Tonic, Coloring"
+                    value={formData.upsell_items}
+                    onChange={(e) => setFormData({ ...formData, upsell_items: e.target.value })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      ATV Amount (Rp) *
+                    </label>
+                    <input
+                      type="number"
+                      required
+                      min="0"
+                      value={formData.atv_amount}
+                      onChange={(e) => setFormData({ ...formData, atv_amount: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Discount (Rp)
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={formData.discount_amount}
+                      onChange={(e) => setFormData({ ...formData, discount_amount: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Area
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g., Patikraja, Kedungrandu"
+                    value={formData.customer_area}
+                    onChange={(e) => setFormData({ ...formData, customer_area: e.target.value })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id="coupon-check"
+                      checked={formData.is_coupon_redeemed}
+                      onChange={(e) => setFormData({ ...formData, is_coupon_redeemed: e.target.checked })}
+                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <label htmlFor="coupon-check" className="ml-2 text-sm text-gray-700">
+                      Coupon Redeemed
+                    </label>
+                  </div>
+
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id="review-check"
+                      checked={formData.is_google_review_asked}
+                      onChange={(e) => setFormData({ ...formData, is_google_review_asked: e.target.checked })}
+                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <label htmlFor="review-check" className="ml-2 text-sm text-gray-700">
+                      Google Review Asked
+                    </label>
+                  </div>
+                </div>
+
+                <div className="flex gap-4 pt-4">
+                  <button
+                    type="submit"
+                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-colors"
+                  >
+                    Simpan
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowModal(false)}
+                    className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 py-3 rounded-lg font-medium transition-colors"
+                  >
+                    Batal
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase/client";
 import KHLTracker from "@/components/barbershop/KHLTracker";
 import ActionableLeads from "@/components/barbershop/ActionableLeads";
 import RevenueAnalytics from "@/components/barbershop/RevenueAnalytics";
+import TransactionsManager from "@/components/barbershop/TransactionsManager";
 
 export default function BarbershopDashboard() {
   const [loading, setLoading] = useState(true);
@@ -88,6 +89,11 @@ export default function BarbershopDashboard() {
           {/* Revenue Analytics */}
           <section>
             <RevenueAnalytics />
+          </section>
+
+          {/* Transactions Manager */}
+          <section>
+            <TransactionsManager />
           </section>
         </div>
       </main>
