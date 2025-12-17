@@ -326,92 +326,102 @@ export default function TransactionsManager() {
 
       {/* Add Transaction Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-2xl font-bold text-gray-900">
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-5 rounded-t-xl">
+              <div className="flex justify-between items-center">
+                <h3 className="text-2xl font-bold text-white flex items-center">
+                  <Plus className="mr-2" size={28} />
                   Tambah Transaksi Baru
                 </h3>
                 <button
                   onClick={() => setShowModal(false)}
-                  className="text-gray-500 hover:text-gray-700 text-2xl"
+                  className="text-white hover:bg-white/20 rounded-full p-1 transition-colors"
                 >
-                  ×
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
                 </button>
               </div>
+              <p className="text-blue-100 text-sm mt-1">Isi form di bawah untuk menambahkan transaksi baru</p>
+            </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Modal Body */}
+            <div className="p-6 bg-gray-50">
+              <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Tanggal & Waktu *
+                  <div className="bg-white p-4 rounded-lg border-2 border-gray-200 hover:border-blue-400 transition-colors">
+                    <label className="block text-sm font-bold text-gray-800 mb-2">
+                      📅 Tanggal & Waktu *
                     </label>
                     <input
                       type="datetime-local"
                       required
                       value={formData.transaction_date}
                       onChange={(e) => setFormData({ ...formData, transaction_date: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-4 py-3 text-base border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white text-gray-900 font-medium"
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      No. HP Customer *
+                  <div className="bg-white p-4 rounded-lg border-2 border-gray-200 hover:border-blue-400 transition-colors">
+                    <label className="block text-sm font-bold text-gray-800 mb-2">
+                      📱 No. HP Customer *
                     </label>
                     <input
                       type="tel"
                       required
                       pattern="[0-9]{10,15}"
+                      placeholder="08123456789"
                       value={formData.customer_phone}
                       onChange={(e) => setFormData({ ...formData, customer_phone: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-4 py-3 text-base border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white text-gray-900 font-medium placeholder-gray-400"
                     />
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Nama Customer *
+                <div className="bg-white p-4 rounded-lg border-2 border-gray-200 hover:border-blue-400 transition-colors">
+                  <label className="block text-sm font-bold text-gray-800 mb-2">
+                    👤 Nama Customer *
                   </label>
                   <input
                     type="text"
                     required
+                    placeholder="Nama lengkap customer"
                     value={formData.customer_name}
                     onChange={(e) => setFormData({ ...formData, customer_name: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-3 text-base border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white text-gray-900 font-medium placeholder-gray-400"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Service Tier *
+                  <div className="bg-white p-4 rounded-lg border-2 border-gray-200 hover:border-blue-400 transition-colors">
+                    <label className="block text-sm font-bold text-gray-800 mb-2">
+                      ✂️ Service Tier *
                     </label>
                     <select
                       required
                       value={formData.service_tier}
                       onChange={(e) => setFormData({ ...formData, service_tier: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-4 py-3 text-base border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white text-gray-900 font-medium"
                     >
-                      <option value="">Pilih Service</option>
-                      <option value="Basic">Basic</option>
-                      <option value="Premium">Premium</option>
-                      <option value="Mastery">Mastery</option>
+                      <option value="">-- Pilih Service --</option>
+                      <option value="Basic">Basic (Rp 20K)</option>
+                      <option value="Premium">Premium (Rp 40-50K)</option>
+                      <option value="Mastery">Mastery (Rp 70K+)</option>
                     </select>
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Capster
+                  <div className="bg-white p-4 rounded-lg border-2 border-gray-200 hover:border-blue-400 transition-colors">
+                    <label className="block text-sm font-bold text-gray-800 mb-2">
+                      💇 Capster
                     </label>
                     <select
                       value={formData.capster_name}
                       onChange={(e) => setFormData({ ...formData, capster_name: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-4 py-3 text-base border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white text-gray-900 font-medium"
                     >
-                      <option value="">Pilih Capster</option>
+                      <option value="">-- Pilih Capster --</option>
                       <option value="Owner">Owner</option>
                       <option value="Staff 1">Staff 1</option>
                       <option value="Staff 2">Staff 2</option>
@@ -420,105 +430,126 @@ export default function TransactionsManager() {
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Upsell Items (optional)
+                <div className="bg-white p-4 rounded-lg border-2 border-gray-200 hover:border-blue-400 transition-colors">
+                  <label className="block text-sm font-bold text-gray-800 mb-2">
+                    ➕ Upsell Items (optional)
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g., Hair Tonic, Coloring"
+                    placeholder="Contoh: Hair Tonic, Coloring, Massage"
                     value={formData.upsell_items}
                     onChange={(e) => setFormData({ ...formData, upsell_items: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-3 text-base border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white text-gray-900 font-medium placeholder-gray-400"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      ATV Amount (Rp) *
+                  <div className="bg-white p-4 rounded-lg border-2 border-gray-200 hover:border-blue-400 transition-colors">
+                    <label className="block text-sm font-bold text-gray-800 mb-2">
+                      💰 ATV Amount (Rp) *
                     </label>
                     <input
                       type="number"
                       required
                       min="0"
+                      step="1000"
+                      placeholder="20000"
                       value={formData.atv_amount}
                       onChange={(e) => setFormData({ ...formData, atv_amount: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-4 py-3 text-base border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white text-gray-900 font-medium placeholder-gray-400"
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Discount (Rp)
+                  <div className="bg-white p-4 rounded-lg border-2 border-gray-200 hover:border-blue-400 transition-colors">
+                    <label className="block text-sm font-bold text-gray-800 mb-2">
+                      🏷️ Discount (Rp)
                     </label>
                     <input
                       type="number"
                       min="0"
+                      step="1000"
+                      placeholder="0"
                       value={formData.discount_amount}
                       onChange={(e) => setFormData({ ...formData, discount_amount: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-4 py-3 text-base border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white text-gray-900 font-medium placeholder-gray-400"
                     />
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Area
+                <div className="bg-white p-4 rounded-lg border-2 border-gray-200 hover:border-blue-400 transition-colors">
+                  <label className="block text-sm font-bold text-gray-800 mb-2">
+                    📍 Area
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g., Patikraja, Kedungrandu"
+                    placeholder="Contoh: Patikraja, Kedungrandu, Banyumas"
                     value={formData.customer_area}
                     onChange={(e) => setFormData({ ...formData, customer_area: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-3 text-base border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white text-gray-900 font-medium placeholder-gray-400"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id="coupon-check"
-                      checked={formData.is_coupon_redeemed}
-                      onChange={(e) => setFormData({ ...formData, is_coupon_redeemed: e.target.checked })}
-                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                    />
-                    <label htmlFor="coupon-check" className="ml-2 text-sm text-gray-700">
-                      Coupon Redeemed
-                    </label>
+                  <div className="bg-white p-4 rounded-lg border-2 border-gray-200 hover:border-blue-400 transition-colors">
+                    <div className="flex items-center h-full">
+                      <input
+                        type="checkbox"
+                        id="coupon-check"
+                        checked={formData.is_coupon_redeemed}
+                        onChange={(e) => setFormData({ ...formData, is_coupon_redeemed: e.target.checked })}
+                        className="w-5 h-5 text-blue-600 border-2 border-gray-300 rounded focus:ring-blue-500"
+                      />
+                      <label htmlFor="coupon-check" className="ml-3 text-base font-semibold text-gray-800 cursor-pointer">
+                        🎟️ Coupon Redeemed
+                      </label>
+                    </div>
                   </div>
 
-                  <div className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id="review-check"
-                      checked={formData.is_google_review_asked}
-                      onChange={(e) => setFormData({ ...formData, is_google_review_asked: e.target.checked })}
-                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                    />
-                    <label htmlFor="review-check" className="ml-2 text-sm text-gray-700">
-                      Google Review Asked
-                    </label>
+                  <div className="bg-white p-4 rounded-lg border-2 border-gray-200 hover:border-blue-400 transition-colors">
+                    <div className="flex items-center h-full">
+                      <input
+                        type="checkbox"
+                        id="review-check"
+                        checked={formData.is_google_review_asked}
+                        onChange={(e) => setFormData({ ...formData, is_google_review_asked: e.target.checked })}
+                        className="w-5 h-5 text-blue-600 border-2 border-gray-300 rounded focus:ring-blue-500"
+                      />
+                      <label htmlFor="review-check" className="ml-3 text-base font-semibold text-gray-800 cursor-pointer">
+                        ⭐ Google Review Asked
+                      </label>
+                    </div>
                   </div>
                 </div>
 
                 <div className="flex gap-4 pt-4">
                   <button
                     type="submit"
-                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-colors"
+                    className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-4 rounded-xl font-bold text-lg transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
                   >
-                    Simpan
+                    💾 Simpan Transaksi
                   </button>
                   <button
                     type="button"
-                    onClick={() => setShowModal(false)}
-                    className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 py-3 rounded-lg font-medium transition-colors"
+                    onClick={() => {
+                      setShowModal(false);
+                      resetForm();
+                    }}
+                    className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 py-4 rounded-xl font-bold text-lg transition-all"
                   >
-                    Batal
+                    ❌ Batal
                   </button>
                 </div>
               </form>
+            </div>
+
+            {/* Help Text */}
+            <div className="px-6 pb-6 bg-gray-50">
+              <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                <p className="text-sm text-blue-800">
+                  <strong>💡 Tips:</strong> Pastikan semua field yang bertanda * diisi dengan lengkap. 
+                  ATV Amount adalah total harga sebelum discount.
+                </p>
+              </div>
             </div>
           </div>
         </div>
