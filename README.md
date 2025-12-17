@@ -48,7 +48,7 @@
 
 ## 🚀 URLs
 
-- **Development**: https://3000-i7gwoly3vrqx7gqq1r4bm-2e77fc33.sandbox.novita.ai
+- **Development**: https://3000-i6w7ptfhsxqq6lxspn1py-b237eb32.sandbox.novita.ai
 - **GitHub Repository**: https://github.com/Estes786/saasxbarbershop
 - **Supabase Project**: https://qwqmhvwqeynnyxaecqzw.supabase.co
 
@@ -166,25 +166,43 @@ saasxbarbershop/
 
 ## 🔥 Recent Updates (Dec 17, 2025)
 
-### ✨ NEW: TransactionsManager Component
+### ✨ NEW: Real-Time Integration System
+- **RefreshContext**: Global state management untuk auto-refresh
+- **Auto-refresh mechanism**: Semua dashboard langsung update setelah transaksi baru
+- **Manual refresh buttons**: Setiap dashboard punya refresh button dengan loading state
+- **Event-driven updates**: TransactionsManager trigger refresh ke semua komponen
+
+### ✨ NEW: Enhanced UI/UX
+- **Toast Notifications**: Replace alert dengan toast yang sophisticated & smooth
+- **ToastContext**: Global toast management dengan animations
+- **Export to CSV**: Fitur export data transaksi ke CSV file
+- **Loading Animations**: Smooth loading states dengan spinning icons
+- **Better Error Handling**: User-friendly error messages dengan toast
+
+### ✨ TransactionsManager Component
 - Full CRUD functionality untuk transaksi
 - Modal form dengan validasi
 - Pagination dengan navigation
 - Auto-update customer profiles
 - Service tier badges & visual indicators
 - Real-time sync dengan Supabase
+- **NEW**: Export to CSV button
+- **NEW**: Manual refresh button
+- **NEW**: Toast notifications
 
-### ✨ NEW: API Routes
+### ✨ API Routes
 - `/api/transactions` - GET all & POST create
 - `/api/transactions/[id]` - GET/PUT/DELETE single
 - `/api/analytics/service-distribution` - Service tier breakdown
 - Auto customer profile calculation
 
-### ✨ Enhanced Features
+### ✨ Dashboard Features
 - Service Distribution Charts (Pie & Table)
 - WhatsApp integration dengan templates
 - Real-time KHL progress tracking
 - Actionable leads segmentation
+- **NEW**: All dashboards have refresh buttons
+- **NEW**: All dashboards auto-update on data changes
 
 ---
 
