@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase/client";
 import { formatCurrency, getWhatsAppLink, getDaysSince } from "@/lib/utils";
-import { AlertTriangle, Gift, Star, MessageCircle, ExternalLink } from "lucide-react";
+import { AlertTriangle, Gift, Star, MessageCircle, ExternalLink, RefreshCw } from "lucide-react";
+import { useRefresh } from "@/lib/context/RefreshContext";
 
 interface Lead {
   id: string;
@@ -20,13 +21,14 @@ interface Lead {
 }
 
 export default function ActionableLeads() {
+  const { refreshTrigger } = useRefresh();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedSegment, setSelectedSegment] = useState<string>("all");
 
   useEffect(() => {
     fetchLeads();
-  }, []);
+  }, [refreshTrigger]); // Auto-refresh when trigger changes
 
   async function fetchLeads() {
     try {
@@ -181,13 +183,24 @@ export default function ActionableLeads() {
     <div className="bg-white rounded-lg shadow-lg overflow-hidden">
       {/* Header */}
       <div className="bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-4">
-        <h2 className="text-xl font-bold text-white flex items-center">
-          <MessageCircle className="mr-2" size={24} />
-          💬 Actionable Leads Dashboard
-        </h2>
-        <p className="text-purple-100 text-sm mt-1">
-          Customer segments yang perlu action segera
-        </p>
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-xl font-bold text-white flex items-center">
+              <MessageCircle className="mr-2" size={24} />
+              💬 Actionable Leads Dashboard
+            </h2>
+            <p className="text-purple-100 text-sm mt-1">
+              Customer segments yang perlu action segera
+            </p>
+          </div>
+          <button
+            onClick={fetchLeads}
+            disabled={loading}
+            className="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-3 py-2 rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50"
+          >
+            <RefreshCw size={18} className={loading ? "animate-spin" : ""} />
+          </button>
+        </div>
       </div>
 
       {/* Segment Filters */}

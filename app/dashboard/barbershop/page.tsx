@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase/client";
+import { RefreshProvider } from "@/lib/context/RefreshContext";
+import { ToastProvider } from "@/lib/context/ToastContext";
 import KHLTracker from "@/components/barbershop/KHLTracker";
 import ActionableLeads from "@/components/barbershop/ActionableLeads";
 import RevenueAnalytics from "@/components/barbershop/RevenueAnalytics";
@@ -60,55 +62,59 @@ export default function BarbershopDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <h1 className="text-2xl font-bold text-gray-900">
-            🚀 OASIS BI PRO x Barbershop Kedungrandu
-          </h1>
-          <p className="text-sm text-gray-600 mt-1">
-            Data Monetization Dashboard - Real-time Insights
-          </p>
+    <ToastProvider>
+      <RefreshProvider>
+        <div className="min-h-screen bg-gray-50">
+        {/* Header */}
+        <header className="bg-white shadow-sm border-b border-gray-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <h1 className="text-2xl font-bold text-gray-900">
+              🚀 OASIS BI PRO x Barbershop Kedungrandu
+            </h1>
+            <p className="text-sm text-gray-600 mt-1">
+              Data Monetization Dashboard - Real-time Insights
+            </p>
+          </div>
+        </header>
+
+        {/* Main Content */}
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="space-y-8">
+            {/* KHL Progress Tracker */}
+            <section>
+              <KHLTracker />
+            </section>
+
+            {/* Actionable Leads */}
+            <section>
+              <ActionableLeads />
+            </section>
+
+            {/* Revenue Analytics */}
+            <section>
+              <RevenueAnalytics />
+            </section>
+
+            {/* Transactions Manager */}
+            <section>
+              <TransactionsManager />
+            </section>
+          </div>
+        </main>
+
+        {/* Footer */}
+        <footer className="bg-white border-t border-gray-200 mt-12">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-sm text-gray-600">
+            <p>
+              © 2025 OASIS BI PRO x Barbershop Kedungrandu. All rights reserved.
+            </p>
+            <p className="mt-1">
+              Jl. Raya Kedungrandu, Patikraja, Banyumas
+            </p>
+          </div>
+        </footer>
         </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="space-y-8">
-          {/* KHL Progress Tracker */}
-          <section>
-            <KHLTracker />
-          </section>
-
-          {/* Actionable Leads */}
-          <section>
-            <ActionableLeads />
-          </section>
-
-          {/* Revenue Analytics */}
-          <section>
-            <RevenueAnalytics />
-          </section>
-
-          {/* Transactions Manager */}
-          <section>
-            <TransactionsManager />
-          </section>
-        </div>
-      </main>
-
-      {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 mt-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-sm text-gray-600">
-          <p>
-            © 2025 OASIS BI PRO x Barbershop Kedungrandu. All rights reserved.
-          </p>
-          <p className="mt-1">
-            Jl. Raya Kedungrandu, Patikraja, Banyumas
-          </p>
-        </div>
-      </footer>
-    </div>
+      </RefreshProvider>
+    </ToastProvider>
   );
 }

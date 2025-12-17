@@ -18,7 +18,8 @@ import {
   Pie,
   Cell,
 } from "recharts";
-import { TrendingUp, DollarSign, Users, Package } from "lucide-react";
+import { TrendingUp, DollarSign, Users, Package, RefreshCw } from "lucide-react";
+import { useRefresh } from "@/lib/context/RefreshContext";
 
 interface DailyAnalytics {
   date: string;
@@ -39,6 +40,7 @@ interface ServiceDistribution {
 const COLORS = ["#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6"];
 
 export default function RevenueAnalytics() {
+  const { refreshTrigger } = useRefresh();
   const [dailyAnalytics, setDailyAnalytics] = useState<DailyAnalytics[]>([]);
   const [serviceDistribution, setServiceDistribution] = useState<
     ServiceDistribution[]
@@ -47,7 +49,7 @@ export default function RevenueAnalytics() {
 
   useEffect(() => {
     fetchAnalytics();
-  }, []);
+  }, [refreshTrigger]); // Auto-refresh when trigger changes
 
   async function fetchAnalytics() {
     try {
@@ -228,13 +230,24 @@ export default function RevenueAnalytics() {
     <div className="bg-white rounded-lg shadow-lg overflow-hidden">
       {/* Header */}
       <div className="bg-gradient-to-r from-green-600 to-teal-600 px-6 py-4">
-        <h2 className="text-xl font-bold text-white flex items-center">
-          <TrendingUp className="mr-2" size={24} />
-          📈 Revenue Analytics
-        </h2>
-        <p className="text-green-100 text-sm mt-1">
-          Analisis revenue dan service distribution (30 hari terakhir)
-        </p>
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-xl font-bold text-white flex items-center">
+              <TrendingUp className="mr-2" size={24} />
+              📈 Revenue Analytics
+            </h2>
+            <p className="text-green-100 text-sm mt-1">
+              Analisis revenue dan service distribution (30 hari terakhir)
+            </p>
+          </div>
+          <button
+            onClick={fetchAnalytics}
+            disabled={loading}
+            className="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-3 py-2 rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50"
+          >
+            <RefreshCw size={18} className={loading ? "animate-spin" : ""} />
+          </button>
+        </div>
       </div>
 
       {/* Summary Cards */}

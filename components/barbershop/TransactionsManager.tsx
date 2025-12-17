@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
-import { Plus, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, Trash2, ChevronLeft, ChevronRight, RefreshCw, Download } from "lucide-react";
+import { useRefresh } from "@/lib/context/RefreshContext";
+import { useToast } from "@/lib/context/ToastContext";
 
 interface Transaction {
   id: string;
@@ -21,6 +23,8 @@ interface Transaction {
 }
 
 export default function TransactionsManager() {
+  const { triggerRefresh } = useRefresh();
+  const { showToast } = useToast();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -74,15 +78,17 @@ export default function TransactionsManager() {
       const result = await response.json();
 
       if (result.success) {
-        alert("✅ Transaksi berhasil ditambahkan!");
+        showToast("success", "✅ Transaksi berhasil ditambahkan!");
         setShowModal(false);
         fetchTransactions(currentPage);
         resetForm();
+        // Trigger refresh untuk semua dashboard
+        triggerRefresh();
       } else {
-        alert("❌ Error: " + result.error);
+        showToast("error", "❌ Error: " + result.error);
       }
     } catch (error: any) {
-      alert("❌ Error: " + error.message);
+      showToast("error", "❌ Error: " + error.message);
     }
   }
 
@@ -97,13 +103,15 @@ export default function TransactionsManager() {
       const result = await response.json();
 
       if (result.success) {
-        alert("✅ Transaksi berhasil dihapus!");
+        showToast("success", "✅ Transaksi berhasil dihapus!");
         fetchTransactions(currentPage);
+        // Trigger refresh untuk semua dashboard
+        triggerRefresh();
       } else {
-        alert("❌ Error: " + result.error);
+        showToast("error", "❌ Error: " + result.error);
       }
     } catch (error: any) {
-      alert("❌ Error: " + error.message);
+      showToast("error", "❌ Error: " + error.message);
     }
   }
 
@@ -121,6 +129,66 @@ export default function TransactionsManager() {
       is_coupon_redeemed: false,
       is_google_review_asked: false,
     });
+  }
+
+  function exportToCSV() {
+    if (transactions.length === 0) {
+      showToast("warning", "Tidak ada data untuk di-export");
+      return;
+    }
+
+    // CSV headers
+    const headers = [
+      "ID",
+      "Tanggal",
+      "Customer",
+      "No HP",
+      "Service Tier",
+      "Upsell Items",
+      "ATV Amount",
+      "Discount",
+      "Net Revenue",
+      "Coupon",
+      "Review Asked",
+      "Area",
+      "Capster"
+    ];
+
+    // CSV rows
+    const rows = transactions.map((tx) => [
+      tx.id,
+      formatDateTime(tx.transaction_date),
+      tx.customer_name,
+      tx.customer_phone,
+      tx.service_tier,
+      tx.upsell_items || "",
+      tx.atv_amount,
+      tx.discount_amount,
+      tx.net_revenue,
+      tx.is_coupon_redeemed ? "Yes" : "No",
+      tx.is_google_review_asked ? "Yes" : "No",
+      tx.customer_area || "",
+      tx.capster_name || ""
+    ]);
+
+    // Create CSV content
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((row) => row.map((cell) => `"${cell}"`).join(","))
+    ].join("\n");
+
+    // Create blob and download
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `transactions-${new Date().toISOString().split("T")[0]}.csv`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    showToast("success", "✅ Data berhasil di-export!");
   }
 
   if (loading && transactions.length === 0) {
@@ -142,13 +210,29 @@ export default function TransactionsManager() {
           <h2 className="text-xl font-bold text-white">📋 Data Transaksi</h2>
           <p className="text-green-100 text-sm mt-1">Kelola semua transaksi barbershop</p>
         </div>
-        <button
-          onClick={() => setShowModal(true)}
-          className="bg-white text-green-600 px-4 py-2 rounded-lg font-medium hover:bg-green-50 transition-colors flex items-center gap-2"
-        >
-          <Plus size={20} />
-          Tambah Transaksi
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => fetchTransactions(currentPage)}
+            className="bg-white text-green-600 px-3 py-2 rounded-lg font-medium hover:bg-green-50 transition-colors flex items-center gap-2"
+            title="Refresh data"
+          >
+            <RefreshCw size={18} />
+          </button>
+          <button
+            onClick={exportToCSV}
+            className="bg-white text-green-600 px-3 py-2 rounded-lg font-medium hover:bg-green-50 transition-colors flex items-center gap-2"
+            title="Export ke CSV"
+          >
+            <Download size={18} />
+          </button>
+          <button
+            onClick={() => setShowModal(true)}
+            className="bg-white text-green-600 px-4 py-2 rounded-lg font-medium hover:bg-green-50 transition-colors flex items-center gap-2"
+          >
+            <Plus size={20} />
+            Tambah Transaksi
+          </button>
+        </div>
       </div>
 
       {/* Transactions Table */}

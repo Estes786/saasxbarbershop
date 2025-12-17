@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase/client";
 import { formatCurrency } from "@/lib/utils";
-import { TrendingUp, Target, Calendar, DollarSign } from "lucide-react";
+import { TrendingUp, Target, Calendar, DollarSign, RefreshCw } from "lucide-react";
+import { useRefresh } from "@/lib/context/RefreshContext";
 
 interface KHLData {
   target_khl: number;
@@ -16,13 +17,14 @@ interface KHLData {
 }
 
 export default function KHLTracker() {
+  const { refreshTrigger } = useRefresh();
   const [khlData, setKhlData] = useState<KHLData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchKHLData();
-  }, []);
+  }, [refreshTrigger]); // Auto-refresh when trigger changes
 
   async function fetchKHLData() {
     try {
@@ -128,13 +130,24 @@ export default function KHLTracker() {
     <div className="bg-white rounded-lg shadow-lg overflow-hidden">
       {/* Header */}
       <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4">
-        <h2 className="text-xl font-bold text-white flex items-center">
-          <Target className="mr-2" size={24} />
-          🎯 KHL Monitoring Dashboard
-        </h2>
-        <p className="text-blue-100 text-sm mt-1">
-          Target Kebutuhan Hidup Layak Bulanan
-        </p>
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-xl font-bold text-white flex items-center">
+              <Target className="mr-2" size={24} />
+              🎯 KHL Monitoring Dashboard
+            </h2>
+            <p className="text-blue-100 text-sm mt-1">
+              Target Kebutuhan Hidup Layak Bulanan
+            </p>
+          </div>
+          <button
+            onClick={fetchKHLData}
+            disabled={loading}
+            className="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-3 py-2 rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50"
+          >
+            <RefreshCw size={18} className={loading ? "animate-spin" : ""} />
+          </button>
+        </div>
       </div>
 
       {/* Main Content */}
