@@ -64,6 +64,23 @@ export default function RegisterPage() {
     }
   }
 
+  async function handleGoogleSignUp() {
+    try {
+      setLoading(true);
+      setError(null);
+      const { error: googleError } = await signInWithGoogle();
+      
+      if (googleError) {
+        setError("Google sign-up failed. Please ensure Google OAuth is configured in Supabase dashboard.");
+        setLoading(false);
+      }
+      // Redirect will be handled by OAuth flow
+    } catch (err: any) {
+      setError(err.message || "Google sign-up failed. Please try again.");
+      setLoading(false);
+    }
+  }
+
   if (success) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center px-4">
@@ -267,11 +284,7 @@ export default function RegisterPage() {
           {/* Google Sign Up */}
           <button
             type="button"
-            onClick={async () => {
-              setLoading(true);
-              await signInWithGoogle();
-              // Redirect handled by OAuth flow
-            }}
+            onClick={handleGoogleSignUp}
             disabled={loading}
             className="w-full py-3 bg-white text-gray-700 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-3"
           >

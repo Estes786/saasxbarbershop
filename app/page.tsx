@@ -31,12 +31,20 @@ export default function Home() {
               </div>
               <span className="text-white font-bold text-xl">OASIS BI PRO</span>
             </div>
-            <Link
-              href="/dashboard/barbershop"
-              className="px-6 py-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-lg hover:bg-white/20 transition-all duration-300 font-medium"
-            >
-              Dashboard
-            </Link>
+            <div className="flex items-center space-x-3">
+              <Link
+                href="/login"
+                className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-300 font-medium"
+              >
+                Login
+              </Link>
+              <Link
+                href="/dashboard/barbershop"
+                className="px-6 py-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-lg hover:bg-white/20 transition-all duration-300 font-medium"
+              >
+                Dashboard
+              </Link>
+            </div>
           </div>
         </nav>
 
@@ -68,15 +76,18 @@ export default function Home() {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
               <Link
-                href="/dashboard/barbershop"
+                href="/login"
                 className="group px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl font-semibold hover:shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 flex items-center justify-center space-x-2"
               >
-                <span>Buka Dashboard</span>
+                <span>Login with Google</span>
                 <ArrowRight className="group-hover:translate-x-1 transition-transform" size={20} />
               </Link>
-              <button className="px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-xl font-semibold hover:bg-white/20 transition-all duration-300">
-                Lihat Demo
-              </button>
+              <Link
+                href="/dashboard/barbershop"
+                className="px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-xl font-semibold hover:bg-white/20 transition-all duration-300"
+              >
+                View Demo Dashboard
+              </Link>
             </div>
 
             {/* Feature Cards Grid */}
