@@ -80,12 +80,64 @@ Run the schema SQL in Supabase SQL Editor:
 - File: `supabase/schema.sql`
 - Or use uploaded file: `supabase-schema.sql`
 
+**IMPORTANT**: After creating tables, run the RLS fix:
+```sql
+-- Copy SQL from: supabase/fix_rls_policies.sql
+-- Paste into Supabase SQL Editor
+-- Execute to allow dashboard to read data
+```
+
 ### 5. Run Development Server
 ```bash
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000)
+
+---
+
+## 🔧 TROUBLESHOOTING
+
+### Dashboard Shows "Rp 0" or Empty Data
+
+**Cause**: RLS policies blocking data access
+
+**Fix**: Run `/supabase/fix_rls_policies.sql` in Supabase SQL Editor
+
+**Steps**:
+1. Go to Supabase Dashboard → SQL Editor
+2. Copy content from `supabase/fix_rls_policies.sql`
+3. Paste and execute
+4. Refresh dashboard
+
+### Actionable Leads Dashboard Empty
+
+**Cause**: No customer data or RLS blocking
+
+**Fix**:
+1. Run RLS fix (above)
+2. Input at least 1-2 transactions via TransactionsManager
+3. Wait for automatic calculation (5-10 seconds)
+4. Refresh dashboard
+
+### "Permission Denied" Errors in Console
+
+**Cause**: RLS policies too restrictive
+
+**Fix**: Run `/supabase/fix_rls_policies.sql`
+
+### Data Not Syncing After Input
+
+**Cause**: Aggregated tables not populated
+
+**Fix**: This is NORMAL. Dashboard uses fallback manual calculation:
+- Revenue Analytics calculates from `barbershop_transactions` directly
+- Actionable Leads calculates from `barbershop_customers` directly
+- No Edge Functions needed for small datasets (<1000 transactions)
+
+### For Detailed Diagnosis
+
+See: `DIAGNOSIS_AND_FIX.md` for complete technical explanation
 
 ---
 
