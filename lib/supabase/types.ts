@@ -9,6 +9,71 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      user_profiles: {
+        Row: {
+          id: string
+          email: string
+          role: string
+          customer_phone: string | null
+          customer_name: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          email: string
+          role: string
+          customer_phone?: string | null
+          customer_name?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          email?: string
+          role?: string
+          customer_phone?: string | null
+          customer_name?: string | null
+          updated_at?: string
+        }
+      }
+      bookings: {
+        Row: {
+          id: string
+          customer_phone: string
+          customer_name: string
+          booking_date: string
+          booking_time: string
+          service_tier: string
+          requested_capster: string | null
+          notes: string | null
+          status: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          customer_phone: string
+          customer_name: string
+          booking_date: string
+          booking_time: string
+          service_tier: string
+          requested_capster?: string | null
+          notes?: string | null
+          status?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          customer_name?: string
+          booking_date?: string
+          booking_time?: string
+          service_tier?: string
+          requested_capster?: string | null
+          notes?: string | null
+          status?: string
+          updated_at?: string
+        }
+      }
       barbershop_transactions: {
         Row: {
           id: string
