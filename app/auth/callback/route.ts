@@ -47,6 +47,8 @@ export async function GET(request: NextRequest) {
                          session.user.user_metadata?.name || 
                          email.split('@')[0];
       
+      // Note: For OAuth users without phone number, profile will be created without customer_phone
+      // This avoids foreign key constraint issues. Phone can be added later via profile update.
       const { error: insertError } = await supabase
         .from('user_profiles')
         .insert({
@@ -54,6 +56,7 @@ export async function GET(request: NextRequest) {
           email: email,
           role: 'customer',
           customer_name: displayName,
+          customer_phone: null, // OAuth users don't have phone initially
         } as any);
       
       if (insertError) {
