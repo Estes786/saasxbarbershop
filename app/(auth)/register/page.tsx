@@ -126,33 +126,10 @@ export default function RegisterPage() {
         {/* Register Form */}
         <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8">
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Role Selection */}
-            <div>
-              <label className="block text-white font-medium mb-2">Daftar sebagai</label>
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setFormData({ ...formData, role: 'customer' })}
-                  className={`py-3 px-4 rounded-lg font-medium transition-all ${
-                    formData.role === 'customer'
-                      ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white'
-                      : 'bg-white/10 text-purple-200 border border-white/20 hover:bg-white/20'
-                  }`}
-                >
-                  Customer
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setFormData({ ...formData, role: 'admin' })}
-                  className={`py-3 px-4 rounded-lg font-medium transition-all ${
-                    formData.role === 'admin'
-                      ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white'
-                      : 'bg-white/10 text-purple-200 border border-white/20 hover:bg-white/20'
-                  }`}
-                >
-                  Admin
-                </button>
-              </div>
+            {/* Info: Customer Registration Only */}
+            <div className="bg-blue-500/20 border border-blue-500/50 rounded-lg p-3 text-blue-200 text-sm">
+              <span className="font-semibold">Customer Registration</span>
+              <p className="mt-1">Daftar untuk mendapatkan akses loyalty program, booking online, dan history transaksi Anda.</p>
             </div>
 
             {/* Email */}
