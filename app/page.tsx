@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { TrendingUp, Target, BarChart3, Users, Sparkles, ArrowRight, CheckCircle2 } from "lucide-react";
+import { TrendingUp, Target, BarChart3, Users, Sparkles, ArrowRight, CheckCircle2, Shield, Crown } from "lucide-react";
 
 export default function Home() {
   const [isVisible, setIsVisible] = useState(false);
+  const [showAdminOption, setShowAdminOption] = useState(false);
 
   useEffect(() => {
     setIsVisible(true);
@@ -20,6 +21,62 @@ export default function Home() {
         <div className="absolute w-96 h-96 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
       </div>
 
+      {/* Admin Access Modal */}
+      {showAdminOption && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center px-4" onClick={() => setShowAdminOption(false)}>
+          <div className="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 border-2 border-yellow-500/50 rounded-2xl p-8 max-w-md w-full shadow-2xl shadow-yellow-500/30" onClick={(e) => e.stopPropagation()}>
+            {/* Crown Icon */}
+            <div className="flex justify-center mb-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-red-600 rounded-full flex items-center justify-center">
+                <Crown className="text-white" size={32} />
+              </div>
+            </div>
+            
+            <h2 className="text-2xl font-bold text-white text-center mb-2">FOUNDER ACCESS</h2>
+            <p className="text-yellow-200 text-center mb-6 text-sm">🔒 Exclusive Admin Registration</p>
+            
+            {/* Warning Box */}
+            <div className="bg-yellow-500/20 border border-yellow-500/50 rounded-xl p-4 mb-6">
+              <div className="flex items-start space-x-2">
+                <Shield className="text-yellow-400 mt-0.5" size={20} />
+                <p className="text-yellow-100 text-sm">
+                  Registrasi admin memerlukan <strong>kode rahasia khusus</strong>. Hanya founder/owner BOZQ Barbershop yang memiliki akses ini.
+                </p>
+              </div>
+            </div>
+
+            {/* Buttons */}
+            <div className="space-y-3">
+              <Link
+                href="/register/admin"
+                className="block w-full py-3 bg-gradient-to-r from-yellow-600 to-red-600 text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-yellow-500/50 transition-all duration-300 text-center"
+                onClick={() => setShowAdminOption(false)}
+              >
+                <div className="flex items-center justify-center space-x-2">
+                  <Shield size={20} />
+                  <span>Register sebagai Admin</span>
+                </div>
+              </Link>
+              
+              <Link
+                href="/login"
+                className="block w-full py-3 bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-lg hover:bg-white/20 transition-all duration-300 text-center font-medium"
+                onClick={() => setShowAdminOption(false)}
+              >
+                Admin Login
+              </Link>
+
+              <button
+                onClick={() => setShowAdminOption(false)}
+                className="block w-full py-2 text-purple-300 hover:text-white transition-colors text-sm"
+              >
+                Tutup
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Main content */}
       <div className="relative z-10 min-h-screen flex flex-col">
         {/* Header/Navigation */}
@@ -32,6 +89,16 @@ export default function Home() {
               <span className="text-white font-bold text-xl">OASIS BI PRO</span>
             </div>
             <div className="flex items-center space-x-3">
+              {/* Toggle Admin Option - Secret Button */}
+              <button
+                onClick={() => setShowAdminOption(!showAdminOption)}
+                className="px-4 py-2 bg-gradient-to-r from-yellow-600 to-red-600 text-white rounded-lg hover:shadow-lg hover:shadow-yellow-500/50 transition-all duration-300 font-medium flex items-center space-x-2"
+                title="Founder/Admin Access"
+              >
+                <Crown size={18} />
+                <span className="hidden sm:inline">Admin</span>
+              </button>
+              
               <Link
                 href="/login"
                 className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-300 font-medium"
