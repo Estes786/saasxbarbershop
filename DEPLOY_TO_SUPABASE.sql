@@ -326,10 +326,10 @@ CREATE INDEX IF NOT EXISTS idx_campaign_dates ON barbershop_campaign_tracking(st
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
 BEGIN
-  NEW.updated_at = NOW();
+  NEW.updated_at = CURRENT_TIMESTAMP;
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql STABLE;
 
 -- Apply triggers to all tables
 DROP TRIGGER IF EXISTS update_user_profiles_updated_at ON user_profiles;
