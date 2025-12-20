@@ -1,79 +1,101 @@
-const { createClient } = require('@supabase/supabase-js');
-const fs = require('fs');
+const https = require('https');
 
-// Initialize Supabase dengan service role key untuk bypass RLS
-const supabase = createClient(
-  'https://qwqmhvwqeynnyxaecqzw.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF3cW1odndxZXlubnl4YWVjcXp3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NTk0NTYxOCwiZXhwIjoyMDgxNTIxNjE4fQ.pBkPeldz1NW0qCI17RHnCWVaGqmCCbrvmuWlo2skpbk',
-  {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false
-    }
-  }
-);
+const PROJECT_REF = 'qwqmhvwqeynnyxaecqzw';
+const ACCESS_TOKEN = 'sbp_9c6004e480e4573b8ad35f7100259cd94ef526b4';
 
-async function execSQL(query) {
-  try {
-    // Method 1: Try using direct query
-    const { data, error, status, statusText } = await supabase
-      .rpc('exec', { sql: query })
-      .select();
+// SQL commands to execute
+const sqlCommands = [
+  `ALTER TABLE user_profiles ADD COLUMN IF NOT EXISTS full_name TEXT;`,
+  `ALTER TABLE user_profiles ADD COLUMN IF NOT EXISTS user_role TEXT DEFAULT 'customer';`,
+  `UPDATE user_profiles SET full_name = customer_name WHERE full_name IS NULL AND customer_name IS NOT NULL;`,
+  `UPDATE user_profiles SET user_role = role WHERE user_role IS NULL AND role IS NOT NULL;`,
+  `UPDATE user_profiles SET user_role = 'customer' WHERE user_role IS NULL;`
+];
+
+async function executeSQL(sql) {
+  return new Promise((resolve, reject) => {
+    const data = JSON.stringify({ query: sql });
     
-    return { data, error, status, statusText };
-  } catch (err) {
-    return { error: err, status: 500 };
-  }
+    const options = {
+      hostname: 'api.supabase.com',
+      port: 443,
+      path: `/v1/projects/${PROJECT_REF}/database/query`,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': data.length,
+        'Authorization': `Bearer ${ACCESS_TOKEN}`
+      }
+    };
+
+    const req = https.request(options, (res) => {
+      let body = '';
+      
+      res.on('data', (chunk) => {
+        body += chunk;
+      });
+      
+      res.on('end', () => {
+        if (res.statusCode >= 200 && res.statusCode < 300) {
+          resolve({ success: true, data: body });
+        } else {
+          resolve({ success: false, error: body, status: res.statusCode });
+        }
+      });
+    });
+
+    req.on('error', (error) => {
+      reject(error);
+    });
+
+    req.write(data);
+    req.end();
+  });
 }
 
 async function main() {
-  console.log('🔧 Applying SQL Fixes Directly to Supabase...\n');
-  console.log('=' .repeat(70));
+  console.log('\n🔧 EXECUTING SQL COMMANDS DIRECTLY\n');
   
-  // Read SQL file
-  const sqlContent = fs.readFileSync('apply_all_fixes.sql', 'utf8');
-  
-  // Split into individual statements (crude but effective)
-  const statements = sqlContent
-    .split(';')
-    .map(s => s.trim())
-    .filter(s => 
-      s.length > 0 && 
-      !s.startsWith('--') && 
-      !s.startsWith('SELECT') && // Skip verification queries for now
-      !s.includes('FROM pg_')
-    );
-  
-  console.log(`\n📝 Found ${statements.length} SQL statements to execute\n`);
-  
-  for (let i = 0; i < statements.length; i++) {
-    const stmt = statements[i];
-    const preview = stmt.substring(0, 80).replace(/\s+/g, ' ');
+  let success = 0;
+  let failed = 0;
+
+  for (let i = 0; i < sqlCommands.length; i++) {
+    const sql = sqlCommands[i];
+    console.log(`\n${i + 1}. Executing: ${sql.substring(0, 70)}...`);
     
-    console.log(`\n[${i+1}/${statements.length}] ${preview}...`);
-    
-    const result = await execSQL(stmt + ';');
-    
-    if (result.error) {
-      console.log(`  ⚠️  ${result.error.message || JSON.stringify(result.error)}`);
-    } else {
-      console.log(`  ✅ Success`);
+    try {
+      const result = await executeSQL(sql);
+      
+      if (result.success) {
+        console.log('   ✅ SUCCESS');
+        success++;
+      } else {
+        console.log('   ⚠️  FAILED:', result.status, result.error.substring(0, 100));
+        failed++;
+      }
+    } catch (error) {
+      console.log('   ❌ ERROR:', error.message);
+      failed++;
     }
-    
-    // Delay to avoid rate limiting
-    await new Promise(resolve => setTimeout(resolve, 300));
   }
+
+  console.log(`\n📊 Results: ${success} success, ${failed} failed\n`);
   
-  console.log('\n' + '=' .repeat(70));
-  console.log('\n✅ SQL Application Attempted!\n');
-  console.log('⚠️  Note: Some RPC calls might fail if exec function doesn\'t exist.');
-  console.log('📌 If you see errors above, please apply apply_all_fixes.sql manually');
-  console.log('   via Supabase SQL Editor at:');
-  console.log('   https://supabase.com/dashboard/project/qwqmhvwqeynnyxaecqzw/sql/new\n');
+  // Verify columns
+  console.log('\n🔍 Verifying columns...');
+  const verifySQL = `SELECT column_name FROM information_schema.columns WHERE table_name = 'user_profiles' ORDER BY ordinal_position;`;
+  
+  try {
+    const result = await executeSQL(verifySQL);
+    if (result.success) {
+      console.log('✅ Columns verified:', result.data);
+    }
+  } catch (error) {
+    console.log('⚠️  Could not verify columns');
+  }
 }
 
 main().catch(err => {
-  console.error('\n❌ Fatal Error:', err.message);
-  console.log('\n📌 Please apply apply_all_fixes.sql manually via Supabase SQL Editor');
+  console.error('❌ Fatal error:', err.message);
   process.exit(1);
 });

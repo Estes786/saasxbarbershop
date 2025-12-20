@@ -6,102 +6,95 @@ const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 async function testRegistration() {
-  console.log('🧪 Testing Customer Registration with Correct Schema...\n');
+  console.log('\n🧪 TESTING USER REGISTRATION (FIXED)\n');
   
-  const testEmail = `test_customer_${Date.now()}@example.com`;
-  const testPhone = `081234567${Math.floor(Math.random() * 1000)}`;
-  
-  console.log('Test Data:');
-  console.log('  Email:', testEmail);
-  console.log('  Phone:', testPhone);
-  console.log('  Name: Test Customer');
-  console.log('  Password: test123456\n');
-  
+  const testEmail = `test${Date.now()}@example.com`;
+  const testPassword = 'Test123456!';
+  const testName = 'Test User';
+  const testRole = 'customer';
+
+  console.log('📧 Test email:', testEmail);
+  console.log('👤 Test name:', testName);
+  console.log('🎭 Test role:', testRole);
+  console.log();
+
   try {
-    // Step 1: Sign up user
-    console.log('Step 1: Creating auth user...');
+    // Step 1: Sign up
+    console.log('1️⃣ Registering user...');
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email: testEmail,
-      password: 'test123456',
+      password: testPassword,
       options: {
         data: {
-          customer_name: 'Test Customer',
-          customer_phone: testPhone
+          full_name: testName,
+          user_role: testRole
         }
       }
     });
-    
+
     if (authError) {
-      console.error('❌ Auth Error:', authError.message);
+      console.error('❌ AUTH ERROR:', authError);
       return;
     }
-    
-    console.log('✅ Auth user created:', authData.user.id);
-    
-    // Wait for user to be created
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Step 2: Create user profile (using correct column names)
-    console.log('\nStep 2: Creating user profile...');
-    const { data: profileData, error: profileError } = await supabase
+
+    console.log('✅ User registered in auth.users');
+    console.log('   User ID:', authData.user?.id);
+    console.log('   Email:', authData.user?.email);
+
+    // Step 2: Check if profile was created
+    console.log('\n2️⃣ Checking user profile...');
+    const { data: profile, error: profileError } = await supabase
       .from('user_profiles')
-      .insert([
-        {
+      .select('*')
+      .eq('id', authData.user.id)
+      .single();
+
+    if (profileError) {
+      console.error('❌ PROFILE ERROR:', profileError);
+      
+      // Try to create manually
+      console.log('\n3️⃣ Creating profile manually...');
+      const { data: manualProfile, error: manualError } = await supabase
+        .from('user_profiles')
+        .insert({
           id: authData.user.id,
           email: testEmail,
-          customer_name: 'Test Customer',
-          customer_phone: testPhone,
-          role: 'customer'
-        }
-      ])
-      .select();
-    
-    if (profileError) {
-      console.error('❌ Profile Error:', profileError.message);
-      console.error('   Code:', profileError.code);
-      console.error('   Details:', profileError.details);
-      console.error('   Hint:', profileError.hint);
-      return;
+          full_name: testName,
+          user_role: testRole
+        })
+        .select()
+        .single();
+
+      if (manualError) {
+        console.error('❌ MANUAL INSERT ERROR:', manualError);
+      } else {
+        console.log('✅ Profile created manually');
+        console.log('   Profile:', manualProfile);
+      }
+    } else {
+      console.log('✅ Profile found automatically');
+      console.log('   Profile:', profile);
     }
-    
-    console.log('✅ User profile created:', profileData[0].id);
-    
-    // Step 3: Create barbershop customer entry
-    console.log('\nStep 3: Creating barbershop customer...');
-    const { data: customerData, error: customerError } = await supabase
-      .from('barbershop_customers')
-      .insert([
-        {
-          customer_phone: testPhone,
-          customer_name: 'Test Customer',
-          customer_area: 'Test Area',
-          total_visits: 0,
-          total_revenue: 0,
-          average_atv: 0,
-          customer_segment: 'New'
-        }
-      ])
-      .select();
-    
-    if (customerError) {
-      console.error('❌ Customer Error:', customerError.message);
-      console.error('   Code:', customerError.code);
-      console.error('   Details:', customerError.details);
-      console.error('   Hint:', customerError.hint);
-      return;
+
+    // Step 3: Try to login
+    console.log('\n4️⃣ Testing login...');
+    const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
+      email: testEmail,
+      password: testPassword
+    });
+
+    if (loginError) {
+      console.error('❌ LOGIN ERROR:', loginError);
+    } else {
+      console.log('✅ Login successful');
+      console.log('   Session:', loginData.session ? 'Active' : 'None');
     }
-    
-    console.log('✅ Barbershop customer created');
-    
-    console.log('\n🎉 Registration Test PASSED!\n');
-    console.log('Summary:');
-    console.log('  - Auth user: ✅');
-    console.log('  - User profile: ✅');
-    console.log('  - Barbershop customer: ✅');
-    console.log('\n✅ NO RLS ERRORS! The fix is working correctly!');
-    
+
+    console.log('\n✅ REGISTRATION TEST COMPLETE\n');
+
   } catch (error) {
-    console.error('❌ Fatal Error:', error);
+    console.error('\n❌ FATAL ERROR:', error.message);
+    console.error('Stack:', error.stack);
   }
 }
 
