@@ -170,6 +170,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             total_visits: 0,
             total_revenue: 0,
             average_atv: 0,
+            lifetime_value: 0,
             coupon_count: 0,
             coupon_eligible: false,
             google_review_given: false,
