@@ -46,6 +46,25 @@
 
 ---
 
+---
+
+## ⚠️ SETUP REQUIRED - 2 MANUAL STEPS
+
+**Status**: Code 100% ready, needs Supabase configuration (15 minutes)
+
+### Quick Setup:
+1. See: `QUICK_FIX_2_STEPS.md` for simple guide
+2. Apply RLS fix (5 min) - via SQL Editor
+3. Configure Google OAuth (10 min) - via Dashboard
+
+### Detailed Info:
+- **Full Report**: `DEBUGGING_FIX_COMPLETE_REPORT.md`
+- **Final Summary**: `FINAL_SUMMARY_COMPLETE.md`
+- **RLS Fix Script**: `FIX_RLS_NO_RECURSION.sql`
+- **Test Script**: `test_complete_auth_flow.js`
+
+---
+
 ## 🚀 URLs
 
 - **Development**: https://3000-i6w7ptfhsxqq6lxspn1py-b237eb32.sandbox.novita.ai
