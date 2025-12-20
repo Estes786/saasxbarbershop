@@ -68,7 +68,7 @@ export default function RegisterPage() {
     try {
       setLoading(true);
       setError(null);
-      const { error: googleError } = await signInWithGoogle();
+      const { error: googleError } = await signInWithGoogle('customer');
       
       if (googleError) {
         setError("Google sign-up failed. Please ensure Google OAuth is configured in Supabase dashboard.");

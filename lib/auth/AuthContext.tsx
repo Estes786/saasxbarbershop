@@ -76,7 +76,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  async function signIn(email: string, password: string) {
+  async function signIn(email: string, password: string, expectedRole?: UserRole) {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -94,6 +94,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         console.log('🔍 Login profile:', profile);
         const userRole = profile?.role;
         console.log('🎯 User role:', userRole);
+        
+        // Verify expected role if provided
+        if (expectedRole && userRole !== expectedRole) {
+          await supabase.auth.signOut();
+          return { error: new Error(`This login page is for ${expectedRole}s only. Your account is registered as ${userRole}.`) };
+        }
         
         if (userRole === 'admin') {
           console.log('➡️ Redirecting to admin dashboard');
@@ -221,12 +227,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  async function signInWithGoogle() {
+  async function signInWithGoogle(expectedRole?: UserRole) {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: `${window.location.origin}/auth/callback${expectedRole ? `?role=${expectedRole}` : ''}`,
         },
       });
       if (error) return { error };

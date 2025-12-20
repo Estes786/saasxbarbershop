@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server';
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get('code');
+  const expectedRole = requestUrl.searchParams.get('role') as 'admin' | 'customer' | null;
 
   if (code) {
     const supabase = await createClient();
@@ -33,6 +34,15 @@ export async function GET(request: NextRequest) {
       .single();
     
     if (profile && !profileError) {
+      // Profile exists - verify expected role if provided
+      if (expectedRole && (profile as any).role !== expectedRole) {
+        console.log(`[OAuth Error] Expected ${expectedRole} but user is ${(profile as any).role}`);
+        await supabase.auth.signOut();
+        return NextResponse.redirect(
+          new URL(`/login/${expectedRole}?error=wrong_role&expected=${expectedRole}&actual=${(profile as any).role}`, requestUrl.origin)
+        );
+      }
+      
       // Profile exists - redirect based on role
       const dashboardUrl = (profile as any).role === 'admin' 
         ? '/dashboard/admin' 
@@ -41,11 +51,14 @@ export async function GET(request: NextRequest) {
       console.log(`[OAuth Success] User ${(profile as any).email} authenticated as ${(profile as any).role}`);
       return NextResponse.redirect(new URL(dashboardUrl, requestUrl.origin));
     } else {
-      // No profile yet - create default customer profile
+      // No profile yet - create default customer profile (or admin if expected)
       const email = session.user.email || '';
       const displayName = session.user.user_metadata?.full_name || 
                          session.user.user_metadata?.name || 
                          email.split('@')[0];
+      
+      // Use expected role if provided, otherwise default to customer
+      const roleToAssign = expectedRole || 'customer';
       
       // Note: For OAuth users without phone number, profile will be created without customer_phone
       // This avoids foreign key constraint issues. Phone can be added later via profile update.
@@ -54,7 +67,7 @@ export async function GET(request: NextRequest) {
         .insert({
           id: session.user.id,
           email: email,
-          role: 'customer',
+          role: roleToAssign,
           customer_name: displayName,
           customer_phone: null, // OAuth users don't have phone initially
         } as any);
@@ -64,9 +77,11 @@ export async function GET(request: NextRequest) {
         return NextResponse.redirect(new URL('/login?error=profile_creation_failed', requestUrl.origin));
       }
       
-      console.log(`[OAuth Success] New customer profile created for ${email}`);
-      // Success - redirect to customer dashboard
-      return NextResponse.redirect(new URL('/dashboard/customer', requestUrl.origin));
+      console.log(`[OAuth Success] New ${roleToAssign} profile created for ${email}`);
+      
+      // Success - redirect based on role
+      const dashboardUrl = roleToAssign === 'admin' ? '/dashboard/admin' : '/dashboard/customer';
+      return NextResponse.redirect(new URL(dashboardUrl, requestUrl.origin));
     }
   }
 

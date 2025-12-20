@@ -98,7 +98,7 @@ export default function AdminRegisterPage() {
     try {
       setLoading(true);
       setError(null);
-      const { error: googleError } = await signInWithGoogle();
+      const { error: googleError } = await signInWithGoogle('admin');
       
       if (googleError) {
         setError("Google sign-up failed. Please ensure Google OAuth is configured.");
@@ -124,10 +124,10 @@ export default function AdminRegisterPage() {
             Silakan cek email Anda untuk konfirmasi akun. Setelah dikonfirmasi, Anda dapat login sebagai Admin.
           </p>
           <Link
-            href="/login"
+            href="/login/admin"
             className="inline-block px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all"
           >
-            Login Sekarang
+            Login Sebagai Admin
           </Link>
         </div>
       </div>
@@ -335,10 +335,10 @@ export default function AdminRegisterPage() {
           <div className="text-center mt-6">
             <p className="text-purple-200 mb-3">Sudah punya akun admin?</p>
             <Link
-              href="/login"
+              href="/login/admin"
               className="inline-block px-6 py-2 bg-white/10 border border-white/20 text-white rounded-lg hover:bg-white/20 transition-all duration-300"
             >
-              Login Sekarang
+              Login Sebagai Admin
             </Link>
           </div>
         </div>

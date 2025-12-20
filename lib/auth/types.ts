@@ -21,9 +21,9 @@ export interface AuthContextType {
   user: AuthUser | null;
   profile: UserProfile | null;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
+  signIn: (email: string, password: string, expectedRole?: UserRole) => Promise<{ error: Error | null }>;
   signUp: (email: string, password: string, role: UserRole, customerData?: { phone: string; name: string }) => Promise<{ error: Error | null }>;
-  signInWithGoogle: () => Promise<{ error: Error | null }>;
+  signInWithGoogle: (expectedRole?: UserRole) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
 }
