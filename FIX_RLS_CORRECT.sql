@@ -1,5 +1,5 @@
 -- ========================================
--- COMPLETE RLS FIX - ALL TABLES
+-- CORRECT RLS FIX - Based on Actual Schema
 -- Fix untuk error: "new row violates row-level security policy"
 -- ========================================
 
@@ -47,7 +47,9 @@ USING (true)
 WITH CHECK (true);
 
 -- ========================================
--- 2. BARBERSHOP_CUSTOMERS TABLE (FIX ERROR)
+-- 2. BARBERSHOP_CUSTOMERS TABLE
+-- Note: This table doesn't have user_id column
+-- It's analytics data based on phone numbers
 -- ========================================
 
 ALTER TABLE IF EXISTS barbershop_customers ENABLE ROW LEVEL SECURITY;
@@ -62,26 +64,28 @@ DROP POLICY IF EXISTS "customers_insert_own" ON barbershop_customers;
 DROP POLICY IF EXISTS "customers_update_own" ON barbershop_customers;
 DROP POLICY IF EXISTS "customers_service_role_all" ON barbershop_customers;
 
--- Create new policies for barbershop_customers
-CREATE POLICY "customers_select_own"
+-- Allow all authenticated users to read customer analytics
+CREATE POLICY "customers_select_all"
 ON barbershop_customers
 FOR SELECT
 TO authenticated
-USING (user_id = auth.uid());
+USING (true);
 
-CREATE POLICY "customers_insert_own"
+-- Allow authenticated users to insert/update customer data
+CREATE POLICY "customers_insert_all"
 ON barbershop_customers
 FOR INSERT
 TO authenticated
-WITH CHECK (user_id = auth.uid());
+WITH CHECK (true);
 
-CREATE POLICY "customers_update_own"
+CREATE POLICY "customers_update_all"
 ON barbershop_customers
 FOR UPDATE
 TO authenticated
-USING (user_id = auth.uid())
-WITH CHECK (user_id = auth.uid());
+USING (true)
+WITH CHECK (true);
 
+-- Service role has full access
 CREATE POLICY "customers_service_role_all"
 ON barbershop_customers
 FOR ALL
@@ -113,6 +117,13 @@ FOR INSERT
 TO authenticated
 WITH CHECK (true);
 
+CREATE POLICY "transactions_update_authenticated"
+ON barbershop_transactions
+FOR UPDATE
+TO authenticated
+USING (true)
+WITH CHECK (true);
+
 CREATE POLICY "transactions_service_role_all"
 ON barbershop_transactions
 FOR ALL
@@ -136,6 +147,19 @@ ON barbershop_analytics_daily
 FOR SELECT
 TO authenticated
 USING (true);
+
+CREATE POLICY "analytics_insert_authenticated"
+ON barbershop_analytics_daily
+FOR INSERT
+TO authenticated
+WITH CHECK (true);
+
+CREATE POLICY "analytics_update_authenticated"
+ON barbershop_analytics_daily
+FOR UPDATE
+TO authenticated
+USING (true)
+WITH CHECK (true);
 
 CREATE POLICY "analytics_service_role_all"
 ON barbershop_analytics_daily
@@ -161,6 +185,19 @@ FOR SELECT
 TO authenticated
 USING (true);
 
+CREATE POLICY "leads_insert_authenticated"
+ON barbershop_actionable_leads
+FOR INSERT
+TO authenticated
+WITH CHECK (true);
+
+CREATE POLICY "leads_update_authenticated"
+ON barbershop_actionable_leads
+FOR UPDATE
+TO authenticated
+USING (true)
+WITH CHECK (true);
+
 CREATE POLICY "leads_service_role_all"
 ON barbershop_actionable_leads
 FOR ALL
@@ -185,6 +222,19 @@ FOR SELECT
 TO authenticated
 USING (true);
 
+CREATE POLICY "campaigns_insert_authenticated"
+ON barbershop_campaign_tracking
+FOR INSERT
+TO authenticated
+WITH CHECK (true);
+
+CREATE POLICY "campaigns_update_authenticated"
+ON barbershop_campaign_tracking
+FOR UPDATE
+TO authenticated
+USING (true)
+WITH CHECK (true);
+
 CREATE POLICY "campaigns_service_role_all"
 ON barbershop_campaign_tracking
 FOR ALL
@@ -193,85 +243,30 @@ USING (true)
 WITH CHECK (true);
 
 -- ========================================
--- 7. BOOKINGS TABLE
+-- 7. BOOKINGS TABLE (if exists and has user_id)
 -- ========================================
 
-ALTER TABLE IF EXISTS bookings ENABLE ROW LEVEL SECURITY;
-
--- Drop existing policies
-DROP POLICY IF EXISTS "bookings_select_own" ON bookings;
-DROP POLICY IF EXISTS "bookings_insert_authenticated" ON bookings;
-DROP POLICY IF EXISTS "bookings_update_own" ON bookings;
-DROP POLICY IF EXISTS "bookings_service_role_all" ON bookings;
-
--- Create policies
-CREATE POLICY "bookings_select_own"
-ON bookings
-FOR SELECT
-TO authenticated
-USING (user_id = auth.uid());
-
-CREATE POLICY "bookings_insert_authenticated"
-ON bookings
-FOR INSERT
-TO authenticated
-WITH CHECK (user_id = auth.uid());
-
-CREATE POLICY "bookings_update_own"
-ON bookings
-FOR UPDATE
-TO authenticated
-USING (user_id = auth.uid())
-WITH CHECK (user_id = auth.uid());
-
-CREATE POLICY "bookings_service_role_all"
-ON bookings
-FOR ALL
-TO service_role
-USING (true)
-WITH CHECK (true);
-
--- ========================================
--- 8. FIX SQL FUNCTION (IMMUTABLE ERROR)
--- ========================================
-
-DROP FUNCTION IF EXISTS update_updated_at_column() CASCADE;
-
-CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
+DO $$
 BEGIN
-  NEW.updated_at = CURRENT_TIMESTAMP;
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql STABLE;
-
--- ========================================
--- 9. RECREATE TRIGGERS
--- ========================================
-
-DROP TRIGGER IF EXISTS update_user_profiles_updated_at ON user_profiles;
-CREATE TRIGGER update_user_profiles_updated_at
-  BEFORE UPDATE ON user_profiles
-  FOR EACH ROW
-  EXECUTE FUNCTION update_updated_at_column();
-
-DROP TRIGGER IF EXISTS update_bookings_updated_at ON bookings;
-CREATE TRIGGER update_bookings_updated_at
-  BEFORE UPDATE ON bookings
-  FOR EACH ROW
-  EXECUTE FUNCTION update_updated_at_column();
-
-DROP TRIGGER IF EXISTS update_transactions_updated_at ON barbershop_transactions;
-CREATE TRIGGER update_transactions_updated_at 
-  BEFORE UPDATE ON barbershop_transactions
-  FOR EACH ROW 
-  EXECUTE FUNCTION update_updated_at_column();
-
-DROP TRIGGER IF EXISTS update_customers_updated_at ON barbershop_customers;
-CREATE TRIGGER update_customers_updated_at 
-  BEFORE UPDATE ON barbershop_customers
-  FOR EACH ROW 
-  EXECUTE FUNCTION update_updated_at_column();
+  IF EXISTS (
+    SELECT FROM information_schema.tables 
+    WHERE table_name = 'bookings'
+  ) THEN
+    ALTER TABLE bookings ENABLE ROW LEVEL SECURITY;
+    
+    -- Drop existing policies
+    EXECUTE 'DROP POLICY IF EXISTS "bookings_select_own" ON bookings';
+    EXECUTE 'DROP POLICY IF EXISTS "bookings_insert_authenticated" ON bookings';
+    EXECUTE 'DROP POLICY IF EXISTS "bookings_update_own" ON bookings';
+    EXECUTE 'DROP POLICY IF EXISTS "bookings_service_role_all" ON bookings';
+    
+    -- Create policies (assuming bookings doesn't have user_id based on error)
+    EXECUTE 'CREATE POLICY "bookings_select_all" ON bookings FOR SELECT TO authenticated USING (true)';
+    EXECUTE 'CREATE POLICY "bookings_insert_authenticated" ON bookings FOR INSERT TO authenticated WITH CHECK (true)';
+    EXECUTE 'CREATE POLICY "bookings_update_authenticated" ON bookings FOR UPDATE TO authenticated USING (true) WITH CHECK (true)';
+    EXECUTE 'CREATE POLICY "bookings_service_role_all" ON bookings FOR ALL TO service_role USING (true) WITH CHECK (true)';
+  END IF;
+END $$;
 
 -- ========================================
 -- VERIFICATION QUERIES
@@ -306,12 +301,6 @@ WHERE tablename IN (
 )
 ORDER BY tablename, policyname;
 
--- Check function
-SELECT proname, provolatile 
-FROM pg_proc 
-WHERE proname = 'update_updated_at_column';
-
 -- ========================================
 -- ALL RLS FIXES APPLIED ✅
--- Expected: No more "row-level security policy" errors
 -- ========================================

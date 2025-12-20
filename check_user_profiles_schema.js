@@ -6,17 +6,15 @@ const supabaseServiceKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXB
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 async function checkSchema() {
-  console.log('🔍 Checking barbershop_customers schema...\n');
-  
   const { data, error } = await supabase
-    .from('barbershop_customers')
+    .from('user_profiles')
     .select('*')
     .limit(1);
   
   if (error) {
     console.error('Error:', error);
   } else {
-    console.log('Sample row:', data[0] || 'No data');
+    console.log('Sample:', data[0] || 'No data');
     if (data[0]) {
       console.log('\nColumns:', Object.keys(data[0]));
     }
