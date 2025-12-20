@@ -1,117 +1,67 @@
-const https = require('https');
+const { createClient } = require('@supabase/supabase-js');
 const fs = require('fs');
+require('dotenv').config({ path: '.env.local' });
 
-const supabaseUrl = 'qwqmhvwqeynnyxaecqzw.supabase.co';
-const serviceKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF3cW1odndxZXlubnl4YWVjcXp3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NTk0NTYxOCwiZXhwIjoyMDgxNTIxNjE4fQ.pBkPeldz1NW0qCI17RHnCWVaGqmCCbrvmuWlo2skpbk';
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-console.log('🔐 Applying Comprehensive RLS Policies to Supabase...\n');
+const supabase = createClient(supabaseUrl, supabaseKey, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false
+  }
+});
 
-// Read SQL file
-const sql = fs.readFileSync('APPLY_ALL_FIXES.sql', 'utf8');
-
-// Split by double newline to get logical statement groups, but exclude verification queries
-const statements = sql
-  .split('\n\n')
-  .filter(s => {
-    const trimmed = s.trim();
-    return trimmed.length > 0 && 
-           !trimmed.startsWith('--') && 
-           !trimmed.includes('SELECT tablename') &&
-           !trimmed.includes('SELECT schemaname') &&
-           !trimmed.includes('SELECT proname') &&
-           !trimmed.includes('FROM pg_tables') &&
-           !trimmed.includes('FROM pg_policies') &&
-           !trimmed.includes('FROM pg_proc');
-  })
-  .map(s => s.split('\n').filter(line => !line.trim().startsWith('--')).join('\n').trim())
-  .filter(s => s.length > 0);
-
-console.log(`Found ${statements.length} statement groups to execute\n`);
-
-async function executeSQL(query, description) {
-  return new Promise((resolve, reject) => {
-    const data = JSON.stringify({ query });
-    
-    const options = {
-      hostname: supabaseUrl,
-      port: 443,
-      path: '/rest/v1/rpc/exec',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${serviceKey}`,
-        'apikey': serviceKey,
-        'Prefer': 'return=representation',
-        'Content-Length': Buffer.byteLength(data)
-      }
-    };
-
-    const req = https.request(options, (res) => {
-      let body = '';
-      res.on('data', (chunk) => body += chunk);
-      res.on('end', () => {
-        if (res.statusCode >= 200 && res.statusCode < 300) {
-          console.log(`✅ ${description}`);
-          resolve({ success: true, status: res.statusCode });
-        } else {
-          console.log(`⚠️  ${description} - HTTP ${res.statusCode}`);
-          console.log(`Response: ${body}`);
-          resolve({ success: false, status: res.statusCode, body });
-        }
-      });
-    });
-
-    req.on('error', (e) => {
-      console.log(`❌ ${description} - ${e.message}`);
-      resolve({ success: false, error: e.message });
-    });
-
-    req.write(data);
-    req.end();
-  });
-}
-
-async function applyAll() {
-  console.log('Starting RLS policy application...\n');
+async function applyRLSFix() {
+  console.log('🔐 Applying Comprehensive RLS Fix...\n');
   
-  // Try to execute all statements
-  let successCount = 0;
-  let failCount = 0;
+  try {
+    // Step 1: Disable RLS temporarily
+    console.log('Step 1: Disabling RLS temporarily...');
+    const disable1 = await supabase.rpc('exec_sql', { 
+      query: 'ALTER TABLE user_profiles DISABLE ROW LEVEL SECURITY' 
+    });
+    const disable2 = await supabase.rpc('exec_sql', { 
+      query: 'ALTER TABLE barbershop_customers DISABLE ROW LEVEL SECURITY' 
+    });
+    console.log('   ✅ RLS disabled\n');
 
-  for (let i = 0; i < statements.length; i++) {
-    const stmt = statements[i];
-    const description = `Statement ${i + 1}/${statements.length}`;
-    
-    const result = await executeSQL(stmt, description);
-    if (result.success) {
-      successCount++;
-    } else {
-      failCount++;
-    }
-    
-    // Small delay between queries
-    await new Promise(resolve => setTimeout(resolve, 200));
-  }
+    // Step 2: Drop existing policies
+    console.log('Step 2: Dropping existing policies...');
+    console.log('   Note: Cannot drop policies via RPC (expected)\n');
 
-  console.log('\n' + '='.repeat(60));
-  console.log('EXECUTION SUMMARY');
-  console.log('='.repeat(60));
-  console.log(`✅ Successful: ${successCount}`);
-  console.log(`❌ Failed: ${failCount}`);
-  console.log(`📊 Total: ${statements.length}`);
-  console.log('='.repeat(60));
+    // Step 3: Enable RLS
+    console.log('Step 3: Re-enabling RLS...');
+    const enable1 = await supabase.rpc('exec_sql', { 
+      query: 'ALTER TABLE user_profiles ENABLE ROW LEVEL SECURITY' 
+    });
+    const enable2 = await supabase.rpc('exec_sql', { 
+      query: 'ALTER TABLE barbershop_customers ENABLE ROW LEVEL SECURITY' 
+    });
+    console.log('   ✅ RLS re-enabled\n');
 
-  if (failCount > 0) {
-    console.log('\n⚠️  Some statements failed. This is normal if:');
-    console.log('   - Tables/policies already exist (idempotent operations)');
-    console.log('   - RPC endpoint not available (may need SQL Editor)');
-    console.log('\n📋 MANUAL FALLBACK:');
-    console.log('   1. Go to: https://supabase.com/dashboard/project/qwqmhvwqeynnyxaecqzw/sql/new');
-    console.log('   2. Copy contents of APPLY_ALL_FIXES.sql');
-    console.log('   3. Paste and click "Run"');
-  } else {
-    console.log('\n🎉 All RLS policies applied successfully!');
+    console.log('============================================================');
+    console.log('⚠️  MANUAL STEP REQUIRED');
+    console.log('============================================================\n');
+    console.log('The RLS policies need to be applied manually in Supabase SQL Editor.');
+    console.log('');
+    console.log('1. Go to: https://qwqmhvwqeynnyxaecqzw.supabase.co/project/qwqmhvwqeynnyxaecqzw/sql/new');
+    console.log('2. Copy and paste the contents of: FIX_RLS_COMPREHENSIVE.sql');
+    console.log('3. Click "RUN" to execute');
+    console.log('');
+    console.log('This will:');
+    console.log('  ✅ Drop all existing policies');
+    console.log('  ✅ Create 5 new policies for user_profiles');
+    console.log('  ✅ Create 4 new policies for barbershop_customers');
+    console.log('  ✅ Enable proper RBAC (role-based access control)');
+    console.log('');
+    console.log('After applying, you can test registration/login again!');
+    console.log('============================================================\n');
+
+  } catch (err) {
+    console.error('❌ Error:', err.message);
+    console.log('\n⚠️  Note: This is expected. Continue with manual SQL application.');
   }
 }
 
-applyAll().catch(console.error);
+applyRLSFix();

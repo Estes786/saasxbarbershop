@@ -86,13 +86,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (error) return { error };
 
       if (data.user) {
+        // Load profile first
+        const profile = await getUserProfile(data.user.id);
         await loadUserProfile(data.user.id);
         
         // Redirect based on role
-        const profile = await getUserProfile(data.user.id);
-        if (profile?.role === 'admin') {
+        console.log('🔍 Login profile:', profile);
+        const userRole = profile?.role;
+        console.log('🎯 User role:', userRole);
+        
+        if (userRole === 'admin') {
+          console.log('➡️ Redirecting to admin dashboard');
           router.push('/dashboard/admin');
         } else {
+          console.log('➡️ Redirecting to customer dashboard');
           router.push('/dashboard/customer');
         }
       }
@@ -119,17 +126,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     customerData?: { phone: string; name: string }
   ) {
     try {
+      console.log('📝 Starting signup process...', { email, role, customerData });
+      
       // 1. Sign up with Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          data: {
+            role: role,
+            customer_phone: customerData?.phone || null,
+            customer_name: customerData?.name || null,
+          }
+        }
       });
 
-      if (authError) return { error: authError };
-      if (!authData.user) return { error: new Error("Failed to create user") };
+      if (authError) {
+        console.error('❌ Auth signup error:', authError);
+        return { error: authError };
+      }
+      if (!authData.user) {
+        console.error('❌ No user created');
+        return { error: new Error("Failed to create user") };
+      }
+
+      console.log('✅ Auth user created:', authData.user.id);
 
       // 2. If customer role and phone provided, create customer record FIRST (foreign key constraint)
       if (role === 'customer' && customerData?.phone) {
+        console.log('📞 Checking for existing customer...');
         const { data: existingCustomer } = await supabase
           .from("barbershop_customers")
           .select("customer_phone")
@@ -137,6 +162,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           .single();
 
         if (!existingCustomer) {
+          console.log('➕ Creating new customer record...');
           // Create new customer record BEFORE profile
           const { error: customerError } = await supabase.from("barbershop_customers").insert({
             customer_phone: customerData.phone,
@@ -152,13 +178,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           } as any);
 
           if (customerError) {
-            console.error("Error creating customer:", customerError);
+            console.error("❌ Error creating customer:", customerError);
             return { error: customerError };
           }
+          console.log('✅ Customer record created');
+        } else {
+          console.log('✅ Customer already exists');
         }
       }
 
       // 3. Create user profile (after customer record)
+      console.log('👤 Creating user profile...');
       const { error: profileError } = await supabase.from("user_profiles").insert({
         id: authData.user.id,
         email,
@@ -168,12 +198,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } as any);
 
       if (profileError) {
-        console.error("Error creating profile:", profileError);
+        console.error("❌ Error creating profile:", profileError);
         return { error: profileError };
+      }
+
+      console.log('✅ User profile created successfully');
+      
+      // 4. Redirect based on role
+      if (role === 'admin') {
+        console.log('➡️ Redirecting to admin dashboard');
+        router.push('/dashboard/admin');
+      } else {
+        console.log('➡️ Redirecting to customer dashboard');
+        router.push('/dashboard/customer');
       }
 
       return { error: null };
     } catch (err: any) {
+      console.error('❌ Signup error:', err);
       return { error: err };
     }
   }
