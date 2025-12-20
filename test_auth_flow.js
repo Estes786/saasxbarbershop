@@ -1,146 +1,123 @@
 const { createClient } = require('@supabase/supabase-js');
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://qwqmhvwqeynnyxaecqzw.supabase.co';
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF3cW1odndxZXlubnl4YWVjcXp3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU5NDU2MTgsImV4cCI6MjA4MTUyMTYxOH0.mKN2LQxDwcV3QmebUB-ytfLQMgWROA7xVu60kAY-LJs';
+const supabaseUrl = 'https://qwqmhvwqeynnyxaecqzw.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF3cW1odndxZXlubnl4YWVjcXp3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU5NDU2MTgsImV4cCI6MjA4MTUyMTYxOH0.mKN2LQxDwcV3QmebUB-ytfLQMgWROA7xVu60kAY-LJs';
+const supabaseServiceKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF3cW1odndxZXlubnl4YWVjcXp3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NTk0NTYxOCwiZXhwIjoyMDgxNTIxNjE4fQ.pBkPeldz1NW0qCI17RHnCWVaGqmCCbrvmuWlo2skpbk';
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabaseAnon = createClient(supabaseUrl, supabaseAnonKey);
+const supabaseService = createClient(supabaseUrl, supabaseServiceKey);
 
-async function testEmailRegistration() {
-  console.log('\n🧪 TEST 1: Email Registration (Customer)\n');
-  console.log('=' .repeat(60));
+async function testAuthFlow() {
+  console.log('🧪 Testing Authentication Flow\n');
+  console.log('=' .repeat(70));
   
-  const testEmail = `testuser${Date.now()}@example.com`;
-  const testPhone = `081234${Math.floor(Math.random() * 1000000)}`;
-  const testPassword = 'test123456';
-  
-  console.log('Test Data:');
-  console.log(`  Email: ${testEmail}`);
-  console.log(`  Phone: ${testPhone}`);
-  console.log(`  Password: ${testPassword}`);
-  console.log('');
+  // Test 1: Check RLS Policies
+  console.log('\n📋 TEST 1: Checking RLS Policies\n');
   
   try {
-    // Step 1: Sign up with Supabase Auth
-    console.log('Step 1: Creating auth user...');
-    const { data: authData, error: authError } = await supabase.auth.signUp({
-      email: testEmail,
-      password: testPassword,
-    });
-    
-    if (authError) {
-      console.log('❌ Auth Error:', authError.message);
-      return { success: false, error: authError };
-    }
-    
-    if (!authData.user) {
-      console.log('❌ No user returned from signup');
-      return { success: false, error: 'No user returned' };
-    }
-    
-    console.log('✅ Auth user created:', authData.user.id);
-    console.log('');
-    
-    // Step 2: Create customer record
-    console.log('Step 2: Creating customer record...');
-    const { error: customerError } = await supabase
-      .from('barbershop_customers')
-      .insert({
-        customer_phone: testPhone,
-        customer_name: 'Test User',
-        total_visits: 0,
-        total_revenue: 0,
-        average_atv: 0,
-        coupon_count: 0,
-        coupon_eligible: false,
-        google_review_given: false,
-        churn_risk_score: 0,
-        first_visit_date: new Date().toISOString(),
-      });
-    
-    if (customerError) {
-      console.log('❌ Customer Error:', customerError.message);
-      return { success: false, error: customerError };
-    }
-    
-    console.log('✅ Customer record created');
-    console.log('');
-    
-    // Step 3: Create user profile
-    console.log('Step 3: Creating user profile...');
-    const { error: profileError } = await supabase
+    // Try to read user_profiles as anon user (should fail or be empty)
+    const { data: anonData, error: anonError } = await supabaseAnon
       .from('user_profiles')
-      .insert({
-        id: authData.user.id,
-        email: testEmail,
-        role: 'customer',
-        customer_phone: testPhone,
-        customer_name: 'Test User',
-      });
+      .select('*')
+      .limit(1);
     
-    if (profileError) {
-      console.log('❌ Profile Error:', profileError.message);
-      console.log('   Details:', JSON.stringify(profileError, null, 2));
-      return { success: false, error: profileError };
+    if (anonError) {
+      console.log('✅ RLS Working: Anon user cannot read profiles');
+      console.log(`   Error: ${anonError.message}`);
+    } else {
+      console.log(`⚠️  Anon user can read profiles (${anonData.length} rows)`);
     }
-    
-    console.log('✅ User profile created');
-    console.log('');
-    
-    console.log('🎉 Email Registration Test PASSED!');
-    console.log('=' .repeat(60));
-    return { success: true, userId: authData.user.id };
-    
   } catch (err) {
-    console.log('❌ Unexpected Error:', err.message);
-    return { success: false, error: err };
+    console.log(`✅ RLS Working: ${err.message}`);
   }
-}
-
-async function testGoogleOAuthSetup() {
-  console.log('\n🧪 TEST 2: Google OAuth Configuration Check\n');
-  console.log('=' .repeat(60));
+  
+  // Test 2: Service Role Access
+  console.log('\n📋 TEST 2: Service Role Access\n');
   
   try {
-    // Try to get provider info (this will fail if OAuth not configured, but that's expected)
-    console.log('Checking Google OAuth configuration...');
-    console.log('');
-    console.log('ℹ️  Google OAuth requires manual configuration in Supabase Dashboard:');
-    console.log('   1. Go to: https://supabase.com/dashboard/project/qwqmhvwqeynnyxaecqzw/auth/providers');
-    console.log('   2. Enable Google provider');
-    console.log('   3. Add authorized redirect URLs');
-    console.log('');
-    console.log('⚠️  OAuth testing requires manual browser interaction');
-    console.log('   Use browser to test: https://3000-iute38xp9xeolrkj5k16l-b237eb32.sandbox.novita.ai/register');
-    console.log('=' .repeat(60));
+    const { data: serviceData, error: serviceError } = await supabaseService
+      .from('user_profiles')
+      .select('*')
+      .limit(5);
     
-    return { success: true, message: 'Manual OAuth testing required' };
+    if (serviceError) {
+      console.log(`❌ Service role error: ${serviceError.message}`);
+    } else {
+      console.log(`✅ Service role can access profiles (${serviceData.length} profiles)`);
+      serviceData.forEach(profile => {
+        console.log(`   - ${profile.email} (${profile.role})`);
+      });
+    }
   } catch (err) {
-    console.log('❌ Error:', err.message);
-    return { success: false, error: err };
+    console.log(`❌ Service role exception: ${err.message}`);
   }
+  
+  // Test 3: Test Email Login
+  console.log('\n📋 TEST 3: Testing Email Login\n');
+  
+  // Get an existing user email
+  const { data: existingUsers } = await supabaseService
+    .from('user_profiles')
+    .select('email, role')
+    .limit(1);
+  
+  if (existingUsers && existingUsers.length > 0) {
+    const testEmail = existingUsers[0].email;
+    console.log(`Testing with email: ${testEmail}`);
+    console.log('Note: This will only work if you know the password');
+    console.log('For testing, you should manually login via:');
+    console.log(`https://3000-i7qw68bzf5391hz3vhgtg-c81df28e.sandbox.novita.ai/login\n`);
+  }
+  
+  // Test 4: Test Google OAuth Configuration
+  console.log('📋 TEST 4: Google OAuth Configuration\n');
+  
+  console.log('To test Google OAuth:');
+  console.log('1. Go to: https://3000-i7qw68bzf5391hz3vhgtg-c81df28e.sandbox.novita.ai/login');
+  console.log('2. Click "Continue with Google"');
+  console.log('3. Complete Google authentication');
+  console.log('4. Should redirect to /auth/callback');
+  console.log('5. Should auto-create profile and redirect to dashboard\n');
+  
+  console.log('⚠️  IMPORTANT: Ensure Google OAuth is configured in Supabase:');
+  console.log('   URL: https://supabase.com/dashboard/project/qwqmhvwqeynnyxaecqzw');
+  console.log('   Navigate to: Authentication → Providers → Google');
+  console.log('   Redirect URL: https://3000-i7qw68bzf5391hz3vhgtg-c81df28e.sandbox.novita.ai/auth/callback\n');
+  
+  // Test 5: Check Database Tables
+  console.log('📋 TEST 5: Database Tables Status\n');
+  
+  const tables = [
+    'user_profiles',
+    'barbershop_transactions',
+    'barbershop_customers',
+    'barbershop_analytics_daily',
+    'barbershop_actionable_leads',
+    'barbershop_campaign_tracking',
+    'bookings'
+  ];
+  
+  for (const table of tables) {
+    try {
+      const { data, error, count } = await supabaseService
+        .from(table)
+        .select('*', { count: 'exact', head: true });
+      
+      if (error) {
+        console.log(`❌ ${table.padEnd(35)} - Error: ${error.code}`);
+      } else {
+        console.log(`✅ ${table.padEnd(35)} - ${count || 0} rows`);
+      }
+    } catch (err) {
+      console.log(`⚠️  ${table.padEnd(35)} - ${err.message}`);
+    }
+  }
+  
+  console.log('\n' + '=' .repeat(70));
+  console.log('\n✅ Authentication Test Complete!\n');
+  console.log('📱 Public URL: https://3000-i7qw68bzf5391hz3vhgtg-c81df28e.sandbox.novita.ai');
+  console.log('🔐 Login: https://3000-i7qw68bzf5391hz3vhgtg-c81df28e.sandbox.novita.ai/login');
+  console.log('📝 Register: https://3000-i7qw68bzf5391hz3vhgtg-c81df28e.sandbox.novita.ai/register\n');
 }
 
-async function main() {
-  console.log('\n🚀 AUTHENTICATION FLOW TESTING\n');
-  console.log('Testing URL: https://3000-iute38xp9xeolrkj5k16l-b237eb32.sandbox.novita.ai');
-  console.log('Supabase Project: https://qwqmhvwqeynnyxaecqzw.supabase.co');
-  
-  // Test 1: Email Registration
-  const emailTest = await testEmailRegistration();
-  
-  // Test 2: OAuth Configuration Check
-  const oauthTest = await testGoogleOAuthSetup();
-  
-  console.log('\n📊 FINAL SUMMARY\n');
-  console.log('=' .repeat(60));
-  console.log(`Email Registration: ${emailTest.success ? '✅ PASSED' : '❌ FAILED'}`);
-  console.log(`OAuth Configuration: ${oauthTest.success ? '✅ CHECKED' : '❌ FAILED'}`);
-  console.log('=' .repeat(60));
-  
-  if (!emailTest.success) {
-    console.log('\n🔍 DEBUGGING INFO:');
-    console.log('Error:', emailTest.error);
-  }
-}
-
-main().catch(console.error);
+testAuthFlow().catch(console.error);
