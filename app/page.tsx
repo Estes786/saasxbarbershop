@@ -140,20 +140,104 @@ export default function Home() {
               Platform BI terintegrasi untuk Barbershop Kedungrandu yang mengubah data transaksi menjadi prediksi revenue dan customer intelligence
             </p>
 
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-              <Link
-                href="/login"
-                className="group px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl font-semibold hover:shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 flex items-center justify-center space-x-2"
-              >
-                <span>Login with Google</span>
-                <ArrowRight className="group-hover:translate-x-1 transition-transform" size={20} />
-              </Link>
+            {/* 3-ROLE NAVIGATION SECTION */}
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-center text-white mb-2">Pilih Role Anda</h2>
+              <p className="text-purple-200 text-center mb-6">3-Role Architecture: Customer → Capster → Admin</p>
+            </div>
+
+            {/* CTA Buttons - 3 Roles */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 justify-center mb-16 max-w-5xl mx-auto">
+              {/* Customer Role */}
+              <div className="group bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl p-6 hover:shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105">
+                <div className="flex flex-col items-center text-white space-y-4">
+                  <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
+                    <Users size={32} />
+                  </div>
+                  <h3 className="text-xl font-bold">Customer</h3>
+                  <p className="text-sm text-purple-100 text-center">Booking online, loyalty points, reviews</p>
+                  <div className="flex flex-col w-full space-y-2 mt-4">
+                    <Link
+                      href="/register"
+                      className="w-full py-2 bg-white text-purple-600 rounded-lg font-semibold hover:bg-purple-50 transition-all duration-300 text-center"
+                    >
+                      Register
+                    </Link>
+                    <Link
+                      href="/login"
+                      className="w-full py-2 bg-white/10 border border-white/30 text-white rounded-lg hover:bg-white/20 transition-all duration-300 text-center"
+                    >
+                      Login
+                    </Link>
+                  </div>
+                </div>
+              </div>
+
+              {/* Capster Role */}
+              <div className="group bg-gradient-to-br from-green-600 to-teal-600 rounded-2xl p-6 hover:shadow-2xl hover:shadow-green-500/50 transition-all duration-300 hover:scale-105">
+                <div className="flex flex-col items-center text-white space-y-4">
+                  <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
+                    <Target size={32} />
+                  </div>
+                  <h3 className="text-xl font-bold">Capster/Barberman</h3>
+                  <p className="text-sm text-green-100 text-center">Predictive analytics, queue management</p>
+                  <div className="flex flex-col w-full space-y-2 mt-4">
+                    <Link
+                      href="/register/capster"
+                      className="w-full py-2 bg-white text-green-600 rounded-lg font-semibold hover:bg-green-50 transition-all duration-300 text-center"
+                    >
+                      Register
+                    </Link>
+                    <Link
+                      href="/login"
+                      className="w-full py-2 bg-white/10 border border-white/30 text-white rounded-lg hover:bg-white/20 transition-all duration-300 text-center"
+                    >
+                      Login
+                    </Link>
+                  </div>
+                </div>
+              </div>
+
+              {/* Admin Role */}
+              <div className="group bg-gradient-to-br from-yellow-600 to-red-600 rounded-2xl p-6 hover:shadow-2xl hover:shadow-yellow-500/50 transition-all duration-300 hover:scale-105 relative">
+                <div className="absolute -top-2 -right-2 bg-gradient-to-r from-yellow-500 to-red-500 rounded-full px-3 py-1 text-xs font-bold text-white">
+                  <div className="flex items-center space-x-1">
+                    <Crown size={14} />
+                    <span>FOUNDER</span>
+                  </div>
+                </div>
+                <div className="flex flex-col items-center text-white space-y-4">
+                  <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
+                    <Shield size={32} />
+                  </div>
+                  <h3 className="text-xl font-bold">Admin</h3>
+                  <p className="text-sm text-yellow-100 text-center">Full system access, audit & management</p>
+                  <div className="flex flex-col w-full space-y-2 mt-4">
+                    <Link
+                      href="/register/admin"
+                      className="w-full py-2 bg-white text-yellow-600 rounded-lg font-semibold hover:bg-yellow-50 transition-all duration-300 text-center"
+                    >
+                      Register 🔒
+                    </Link>
+                    <Link
+                      href="/login"
+                      className="w-full py-2 bg-white/10 border border-white/30 text-white rounded-lg hover:bg-white/20 transition-all duration-300 text-center"
+                    >
+                      Login
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Demo Button */}
+            <div className="flex justify-center mb-16">
               <Link
                 href="/dashboard/barbershop"
-                className="px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-xl font-semibold hover:bg-white/20 transition-all duration-300"
+                className="px-8 py-3 bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-xl font-semibold hover:bg-white/20 transition-all duration-300 flex items-center space-x-2"
               >
-                View Demo Dashboard
+                <Sparkles size={20} />
+                <span>View Demo Dashboard</span>
               </Link>
             </div>
 
