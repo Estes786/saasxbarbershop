@@ -12,7 +12,6 @@
   "dependencies": {
     "@supabase/auth-helpers-nextjs": "^0.15.0",
     "@supabase/ssr": "^0.8.0",
-    "@supabase/supabase-js": "^2.89.0",
     "clsx": "^2.1.0",
     "date-fns": "^3.0.6",
     "dotenv": "^17.2.3",
@@ -24,6 +23,7 @@
     "tailwind-merge": "^2.2.1"
   },
   "devDependencies": {
+    "@supabase/supabase-js": "^2.89.0",
     "@types/node": "^20.10.6",
     "@types/react": "^18.2.46",
     "@types/react-dom": "^18.2.18",
