@@ -1,357 +1,539 @@
-# 🚀 OASIS BI PRO x Barbershop SaaS
+# 🚀 OASIS BI PRO - Barbershop Management System
 
-**Production-Ready Business Intelligence Platform for Barbershop Management**
+## 📋 Project Overview
 
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/Estes786/saasxbarbershop)
-[![Authentication](https://img.shields.io/badge/auth-working-success)](https://github.com/Estes786/saasxbarbershop)
-[![Database](https://img.shields.io/badge/database-ready-success)](https://github.com/Estes786/saasxbarbershop)
-[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+**OASIS BI PRO** adalah Business Intelligence Platform untuk barbershop dengan fitur:
+- ✅ **3-Role Authentication System** (Customer, Capster, Admin)
+- ✅ **Google OAuth Integration** untuk registrasi & login cepat
+- ✅ **Customer Loyalty Program** dengan tracking visits & revenue
+- ✅ **Real-time Analytics Dashboard** untuk semua role
+- 🔧 **Booking System** dengan queue management (FASE 3 - In Progress)
+- 🔧 **WhatsApp Notifications** untuk booking confirmations (FASE 3 - In Progress)
+- 🔧 **Predictive Analytics** untuk churn risk & visit prediction (FASE 3 - In Progress)
 
 ---
 
-## 📊 Project Status (21 Desember 2025)
+## 🎯 Currently Completed Features
 
-```
-🎉 FASE 2 COMPLETE - 3-Role Navigation & Database Ready!
+### ✅ FASE 1 & 2: Authentication & Database
 
-✅ Deep Research:         Complete (31KB comprehensive architecture)
-✅ Database Schema:       READY with idempotent SQL script ✨
-✅ Service Catalog:       8 services (sesuai price list user)
-✅ Capsters Data:         3 capsters seeded (Budi, Agus, Dedi)
-✅ 3-Role Navigation:     Homepage dengan Customer, Capster, Admin cards ✨ NEW!
-✅ Build:                 Successful (Next.js 15.5.9 + React 19.0.0)
-✅ Authentication:        Working (Customer & Admin) 
-✅ Development Server:    Running on PM2
-✅ Git Repository:        Synced with latest changes
-✅ Documentation:         Panduan setup Supabase lengkap ✨ NEW!
-
-🔄 IN PROGRESS:
-   - Database deployment ke Supabase (manual via SQL Editor)
-   - Capster Dashboard dengan Predictive Analytics
+1. **Multi-Role Authentication System**
+   - Customer registration & login (email + Google OAuth)
+   - Admin login dengan secure credentials
+   - Capster authentication (in progress - FASE 3)
    
-⏳ NEXT (FASE 3):
-   - Booking System Implementation
-   - Real-time Slot Management
-   - Email/WhatsApp Notifications
+2. **Database Schema (PostgreSQL via Supabase)**
+   - `user_profiles` - User authentication dengan role-based access
+   - `barbershop_customers` - Customer data & loyalty metrics
+   - `capsters` - Capster profiles & performance metrics
+   - `service_catalog` - Service offerings
+   - `bookings` - Booking management (schema ready)
+   - `barbershop_transactions` - Transaction history
 
-📅 Target Launch:   3 Januari 2026 (12 hari remaining)
+3. **Row Level Security (RLS)**
+   - Policy-based access control untuk semua role
+   - Service role bypass untuk backend operations
+   - Trigger auto-create `barbershop_customers` saat registrasi
+
+4. **Google OAuth Integration**
+   - Sign in/up dengan Google account
+   - Auto-create profile dengan role detection
+   - Redirect handling berdasarkan user role
+
+---
+
+## 🌐 URLs & Access
+
+### Development
+- **Local**: http://localhost:3000
+- **API Endpoints**: http://localhost:3000/api/*
+
+### Production (After Deployment)
+- **Live URL**: https://saasxbarbershop.vercel.app (example)
+
+### Supabase Dashboard
+- **Project**: https://supabase.com/dashboard/project/qwqmhvwqeynnyxaecqzw
+- **SQL Editor**: https://supabase.com/dashboard/project/qwqmhvwqeynnyxaecqzw/sql/new
+
+---
+
+## 📊 Functional Entry URIs (Paths & Parameters)
+
+### Authentication Routes
+
+#### **Customer Registration**
+```
+GET /register
+GET /register/customer
+
+Form Fields:
+- email: string (required)
+- password: string (min 6 chars, required)
+- customerName: string (optional)
+- customerPhone: string (required for customer)
+- confirmPassword: string (required)
+
+Or:
+POST /api/auth/google-signup?role=customer
+```
+
+#### **Customer Login**
+```
+GET /login
+GET /login/customer
+
+Form Fields:
+- email: string (required)
+- password: string (required)
+
+Or:
+POST /api/auth/google-signin?role=customer
+```
+
+#### **Admin Login**
+```
+GET /login/admin
+
+Form Fields:
+- email: string (required)
+- password: string (required)
+- adminKey: string (optional, for extra security)
+```
+
+#### **OAuth Callback**
+```
+GET /auth/callback?code=<auth_code>&role=<customer|admin>
+
+Query Parameters:
+- code: OAuth authorization code
+- role: Expected user role (customer/admin)
+```
+
+### Dashboard Routes
+
+#### **Customer Dashboard**
+```
+GET /dashboard/customer
+
+Features:
+- View personal profile
+- Loyalty points & visit history
+- Upcoming bookings (FASE 3)
+- Transaction history
+```
+
+#### **Admin Dashboard**
+```
+GET /dashboard/admin
+
+Features:
+- View all customers & metrics
+- Capster management
+- Service catalog management
+- Analytics & reports
+- System configuration
+```
+
+#### **Capster Dashboard** (FASE 3 - In Progress)
+```
+GET /dashboard/capster
+
+Features:
+- View today's queue
+- Performance metrics
+- Customer visit predictions
+- Earnings tracker
 ```
 
 ---
 
-## 🌐 Live URLs
+## 🗄️ Data Architecture
 
-- **Application**: https://3000-if6lklkxaktsek1dfbt3t-dfc00ec5.sandbox.novita.ai
-- **Homepage**: `/` (dengan 3-role navigation) ✨ NEW!
-- **Login**: `/login`
-- **Customer Registration**: `/register`
-- **Capster Registration**: `/register/capster` ✅
-- **Admin Registration**: `/register/admin` (requires secret key)
-- **GitHub**: https://github.com/Estes786/saasxbarbershop
+### Data Models
 
----
+#### **user_profiles**
+```typescript
+{
+  id: UUID (FK to auth.users)
+  email: string (unique)
+  role: 'customer' | 'capster' | 'admin' | 'barbershop'
+  customer_phone: string (nullable)
+  customer_name: string
+  capster_id: UUID (nullable, FK to capsters)
+  created_at: timestamp
+  updated_at: timestamp
+}
+```
 
-## 💇 Service Catalog (Live in Database)
+#### **barbershop_customers**
+```typescript
+{
+  customer_phone: string (PK)
+  customer_name: string
+  total_visits: integer
+  total_revenue: numeric
+  average_atv: numeric
+  lifetime_value: numeric
+  coupon_count: integer
+  coupon_eligible: boolean
+  google_review_given: boolean
+  churn_risk_score: numeric (0-1)
+  first_visit_date: date
+  last_visit_date: date
+  days_since_last_visit: integer
+  visit_frequency: string
+  preferred_services: string[]
+}
+```
 
-| Service | Category | Price | Duration |
-|---------|----------|-------|----------|
-| Cukur Dewasa | Haircut | Rp 18.000 | 30 min |
-| Cukur Anak (6-10) | Haircut | Rp 15.000 | 25 min |
-| Cukur Balita | Haircut | Rp 18.000 | 20 min |
-| Keramas | Grooming | Rp 10.000 | 15 min |
-| Kumis & Jenggot | Grooming | Rp 10.000 | 15 min |
-| Cukur + Keramas | Package | Rp 25.000 | 40 min |
-| Semir Rambut (Hitam) | Coloring | Rp 50.000 | 45 min |
-| Hairlight / Bleaching | Coloring | Rp 150.000+ | 90 min |
+#### **capsters**
+```typescript
+{
+  id: UUID (PK)
+  user_id: UUID (FK to user_profiles)
+  capster_name: string
+  phone: string
+  specialization: 'haircut' | 'grooming' | 'coloring' | 'all'
+  rating: numeric (0-5)
+  total_customers_served: integer
+  total_revenue_generated: numeric
+  is_available: boolean
+  working_hours: jsonb
+  profile_image_url: string
+  bio: string
+  years_of_experience: integer
+}
+```
 
----
+### Storage Services Used
 
-## 📖 CRITICAL DOCUMENTS
+1. **Supabase PostgreSQL Database**
+   - Primary data storage
+   - RLS policies untuk data security
+   - Real-time subscriptions (for FASE 3)
 
-### **🔥 MUST READ:**
+2. **Supabase Authentication**
+   - Email/password authentication
+   - Google OAuth provider
+   - Session management
 
-1. **[EXECUTION_SUMMARY.md](EXECUTION_SUMMARY.md)** - Quick start guide & immediate next actions
-2. **[DEEP_RESEARCH_3_ROLE_ARCHITECTURE.md](DEEP_RESEARCH_3_ROLE_ARCHITECTURE.md)** - Complete 3-role architecture blueprint (31KB)
-   - Customer → Capster → Admin hierarchy
-   - Predictive analytics algorithm (CORE DIFFERENTIATOR)
-   - UI/UX design patterns by role
-   - 14-day implementation roadmap
+3. **Supabase Storage** (For FASE 3)
+   - Profile images
+   - Service catalog images
+   - Upload bukti transaksi
 
-3. **[APPLY_3_ROLE_SCHEMA_FIXED.sql](APPLY_3_ROLE_SCHEMA_FIXED.sql)** 🆕 - Fixed database schema (idempotent, safe to re-run)
-   - 5 new tables with RLS policies
-   - Seed data (8 services + 3 capsters)
-   - Triggers for auto-updates
-   - ✅ **ALREADY APPLIED TO DATABASE**
+### Data Flow
 
-### **Database Analysis Tools:**
-- `analyze_database_complete.js` - Check current database state
-- `cleanup_duplicates.js` - Remove duplicate entries
+```
+User Registration (Customer via Google OAuth)
+    ↓
+1. Google OAuth consent → auth.users created
+    ↓
+2. OAuth callback handler → Create user_profiles record (role='customer', no phone initially)
+    ↓
+3. Trigger fires → Auto-create barbershop_customers record (if phone provided)
+    ↓
+4. Redirect to /dashboard/customer
+```
 
----
-
-## ✨ Features by Role
-
-### **👥 For Customers** (Purple/Blue Theme):
-- ✅ Email/Password Registration & Login
-- ✅ Profile Management
-- ✅ Dashboard Access
-- 🔄 **Booking System** (FASE 3 - Coming Soon!)
-- 🔄 **Loyalty Points & Rewards** (Database ready)
-- 🔄 **Review & Rating System** (Database ready)
-- ⏭️ Google OAuth (pending configuration)
-
-### **✂️ For Capsters/Barbermen** (Green/Teal Theme) 🆕:
-- 🔄 **Predictive Analytics** - Prediksi customer visit patterns (CORE DIFFERENTIATOR!)
-- 🔄 **Today's Queue Management** - Real-time booking queue
-- 🔄 **Customer Management** - Deep insights into customer behavior
-- 🔄 **Performance Metrics** - Revenue, customers served, rating tracking
-- 🔄 **Slot Availability Management** - Manage own schedule
-- ⏭️ Capster Registration Flow (In Development)
-
-### **👔 For Admins** (Orange/Red Theme):
-- ✅ Full System Access
-- ✅ User Management (24 users currently)
-- ✅ Transaction Management (18 transactions)
-- ✅ Customer Analytics (17 customers)
-- ✅ Revenue Tracking
-- ✅ Service Tier Analysis
-- 🔄 **Capster Management** - Performance comparison, scheduling
-- 🔄 **System Audit** - Database logs, RLS status, health monitoring
-
-### **🏪 For Barbershop Owners**:
-- ✅ Transaction Management
-- ✅ Customer Analytics
-- ✅ Revenue Tracking
-- ✅ Service Tier Analysis
-- ✅ **Service Catalog** - Live with 13 services
-- 🔄 **Booking System Integration** - Real-time booking management (FASE 3)
-
----
-
-## 🗄️ Database Architecture
-
-### **Current Tables (12 Total):**
-
-#### **Existing (7 tables):**
-1. `user_profiles` - 24 users (21 customers, 3 admins)
-2. `barbershop_customers` - 17 customers
-3. `barbershop_transactions` - 18 transactions
-4. `bookings` - 0 rows (ready for killer feature!)
-5. `barbershop_analytics_daily` - 1 record
-
-#### **New 3-Role Tables (5 tables) ✅:**
-6. `service_catalog` - 13 services (✅ Cleaned up, no more duplicates)
-7. `capsters` - 3 capsters (✅ Cleaned up: Budi, Agus, Dedi)
-8. `booking_slots` - 0 rows (ready)
-9. `customer_loyalty` - 0 rows (ready)
-10. `customer_reviews` - 0 rows (ready)
-
-#### **Missing (Optional):**
-11. `barbershop_actionable_insights` - To be created
-12. `barbershop_customer_reviews` - To be created
+```
+User Login (Email)
+    ↓
+1. Supabase Auth check credentials
+    ↓
+2. Load user_profiles by user.id
+    ↓
+3. Check role → Redirect to appropriate dashboard
+```
 
 ---
 
-## 🏗️ Tech Stack
+## 🚀 User Guide
 
-- **Frontend**: Next.js 15.5.9 + React 19.0.0 + TypeScript
-- **Styling**: TailwindCSS + Lucide Icons
-- **Backend**: Supabase (PostgreSQL + Edge Functions)
-- **Authentication**: Supabase Auth (Email + Google OAuth ready)
-- **Deployment**: PM2 (development) + Vercel/Cloudflare (production)
-- **Database**: PostgreSQL with Row Level Security (RLS)
+### For Customers
+
+#### Registrasi
+1. **Via Email**:
+   - Kunjungi http://localhost:3000/register
+   - Isi email, password, nama, dan nomor HP
+   - Klik "Daftar"
+   - Check email untuk konfirmasi
+   - Login setelah konfirmasi
+
+2. **Via Google**:
+   - Kunjungi http://localhost:3000/register
+   - Klik "Continue with Google"
+   - Pilih Google account
+   - Otomatis redirect ke dashboard customer
+
+#### Login
+1. Kunjungi http://localhost:3000/login
+2. Masukkan email & password (atau klik Google)
+3. Auto-redirect ke customer dashboard
+
+#### Dashboard Features
+- View loyalty points & total visits
+- See transaction history
+- Book appointments (FASE 3)
+- Update profile information
+
+### For Admin
+
+#### Login
+1. Kunjungi http://localhost:3000/login/admin
+2. Masukkan admin email & password
+3. Auto-redirect ke admin dashboard
+
+#### Default Admin Credentials
+```sql
+-- Create via Supabase SQL Editor:
+INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at)
+VALUES (
+  gen_random_uuid(),
+  'admin@oasis.com',
+  crypt('Admin123!', gen_salt('bf')),
+  NOW(), NOW(), NOW()
+)
+RETURNING id;
+
+-- Then create profile with returned UUID:
+INSERT INTO user_profiles (id, email, role, full_name)
+VALUES ('<UUID>', 'admin@oasis.com', 'admin', 'System Admin');
+```
+
+#### Dashboard Features
+- View all customers & analytics
+- Manage capsters
+- Configure services
+- Generate reports
+- System settings
+
+### For Capsters (FASE 3 - In Progress)
+
+#### Registration Flow
+- Admin creates capster account
+- Capster receives invitation email
+- Sets up profile & availability
+- Access capster dashboard
+
+#### Dashboard Features (Coming Soon)
+- Today's queue & appointments
+- Performance metrics
+- Customer visit predictions
+- Earnings tracker
 
 ---
 
-## 🚀 Quick Start
+## 🛠️ Deployment Status
 
-### **Prerequisites:**
-- Node.js 18+ installed
+### Current Status: ✅ **Development Ready**
+
+**What's Done:**
+- ✅ Database schema deployed to Supabase
+- ✅ RLS policies configured
+- ✅ Authentication system (email + Google OAuth)
+- ✅ Customer & Admin dashboards
+- ✅ OAuth callback handling
+- ✅ Foreign key constraint fix applied
+
+**What's Next (FASE 3):**
+- 🔧 Capster registration & dashboard
+- 🔧 Booking system implementation
+- 🔧 Real-time queue management
+- 🔧 WhatsApp notification integration
+- 🔧 Predictive analytics features
+
+### Tech Stack
+- **Frontend**: Next.js 15, React 19, TailwindCSS
+- **Backend**: Supabase (PostgreSQL + Auth + Storage)
+- **Deployment**: Vercel (recommended for Next.js)
+- **Analytics**: Recharts, date-fns
+- **UI Icons**: Lucide React
+
+---
+
+## 🐛 Known Issues & Fixes
+
+### ✅ FIXED: Foreign Key Constraint Error
+**Issue**: `user_profiles_customer_phone_fkey` violation during registration
+
+**Root Cause**: Foreign key constraint referenced `barbershop_customers(customer_phone)` before it existed
+
+**Solution**: 
+1. Removed foreign key constraint
+2. Added trigger `auto_create_barbershop_customer()` 
+3. Trigger fires AFTER `user_profiles` insert to create matching customer record
+
+**SQL Fix Applied**: See `FINAL_DATABASE_FIX.sql`
+
+### ✅ FIXED: Infinite Recursion in RLS Policies
+**Issue**: `infinite recursion detected in policy` error
+
+**Root Cause**: Function volatility was `IMMUTABLE`, causing recursive policy checks
+
+**Solution**: Changed function to `STABLE` volatility
+
+### ⚠️ TO FIX: Google OAuth Phone Number Collection
+**Issue**: OAuth users don't have `customer_phone` initially
+
+**Workaround**: Profile created without phone, can be updated later
+
+**Proper Fix (FASE 3)**: 
+- Show "Complete Profile" modal after OAuth login
+- Request phone number before full dashboard access
+
+---
+
+## 📖 Development Guide
+
+### Prerequisites
+- Node.js 20+
+- npm or yarn
 - Supabase account
-- Git
 
-### **Setup:**
+### Setup
 
+1. **Clone Repository**
 ```bash
-# Clone repository
 git clone https://github.com/Estes786/saasxbarbershop.git
 cd saasxbarbershop
+```
 
-# Install dependencies
+2. **Install Dependencies**
+```bash
 npm install
+```
 
-# Configure environment variables
+3. **Configure Environment**
+```bash
 cp .env.example .env.local
-# Edit .env.local with your Supabase credentials
+```
 
-# Build project
-npm run build
+Edit `.env.local`:
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://qwqmhvwqeynnyxaecqzw.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-anon-key>
+SUPABASE_SERVICE_ROLE_KEY=<your-service-role-key>
+```
 
-# Start development server
+4. **Apply Database Schema**
+- Open Supabase SQL Editor
+- Copy content from `FINAL_DATABASE_FIX.sql`
+- Execute
+
+5. **Configure Google OAuth** (See `PANDUAN_FIX_LENGKAP.md`)
+
+6. **Run Development Server**
+```bash
 npm run dev
 ```
 
-### **Database Setup:**
+Visit: http://localhost:3000
 
-The database schema has been applied! To verify:
+### Testing
 
-```bash
-# Check current database state
-node analyze_database_complete.js
+1. **Test Customer Registration (Email)**
+   - Go to /register
+   - Fill form with test data
+   - Should redirect to /dashboard/customer after email confirmation
 
-# If needed, cleanup duplicates
-node cleanup_duplicates.js
-```
+2. **Test Customer Registration (Google)**
+   - Go to /register
+   - Click "Continue with Google"
+   - Should redirect to /dashboard/customer immediately
 
----
+3. **Test Admin Login**
+   - Go to /login/admin
+   - Use admin credentials
+   - Should redirect to /dashboard/admin
 
-## 📈 Development Roadmap
+### Troubleshooting
 
-### ✅ **FASE 1: Foundation (Days 1-2) - COMPLETE**
-- ✅ Deep research on 3-role architecture
-- ✅ Database schema design
-- ✅ Initial project setup
-- ✅ Authentication system
+**Error: "Could not fetch user"**
+- Clear browser cache & cookies
+- Sign out and sign in again
+- Check Supabase logs
 
-### ✅ **FASE 2: Capster Role Implementation (Days 3-5) - 80% COMPLETE**
-- ✅ Database tables created & seeded
-- ✅ Service catalog populated with correct prices
-- ✅ Capsters data seeded
-- 🔄 Capster Dashboard (In Progress)
-- 🔄 Capster Registration Flow (Next)
-- ⏭️ Predictive Analytics Algorithm Implementation
+**Error: "User already registered"**
+- Delete user from `auth.users` table
+- Try registration again
 
-### ⏳ **FASE 3: Booking System (Days 6-10) - COMING SOON**
-- BookingForm Component (customer side)
-- Slot Availability Checker (Edge Function)
-- Real-time Slot Updates (Supabase Realtime)
-- Booking Confirmation (email/WhatsApp)
-
-### ⏳ **FASE 4: Testing & Deployment (Days 11-14)**
-- Test all 3 roles end-to-end
-- Build & deploy to production
-- Performance optimization
-- Launch! 🚀
+**Google OAuth not working**
+- Verify Client ID & Secret in Supabase
+- Check redirect URI matches exactly
+- Ensure Google OAuth is enabled in Supabase dashboard
 
 ---
 
-## 🎯 Core Differentiators
+## 📚 Documentation Files
 
-### **1. 3-Role Hierarchical Architecture**
-World's first BI platform with dedicated Capster/Barberman role acting as bridge between customers and admins.
-
-### **2. Predictive Analytics for Capsters**
-Algorithm predicts when customers will return for next haircut based on:
-- Historical visit patterns
-- Average return interval
-- Service type trends
-- Confidence scoring
-
-### **3. Real-time Booking System**
-- Slot availability management
-- Real-time updates via Supabase Realtime
-- Automated notifications (email/WhatsApp)
-
-### **4. Customer Intelligence**
-- Churn risk detection
-- Loyalty point system
-- Review & rating management
-- Personalized service recommendations
+- **PANDUAN_FIX_LENGKAP.md** - Comprehensive fix guide untuk database & OAuth
+- **FINAL_DATABASE_FIX.sql** - Complete idempotent SQL schema
+- **IDEMPOTENT_SCHEMA_FIX.sql** - Original schema fix (deprecated, use FINAL version)
+- **apply_sql_fix.js** - Script untuk apply SQL via Supabase CLI
 
 ---
 
-## 📝 Environment Variables
+## 🎯 Recommended Next Steps
 
-```bash
-# Supabase Configuration
-NEXT_PUBLIC_SUPABASE_URL=https://qwqmhvwqeynnyxaecqzw.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+### FASE 3: Capster Dashboard & Booking System
 
-# Service Role Key (server-side only)
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-```
+#### Priority 1: Capster Registration Flow (2-3 hours)
+- [ ] Create `/register/capster` page
+- [ ] Admin invitation system
+- [ ] Auto-create `capsters` record on registration
+- [ ] Link to `user_profiles.capster_id`
 
----
+#### Priority 2: Booking System (6-8 hours) 🔥 KILLER FEATURE!
+- [ ] Customer booking form with date/time picker
+- [ ] Real-time slot availability checker
+- [ ] Capster assignment logic
+- [ ] Queue management dashboard
+- [ ] Status tracking (pending, confirmed, completed, cancelled, no_show)
 
-## 🧪 Testing
+#### Priority 3: WhatsApp Notifications (3-4 hours)
+- [ ] Integrate WhatsApp Business API
+- [ ] Send booking confirmation
+- [ ] Send reminder 1 hour before appointment
+- [ ] Send post-visit feedback request
 
-```bash
-# Check database state
-node analyze_database_complete.js
+#### Priority 4: Predictive Analytics (4-5 hours)
+- [ ] Customer visit prediction algorithm
+- [ ] Churn risk calculation
+- [ ] Service recommendation engine
+- [ ] Revenue forecasting
 
-# Test authentication flow
-npm run test:auth
-
-# Test API endpoints
-curl http://localhost:3000/api/analytics/service-distribution
-```
-
----
-
-## 📦 Project Structure
-
-```
-saasxbarbershop/
-├── app/
-│   ├── (auth)/          # Authentication pages
-│   ├── dashboard/       # Role-based dashboards
-│   │   ├── admin/
-│   │   ├── barbershop/
-│   │   ├── capster/     # 🆕 Capster dashboard
-│   │   └── customer/
-│   ├── login/
-│   └── register/
-├── components/          # Reusable components
-├── lib/
-│   ├── auth/           # Authentication logic
-│   ├── supabase/       # Supabase client
-│   └── analytics/      # 🆕 Predictive algorithms
-├── supabase/           # Database migrations
-├── APPLY_3_ROLE_SCHEMA_FIXED.sql  # 🆕 Fixed database schema
-├── analyze_database_complete.js   # Database analysis tool
-└── cleanup_duplicates.js          # Cleanup utility
-```
+### Total Estimated Time for FASE 3: 15-20 hours
 
 ---
 
 ## 🤝 Contributing
 
-This is a private project for BOZQ Barbershop Kedungrandu. For inquiries, please contact the project owner.
-
----
-
-## 📄 License
-
-MIT License - See [LICENSE](LICENSE) file for details.
+This is a private project for OASIS Barbershop. For any issues or feature requests, contact the development team.
 
 ---
 
 ## 📞 Support
 
-- **Project Owner**: Faras Haidar
-- **Location**: Jl. Raya Kedungrandu, Patikraja, Banyumas
+- **Developer**: AI Assistant
+- **Project Owner**: Estes786
 - **GitHub**: https://github.com/Estes786/saasxbarbershop
-- **Issues**: https://github.com/Estes786/saasxbarbershop/issues
 
 ---
 
-## 🎉 Acknowledgments
+## 📅 Version History
 
-Built with:
-- Next.js Team
-- Supabase Team
-- Vercel Team
-- React Team
-- TailwindCSS Team
+- **v1.0.0** (Dec 20, 2024) - Initial release dengan auth system
+- **v1.1.0** (Dec 21, 2024) - Fixed foreign key constraint & added Google OAuth
+- **v1.2.0** (Coming) - FASE 3: Booking system & analytics
 
-**Status**: 🚀 **Active Development** | **Last Updated**: 21 Desember 2025
-owledgments
+---
 
-Built with:
-- Next.js Team
-- Supabase Team
-- Vercel Team
-- React Team
-- TailwindCSS Team
+## 📄 License
 
-**Status**: 🚀 **Active Development** | **Last Updated**: 21 Desember 2025
+Proprietary - All rights reserved by OASIS Barbershop
+
+---
+
+**Last Updated**: December 21, 2024
+**Status**: ✅ Development Ready | 🔧 FASE 3 In Progress
