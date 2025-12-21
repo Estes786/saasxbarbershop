@@ -238,9 +238,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         } else if (capsterData) {
           console.log('✅ Capster record created with ID:', (capsterData as any).id);
           // Update user profile with capster_id
-          await supabase
+          // @ts-ignore - Supabase types not generated for capster_id field yet
+          await (supabase as any)
             .from("user_profiles")
-            .update({ capster_id: (capsterData as any).id } as any)
+            .update({ capster_id: (capsterData as any).id })
             .eq("id", authData.user.id);
           console.log('✅ User profile updated with capster_id');
         }

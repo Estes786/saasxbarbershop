@@ -4,7 +4,7 @@ module.exports = {
       name: 'saasxbarbershop',
       script: 'npm',
       args: 'run dev',
-      cwd: '/home/user/webapp',
+      cwd: '/home/user/saasxbarbershop',
       env: {
         NODE_ENV: 'development',
         PORT: 3000

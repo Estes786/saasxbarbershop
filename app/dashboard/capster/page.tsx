@@ -60,21 +60,25 @@ export default function CapsterDashboard() {
           .single();
 
         if (!capsterError && capsterData) {
-          currentCapsterId = (capsterData as any).id;
-          setCapsterId(currentCapsterId);
-          console.log('✅ Capster record created:', currentCapsterId);
+          const newCapsterId = (capsterData as any).id as string;
+          currentCapsterId = newCapsterId;
+          setCapsterId(newCapsterId);
+          console.log('✅ Capster record created:', newCapsterId);
           
           // Update user profile with capster_id
-          await supabase
+          // @ts-ignore - Supabase types not generated for capster_id field yet
+          const { error: updateError } = await (supabase as any)
             .from("user_profiles")
-            .update({ capster_id: currentCapsterId } as any)
+            .update({ capster_id: newCapsterId })
             .eq("id", profile?.id);
             
-          console.log('✅ User profile updated with capster_id');
+          if (!updateError) {
+            console.log('✅ User profile updated with capster_id');
+          }
         } else {
           console.error('❌ Failed to create capster record:', capsterError);
         }
-      } else {
+      } else if (currentCapsterId) {
         setCapsterId(currentCapsterId);
       }
 
