@@ -104,6 +104,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (userRole === 'admin') {
           console.log('➡️ Redirecting to admin dashboard');
           router.push('/dashboard/admin');
+        } else if (userRole === 'capster') {
+          console.log('➡️ Redirecting to capster dashboard');
+          router.push('/dashboard/capster');
+        } else if (userRole === 'barbershop') {
+          console.log('➡️ Redirecting to barbershop dashboard');
+          router.push('/dashboard/barbershop');
         } else {
           console.log('➡️ Redirecting to customer dashboard');
           router.push('/dashboard/customer');
@@ -215,6 +221,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (role === 'admin') {
         console.log('➡️ Redirecting to admin dashboard');
         router.push('/dashboard/admin');
+      } else if (role === 'capster') {
+        console.log('➡️ Redirecting to capster dashboard');
+        router.push('/dashboard/capster');
+      } else if (role === 'barbershop') {
+        console.log('➡️ Redirecting to barbershop dashboard');
+        router.push('/dashboard/barbershop');
       } else {
         console.log('➡️ Redirecting to customer dashboard');
         router.push('/dashboard/customer');

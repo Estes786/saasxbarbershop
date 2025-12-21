@@ -1,5 +1,5 @@
 // Authentication & Authorization Types
-export type UserRole = 'admin' | 'customer';
+export type UserRole = 'admin' | 'customer' | 'capster' | 'barbershop';
 
 export interface UserProfile {
   id: string;
@@ -7,6 +7,7 @@ export interface UserProfile {
   role: UserRole;
   customer_phone?: string; // Link to barbershop_customers table
   customer_name?: string;
+  capster_id?: string; // Link to capsters table for capster role
   created_at: string;
   updated_at: string;
 }

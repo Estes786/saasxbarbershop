@@ -1,7 +1,8 @@
 -- =====================================================
--- OASIS BI PRO: 3-ROLE ARCHITECTURE DATABASE SCHEMA
--- Created: 20 Desember 2025
+-- OASIS BI PRO: 3-ROLE ARCHITECTURE DATABASE SCHEMA (FIXED)
+-- Created: 21 Desember 2025
 -- Purpose: Transform 2-role to 3-role (Customer → Capster → Admin)
+-- FIX: Drop existing policies before creating new ones
 -- =====================================================
 
 -- ===========================
@@ -23,18 +24,22 @@ CREATE TABLE IF NOT EXISTS service_catalog (
 
 -- Seed realistic data for BOZQ Barbershop
 INSERT INTO service_catalog (service_name, service_category, base_price, duration_minutes, description, display_order) VALUES
-('Potong Rambut Regular', 'haircut', 30000, 30, 'Potong rambut standar dengan gunting dan clipper profesional', 1),
-('Potong Rambut Premium', 'haircut', 50000, 45, 'Potong rambut dengan konsultasi styling & blow dry', 2),
-('Cukur Jenggot', 'grooming', 20000, 20, 'Cukur jenggot bersih dengan pisau cukur tradisional', 3),
-('Grooming Lengkap', 'grooming', 70000, 60, 'Potong rambut + cukur jenggot + facial treatment', 4),
-('Keramas Premium', 'grooming', 15000, 15, 'Keramas dengan shampoo premium + head massage', 5),
-('Coloring Full', 'coloring', 150000, 90, 'Pewarnaan rambut full dengan cat profesional import', 6),
-('Highlight', 'coloring', 100000, 75, 'Highlight rambut dengan teknik balayage modern', 7),
-('Paket Hemat', 'package', 100000, 75, 'Potong rambut + grooming + keramas (Hemat 35k!)', 8)
+('Potong Rambut Dewasa', 'haircut', 18000, 30, 'Potong rambut standar untuk dewasa', 1),
+('Potong Rambut Anak', 'haircut', 15000, 25, 'Potong rambut untuk anak-anak', 2),
+('Cukur Balita', 'haircut', 18000, 20, 'Cukur rambut khusus balita dengan kesabaran extra', 3),
+('Keramas', 'grooming', 10000, 15, 'Keramas dengan shampoo berkualitas', 4),
+('Cukur Jenggot + Kumis', 'grooming', 10000, 20, 'Cukur jenggot dan kumis rapi', 5),
+('Cukur + Keramas', 'package', 25000, 40, 'Paket potong rambut dan keramas', 6),
+('Semir (Hitam)', 'coloring', 50000, 60, 'Semir rambut warna hitam', 7),
+('Hairlight/Bleaching', 'coloring', 150000, 90, 'Hairlight atau bleaching rambut mulai dari 150k', 8)
 ON CONFLICT DO NOTHING;
 
 -- Enable RLS
 ALTER TABLE service_catalog ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "service_catalog_read_all" ON service_catalog;
+DROP POLICY IF EXISTS "service_catalog_write_admin" ON service_catalog;
 
 -- Public read access (all roles can see services)
 CREATE POLICY "service_catalog_read_all" ON service_catalog FOR SELECT USING (true);
@@ -74,6 +79,11 @@ ON CONFLICT DO NOTHING;
 -- Enable RLS
 ALTER TABLE capsters ENABLE ROW LEVEL SECURITY;
 
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "capsters_read_all" ON capsters;
+DROP POLICY IF EXISTS "capsters_update_own" ON capsters;
+DROP POLICY IF EXISTS "capsters_admin_all" ON capsters;
+
 -- All authenticated users can read capsters
 CREATE POLICY "capsters_read_all" ON capsters FOR SELECT USING (true);
 
@@ -108,6 +118,11 @@ CREATE INDEX IF NOT EXISTS idx_booking_slots_date_status ON booking_slots(date, 
 
 -- Enable RLS
 ALTER TABLE booking_slots ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "booking_slots_read_all" ON booking_slots;
+DROP POLICY IF EXISTS "booking_slots_manage_own" ON booking_slots;
+DROP POLICY IF EXISTS "booking_slots_admin_all" ON booking_slots;
 
 -- All authenticated can read available slots
 CREATE POLICY "booking_slots_read_all" ON booking_slots FOR SELECT USING (true);
@@ -155,6 +170,11 @@ CREATE TRIGGER set_referral_code
 -- Enable RLS
 ALTER TABLE customer_loyalty ENABLE ROW LEVEL SECURITY;
 
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "customer_loyalty_read_own" ON customer_loyalty;
+DROP POLICY IF EXISTS "customer_loyalty_read_capster_admin" ON customer_loyalty;
+DROP POLICY IF EXISTS "customer_loyalty_update_admin" ON customer_loyalty;
+
 -- Customers can read their own loyalty data
 CREATE POLICY "customer_loyalty_read_own" ON customer_loyalty FOR SELECT 
 USING (customer_phone IN (SELECT customer_phone FROM user_profiles WHERE id = auth.uid()));
@@ -192,6 +212,12 @@ CREATE INDEX IF NOT EXISTS idx_customer_reviews_date ON customer_reviews(created
 
 -- Enable RLS
 ALTER TABLE customer_reviews ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "customer_reviews_read_approved" ON customer_reviews;
+DROP POLICY IF EXISTS "customer_reviews_create_own" ON customer_reviews;
+DROP POLICY IF EXISTS "customer_reviews_read_all_staff" ON customer_reviews;
+DROP POLICY IF EXISTS "customer_reviews_manage_admin" ON customer_reviews;
 
 -- All can read approved reviews
 CREATE POLICY "customer_reviews_read_approved" ON customer_reviews FOR SELECT 
