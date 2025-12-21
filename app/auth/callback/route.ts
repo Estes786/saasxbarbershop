@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/server';
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get('code');
-  const expectedRole = requestUrl.searchParams.get('role') as 'admin' | 'customer' | 'capster' | null;
+  const expectedRole = requestUrl.searchParams.get('role') as 'admin' | 'customer' | 'capster' | 'barbershop' | null;
 
   if (code) {
     const supabase = await createClient();
@@ -99,12 +99,11 @@ export async function GET(request: NextRequest) {
           .select()
           .single();
 
-        if (!capsterError && capsterData) {
-          console.log('[OAuth] Capster record created, updating user profile...');
-          await supabase
-            .from('user_profiles')
-            .update({ capster_id: (capsterData as any).id } as any)
-            .eq('id', session.user.id);
+        // Note: capster_id will be auto-updated by dashboard when user first logs in
+        if (capsterError) {
+          console.error('[OAuth] Error creating capster record:', capsterError);
+        } else {
+          console.log('[OAuth] Capster record created successfully');
         }
       }
       
