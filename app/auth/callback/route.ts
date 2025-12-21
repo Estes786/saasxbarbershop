@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/server';
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get('code');
-  const expectedRole = requestUrl.searchParams.get('role') as 'admin' | 'customer' | null;
+  const expectedRole = requestUrl.searchParams.get('role') as 'admin' | 'customer' | 'capster' | null;
 
   if (code) {
     const supabase = await createClient();
@@ -44,9 +44,14 @@ export async function GET(request: NextRequest) {
       }
       
       // Profile exists - redirect based on role
-      const dashboardUrl = (profile as any).role === 'admin' 
-        ? '/dashboard/admin' 
-        : '/dashboard/customer';
+      let dashboardUrl = '/dashboard/customer'; // default
+      if ((profile as any).role === 'admin') {
+        dashboardUrl = '/dashboard/admin';
+      } else if ((profile as any).role === 'capster') {
+        dashboardUrl = '/dashboard/capster';
+      } else if ((profile as any).role === 'barbershop') {
+        dashboardUrl = '/dashboard/barbershop';
+      }
       
       console.log(`[OAuth Success] User ${(profile as any).email} authenticated as ${(profile as any).role}`);
       return NextResponse.redirect(new URL(dashboardUrl, requestUrl.origin));
@@ -78,9 +83,40 @@ export async function GET(request: NextRequest) {
       }
       
       console.log(`[OAuth Success] New ${roleToAssign} profile created for ${email}`);
+
+      // If capster role, create capster record
+      if (roleToAssign === 'capster') {
+        console.log('[OAuth] Creating capster record for OAuth user...');
+        const { data: capsterData, error: capsterError } = await supabase
+          .from('capsters')
+          .insert({
+            user_id: session.user.id,
+            capster_name: displayName,
+            phone: null,
+            specialization: 'all',
+            is_available: true,
+          } as any)
+          .select()
+          .single();
+
+        if (!capsterError && capsterData) {
+          console.log('[OAuth] Capster record created, updating user profile...');
+          await supabase
+            .from('user_profiles')
+            .update({ capster_id: (capsterData as any).id } as any)
+            .eq('id', session.user.id);
+        }
+      }
       
       // Success - redirect based on role
-      const dashboardUrl = roleToAssign === 'admin' ? '/dashboard/admin' : '/dashboard/customer';
+      let dashboardUrl = '/dashboard/customer'; // default
+      if (roleToAssign === 'admin') {
+        dashboardUrl = '/dashboard/admin';
+      } else if (roleToAssign === 'capster') {
+        dashboardUrl = '/dashboard/capster';
+      } else if (roleToAssign === 'barbershop') {
+        dashboardUrl = '/dashboard/barbershop';
+      }
       return NextResponse.redirect(new URL(dashboardUrl, requestUrl.origin));
     }
   }

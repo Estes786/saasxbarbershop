@@ -216,6 +216,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       console.log('✅ User profile created successfully');
+
+      // 3.5. If capster role, create capster record
+      if (role === 'capster') {
+        console.log('✂️ Creating capster record...');
+        const { data: capsterData, error: capsterError } = await supabase
+          .from("capsters")
+          .insert({
+            user_id: authData.user.id,
+            capster_name: customerData?.name || email,
+            phone: customerData?.phone || null,
+            specialization: 'all',
+            is_available: true,
+          } as any)
+          .select()
+          .single();
+
+        if (capsterError) {
+          console.error("❌ Error creating capster:", capsterError);
+          // Don't fail signup, just log error
+        } else if (capsterData) {
+          console.log('✅ Capster record created with ID:', (capsterData as any).id);
+          // Update user profile with capster_id
+          await supabase
+            .from("user_profiles")
+            .update({ capster_id: (capsterData as any).id } as any)
+            .eq("id", authData.user.id);
+          console.log('✅ User profile updated with capster_id');
+        }
+      }
       
       // 4. Redirect based on role
       if (role === 'admin') {

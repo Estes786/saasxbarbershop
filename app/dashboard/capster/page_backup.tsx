@@ -23,7 +23,6 @@ export default function CapsterDashboard() {
   const [upcomingVisits, setUpcomingVisits] = useState<PredictionResult[]>([]);
   const [churnRiskCustomers, setChurnRiskCustomers] = useState<PredictionResult[]>([]);
   const [todayBookings, setTodayBookings] = useState<any[]>([]);
-  const [capsterId, setCapsterId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!authLoading) {
@@ -41,50 +40,13 @@ export default function CapsterDashboard() {
     try {
       setLoading(true);
 
-      // 1. Load or create capster record if not exists
-      let currentCapsterId = profile?.capster_id;
-      
-      if (!currentCapsterId) {
-        console.log('⚠️ No capster_id found, attempting to create capster record...');
-        // Try to create capster record
-        const { data: capsterData, error: capsterError } = await supabase
-          .from("capsters")
-          .insert({
-            user_id: profile?.id,
-            capster_name: profile?.customer_name || profile?.email || 'Capster',
-            phone: profile?.customer_phone || null,
-            specialization: 'all',
-            is_available: true,
-          } as any)
-          .select()
-          .single();
-
-        if (!capsterError && capsterData) {
-          currentCapsterId = (capsterData as any).id;
-          setCapsterId(currentCapsterId);
-          console.log('✅ Capster record created:', currentCapsterId);
-          
-          // Update user profile with capster_id
-          await supabase
-            .from("user_profiles")
-            .update({ capster_id: currentCapsterId } as any)
-            .eq("id", profile?.id);
-            
-          console.log('✅ User profile updated with capster_id');
-        } else {
-          console.error('❌ Failed to create capster record:', capsterError);
-        }
-      } else {
-        setCapsterId(currentCapsterId);
-      }
-
-      // 2. Load capster stats (if capster_id exists)
-      if (currentCapsterId) {
+      // 1. Load capster stats
+      if (profile?.capster_id) {
         // @ts-ignore - Supabase types not generated for capsters table yet
         const { data: capsterData } = await supabase
           .from("capsters")
           .select("*")
-          .eq("id", currentCapsterId)
+          .eq("id", profile.capster_id)
           .single();
 
         if (capsterData) {
@@ -97,7 +59,7 @@ export default function CapsterDashboard() {
         }
       }
 
-      // 3. Load customer visit history for predictions
+      // 2. Load customer visit history for predictions
       // @ts-ignore - Supabase types not generated for barbershop_customers table yet
       const { data: customers } = await supabase
         .from("barbershop_customers")
@@ -128,7 +90,7 @@ export default function CapsterDashboard() {
       }
 
       // 4. Load today's bookings (if capster_id exists)
-      if (currentCapsterId) {
+      if (capsterId) {
         const today = format(new Date(), "yyyy-MM-dd");
         // @ts-ignore - Supabase types not generated for bookings table yet
         const { data: bookings } = await supabase
@@ -138,7 +100,7 @@ export default function CapsterDashboard() {
             service:service_catalog(service_name, base_price)
           `)
           .eq("booking_date", today)
-          .eq("capster_id", currentCapsterId)
+          .eq("capster_id", capsterId)
           .order("booking_time", { ascending: true });
 
         if (bookings) {
@@ -154,7 +116,7 @@ export default function CapsterDashboard() {
   }
 
   async function toggleAvailability() {
-    if (!capsterId) {
+    if (!profile?.capster_id) {
       console.error('Cannot toggle availability: No capster_id');
       return;
     }
@@ -165,7 +127,7 @@ export default function CapsterDashboard() {
       .from("capsters")
       // @ts-ignore - Supabase types not generated for capsters table yet
       .update({ is_available: newStatus })
-      .eq("id", capsterId);
+      .eq("id", profile.capster_id);
 
     if (!error) {
       setCapsterStats({ ...capsterStats!, is_available: newStatus });
@@ -369,6 +331,36 @@ export default function CapsterDashboard() {
                       <tr key={booking.id} className="hover:bg-gray-50">
                         <td className="px-4 py-3 text-sm">{booking.booking_time}</td>
                         <td className="px-4 py-3 text-sm font-medium">{booking.customer_name}</td>
+                        <td className="px-4 py-3 text-sm">{booking.service?.service_name || "-"}</td>
+                        <td className="px-4 py-3 text-sm">
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              booking.status === "confirmed"
+                                ? "bg-green-100 text-green-800"
+                                : booking.status === "completed"
+                                ? "bg-blue-100 text-blue-800"
+                                : "bg-yellow-100 text-yellow-800"
+                            }`}
+                          >
+                            {booking.status}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-sm">
+                          Rp {(booking.service?.base_price || 0).toLocaleString("id-ID")}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+_name}</td>
                         <td className="px-4 py-3 text-sm">{booking.service?.service_name || "-"}</td>
                         <td className="px-4 py-3 text-sm">
                           <span
