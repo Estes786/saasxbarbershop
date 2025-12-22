@@ -86,21 +86,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (error) return { error };
 
       if (data.user) {
-        // Load profile first
+        // CRITICAL FIX: Wait for profile to load before checking role
         const profile = await getUserProfile(data.user.id);
-        await loadUserProfile(data.user.id);
-        
-        // Redirect based on role
         console.log('🔍 Login profile:', profile);
-        const userRole = profile?.role;
+        
+        if (!profile) {
+          await supabase.auth.signOut();
+          return { error: new Error('User profile not found. Please contact admin.') };
+        }
+        
+        const userRole = profile.role;
         console.log('🎯 User role:', userRole);
         
         // Verify expected role if provided
         if (expectedRole && userRole !== expectedRole) {
           await supabase.auth.signOut();
-          return { error: new Error(`This login page is for ${expectedRole}s only. Your account is registered as ${userRole}.`) };
+          return { error: new Error(`This login page is for ${expectedRole}s only. Your account is registered as ${userRole || 'unknown'}.`) };
         }
         
+        // Load profile into state AFTER verification
+        await loadUserProfile(data.user.id);
+        
+        // Redirect based on role
         if (userRole === 'admin') {
           console.log('➡️ Redirecting to admin dashboard');
           router.push('/dashboard/admin');
@@ -140,6 +147,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       console.log('📝 Starting signup process...', { email, role, customerData });
       
+      // CRITICAL FIX: Check if user already exists in user_profiles
+      const { data: existingProfile, error: checkError } = await supabase
+        .from("user_profiles")
+        .select("id, email, role")
+        .eq("email", email)
+        .maybeSingle();
+      
+      if (existingProfile && !checkError) {
+        console.log('⚠️ User already registered:', existingProfile);
+        // If user exists, try to sign in instead
+        return { error: new Error(`This email is already registered as ${(existingProfile as any).role}. Please use the login page instead.`) };
+      }
+      
       // 1. Sign up with Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
@@ -155,6 +175,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (authError) {
         console.error('❌ Auth signup error:', authError);
+        // Handle "User already registered" error from Supabase Auth
+        if (authError.message?.includes('already registered')) {
+          return { error: new Error('This email is already registered. Please use the login page instead.') };
+        }
         return { error: authError };
       }
       if (!authData.user) {
@@ -247,7 +271,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       }
       
-      // 4. Redirect based on role
+      // 4. CRITICAL FIX: Load profile into state before redirect
+      await loadUserProfile(authData.user.id);
+      
+      // Small delay to ensure state is updated
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // 5. Redirect based on role
       if (role === 'admin') {
         console.log('➡️ Redirecting to admin dashboard');
         router.push('/dashboard/admin');
