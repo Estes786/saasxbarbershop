@@ -354,6 +354,22 @@ VALUES ('<UUID>', 'admin@oasis.com', 'admin', 'System Admin');
 
 ## 🐛 Known Issues & Fixes
 
+### ✅ FIXED (23 Dec 2024): User Profile Not Found Error
+**Issue**: `User profile not found. Please contact admin. This could be an RLS policy issue`
+
+**Root Cause**: RLS policies dengan subquery yang membaca `user_profiles` lagi menyebabkan infinite recursion
+
+**Solution**: 
+1. Simplify ALL RLS policies - gunakan HANYA `auth.uid() = id` TANPA subquery
+2. Remove ALL subqueries dari policy USING/WITH CHECK clauses
+3. Service role bypass policy untuk backend operations
+
+**SQL Fix**: See `FIX_RLS_USER_PROFILE_NOT_FOUND.sql`
+**Instructions**: See `APPLY_FIX_INSTRUCTIONS.md`
+**Analysis**: See `FIX_SUMMARY_23DEC2024.md`
+
+**Status**: ⏳ **Fix created, needs to be applied to Supabase**
+
 ### ✅ FIXED: Foreign Key Constraint Error
 **Issue**: `user_profiles_customer_phone_fkey` violation during registration
 
@@ -535,5 +551,25 @@ Proprietary - All rights reserved by OASIS Barbershop
 
 ---
 
-**Last Updated**: December 21, 2024
-**Status**: ✅ Development Ready | 🔧 FASE 3 In Progress
+**Last Updated**: December 23, 2024
+**Status**: 🔧 Fix Pending | ⏳ FASE 3 In Progress
+
+---
+
+## 🚨 CRITICAL: Fix Required Before Testing
+
+**Priority**: 🔴 **URGENT**
+
+Before testing login/registration, you MUST apply the RLS policy fix:
+
+1. Open Supabase SQL Editor: https://supabase.com/dashboard/project/qwqmhvwqeynnyxaecqzw/sql/new
+2. Copy content from `FIX_RLS_USER_PROFILE_NOT_FOUND.sql`
+3. Paste and click "RUN"
+4. Verify success messages
+
+**Without this fix**: All login attempts will fail with "User profile not found" error.
+
+**Documentation**: 
+- `APPLY_FIX_INSTRUCTIONS.md` - Step-by-step guide
+- `FIX_SUMMARY_23DEC2024.md` - Detailed analysis
+- `FIX_RLS_USER_PROFILE_NOT_FOUND.sql` - SQL script
