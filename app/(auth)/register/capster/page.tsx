@@ -250,10 +250,9 @@ export default function CapsterRegisterPage() {
         </div>
 
         {/* Info Notice */}
-        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <p className="text-sm text-blue-800">
-            <strong>📢 Catatan:</strong> Setelah mendaftar, akun Anda akan direview oleh admin. 
-            Anda akan dapat mengakses dashboard capster setelah disetujui.
+        <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+          <p className="text-sm text-green-800">
+            <strong>✅ Auto-Approval Active:</strong> Setelah mendaftar, Anda langsung dapat mengakses dashboard capster tanpa perlu menunggu approval admin!
           </p>
         </div>
       </div>
