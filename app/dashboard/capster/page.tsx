@@ -26,12 +26,32 @@ export default function CapsterDashboard() {
   const [capsterId, setCapsterId] = useState<string | null>(null);
 
   useEffect(() => {
+    console.log('🔄 Dashboard effect triggered:', { authLoading, user: !!user, profile });
+    
     if (!authLoading) {
       if (!user) {
-        router.push("/login");
-      } else if (profile?.role !== "capster") {
-        router.push("/dashboard/customer");
+        console.log('❌ No user, redirecting to login');
+        router.push("/login/capster");
+      } else if (!profile) {
+        console.warn('⚠️ User exists but profile not loaded yet, waiting...');
+        // Wait for profile to load
+        const timeout = setTimeout(() => {
+          console.error('❌ Profile loading timeout, redirecting to login');
+          router.push("/login/capster");
+        }, 5000); // 5 second timeout
+        
+        return () => clearTimeout(timeout);
+      } else if (profile.role !== "capster") {
+        console.log(`❌ Wrong role: ${profile.role}, redirecting`);
+        if (profile.role === 'admin') {
+          router.push("/dashboard/admin");
+        } else if (profile.role === 'barbershop') {
+          router.push("/dashboard/barbershop");
+        } else {
+          router.push("/dashboard/customer");
+        }
       } else {
+        console.log('✅ Capster authenticated, loading dashboard data');
         loadDashboardData();
       }
     }
@@ -178,10 +198,34 @@ export default function CapsterDashboard() {
 
   if (authLoading || loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-green-50 via-teal-50 to-emerald-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Memuat dashboard...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 font-medium">Memuat dashboard capster...</p>
+          <p className="text-gray-500 text-sm mt-2">
+            {authLoading ? 'Memverifikasi autentikasi...' : 'Memuat data dashboard...'}
+          </p>
+        </div>
+      </div>
+    );
+  }
+  
+  // CRITICAL: Check if profile is loaded before rendering dashboard
+  if (!profile) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50">
+        <div className="text-center max-w-md">
+          <div className="text-6xl mb-4">⚠️</div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Profile Tidak Ditemukan</h1>
+          <p className="text-gray-600 mb-6">
+            Kami tidak dapat memuat profil Anda. Silakan coba login kembali.
+          </p>
+          <button
+            onClick={() => router.push('/login/capster')}
+            className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all"
+          >
+            Kembali ke Login
+          </button>
         </div>
       </div>
     );

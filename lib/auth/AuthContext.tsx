@@ -51,6 +51,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   async function loadUserProfile(userId: string) {
     try {
+      console.log('🔄 Loading profile for user:', userId);
       const { data, error } = await supabase
         .from("user_profiles")
         .select("*")
@@ -58,39 +59,50 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .single();
 
       if (error) {
-        console.error("Error loading profile:", error);
+        console.error("❌ Error loading profile:", error);
         setLoading(false);
         return;
       }
 
       if (data) {
+        console.log('✅ Profile loaded successfully:', data);
         setProfile(data as UserProfile);
         if (user) {
           setUser({ ...user, profile: data as UserProfile });
         }
+      } else {
+        console.warn('⚠️ No profile data found for user:', userId);
       }
       setLoading(false);
     } catch (err) {
-      console.error("Error loading profile:", err);
+      console.error("❌ Error loading profile:", err);
       setLoading(false);
     }
   }
 
   async function signIn(email: string, password: string, expectedRole?: UserRole) {
     try {
+      console.log('🔐 Signing in:', { email, expectedRole });
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) return { error };
+      if (error) {
+        console.error('❌ Auth error:', error);
+        return { error };
+      }
 
       if (data.user) {
+        console.log('✅ Auth success, user ID:', data.user.id);
+        
         // CRITICAL FIX: Wait for profile to load before checking role
         const profile = await getUserProfile(data.user.id);
         console.log('🔍 Login profile:', profile);
         
         if (!profile) {
+          console.error('❌ Profile not found');
           await supabase.auth.signOut();
           return { error: new Error('User profile not found. Please contact admin.') };
         }
@@ -100,12 +112,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         
         // Verify expected role if provided
         if (expectedRole && userRole !== expectedRole) {
+          console.warn(`⚠️ Role mismatch: expected ${expectedRole}, got ${userRole}`);
           await supabase.auth.signOut();
           return { error: new Error(`This login page is for ${expectedRole}s only. Your account is registered as ${userRole || 'unknown'}.`) };
         }
         
-        // Load profile into state AFTER verification
+        // CRITICAL: Load profile into state with explicit wait
+        console.log('🔄 Loading profile into state...');
         await loadUserProfile(data.user.id);
+        
+        // IMPORTANT: Wait a bit longer to ensure state is fully updated
+        await new Promise(resolve => setTimeout(resolve, 800));
+        console.log('✅ Profile loaded into state');
         
         // Redirect based on role
         if (userRole === 'admin') {
@@ -125,6 +143,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       return { error: null };
     } catch (err: any) {
+      console.error('❌ Sign in error:', err);
       return { error: err };
     }
   }
@@ -272,10 +291,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       
       // 4. CRITICAL FIX: Load profile into state before redirect
+      console.log('🔄 Loading profile into state...');
       await loadUserProfile(authData.user.id);
       
-      // Small delay to ensure state is updated
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // IMPORTANT: Wait longer to ensure state is updated
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      console.log('✅ Profile loaded into state, ready to redirect');
       
       // 5. Redirect based on role
       if (role === 'admin') {
