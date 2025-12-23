@@ -49,9 +49,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  async function loadUserProfile(userId: string) {
+  async function loadUserProfile(userId: string, retries = 3) {
     try {
-      console.log('🔄 Loading profile for user:', userId);
+      console.log(`🔄 Loading profile for user: ${userId} (retries left: ${retries})`);
+      
+      // CRITICAL FIX: Add delay before query to ensure RLS is ready
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
       const { data, error } = await supabase
         .from("user_profiles")
         .select("*")
@@ -60,23 +64,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (error) {
         console.error("❌ Error loading profile:", error);
+        
+        // RETRY LOGIC: If error and retries left, try again
+        if (retries > 0 && error.code !== 'PGRST116') {
+          console.log(`🔄 Retrying profile load... (${retries - 1} attempts left)`);
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          return loadUserProfile(userId, retries - 1);
+        }
+        
         setLoading(false);
-        return;
+        return null;
       }
 
       if (data) {
-        console.log('✅ Profile loaded successfully:', data);
+        console.log('✅ Profile loaded successfully:', {
+          id: (data as any).id?.substring(0, 8) + '...',
+          email: (data as any).email,
+          role: (data as any).role,
+          customer_name: (data as any).customer_name
+        });
         setProfile(data as UserProfile);
         if (user) {
           setUser({ ...user, profile: data as UserProfile });
         }
+        setLoading(false);
+        return data as UserProfile;
       } else {
         console.warn('⚠️ No profile data found for user:', userId);
+        setLoading(false);
+        return null;
       }
-      setLoading(false);
     } catch (err) {
       console.error("❌ Error loading profile:", err);
+      
+      // RETRY LOGIC: If exception and retries left, try again
+      if (retries > 0) {
+        console.log(`🔄 Retrying after exception... (${retries - 1} attempts left)`);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        return loadUserProfile(userId, retries - 1);
+      }
+      
       setLoading(false);
+      return null;
     }
   }
 
@@ -97,14 +126,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (data.user) {
         console.log('✅ Auth success, user ID:', data.user.id);
         
-        // CRITICAL FIX: Wait for profile to load before checking role
-        const profile = await getUserProfile(data.user.id);
+        // CRITICAL FIX: Wait for profile to load before checking role (with retry)
+        let profile = await getUserProfile(data.user.id);
         console.log('🔍 Login profile:', profile);
         
+        // RETRY if profile not found immediately
         if (!profile) {
-          console.error('❌ Profile not found');
+          console.warn('⚠️ Profile not found on first attempt, retrying...');
+          await new Promise(resolve => setTimeout(resolve, 1500));
+          profile = await getUserProfile(data.user.id);
+        }
+        
+        if (!profile) {
+          console.error('❌ Profile not found after retries');
           await supabase.auth.signOut();
-          return { error: new Error('User profile not found. Please contact admin.') };
+          return { error: new Error('User profile not found. Please contact admin. This could be an RLS policy issue - try logging in again.') };
         }
         
         const userRole = profile.role;
