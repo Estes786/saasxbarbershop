@@ -28,19 +28,23 @@ export default function AdminRegisterPage() {
     setError(null);
 
     try {
-      const response = await fetch('/api/auth/verify-admin-key', {
+      const response = await fetch('/api/validate-access-key', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ secretKey: formData.secretKey }),
+        body: JSON.stringify({ 
+          accessKey: formData.secretKey,
+          role: 'admin'
+        }),
       });
 
       const data = await response.json();
 
-      if (data.valid) {
+      if (data.success && data.validation?.[0]?.is_valid) {
         setKeyVerified(true);
         setError(null);
       } else {
-        setError("Kode rahasia admin tidak valid! Hanya founder yang memiliki akses admin.");
+        const message = data.validation?.[0]?.message || data.error || "Kode rahasia admin tidak valid!";
+        setError(message + " Hanya founder yang memiliki akses admin.");
       }
     } catch (err) {
       setError("Gagal memverifikasi kode. Silakan coba lagi.");

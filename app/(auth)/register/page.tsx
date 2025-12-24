@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useAuth } from "@/lib/auth/AuthContext";
 import Link from "next/link";
-import { UserPlus, Mail, Lock, Phone, User, Sparkles } from "lucide-react";
+import { UserPlus, Mail, Lock, Phone, User, Sparkles, Key } from "lucide-react";
 import { UserRole } from "@/lib/auth/types";
 
 export default function RegisterPage() {
@@ -15,15 +15,64 @@ export default function RegisterPage() {
     role: "customer" as UserRole,
     customerPhone: "",
     customerName: "",
+    accessKey: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [validatingKey, setValidatingKey] = useState(false);
+  const [keyValidated, setKeyValidated] = useState(false);
+
+  async function validateAccessKey() {
+    if (!formData.accessKey) {
+      setError("Masukkan access key terlebih dahulu!");
+      return;
+    }
+
+    setValidatingKey(true);
+    setError(null);
+
+    try {
+      const response = await fetch('/api/validate-access-key', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          accessKey: formData.accessKey,
+          role: formData.role,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success && data.validation?.[0]?.is_valid) {
+        setKeyValidated(true);
+        setError(null);
+      } else {
+        const message = data.validation?.[0]?.message || 'Invalid access key';
+        setError(message);
+        setKeyValidated(false);
+      }
+    } catch (err: any) {
+      setError('Failed to validate access key. Please try again.');
+      setKeyValidated(false);
+    } finally {
+      setValidatingKey(false);
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError(null);
+
+    // Validate access key first
+    if (!keyValidated) {
+      setError("Harap validasi access key terlebih dahulu!");
+      setLoading(false);
+      return;
+    }
 
     // Validation
     if (formData.password !== formData.confirmPassword) {
@@ -130,6 +179,42 @@ export default function RegisterPage() {
             <div className="bg-blue-500/20 border border-blue-500/50 rounded-lg p-3 text-blue-200 text-sm">
               <span className="font-semibold">Customer Registration</span>
               <p className="mt-1">Daftar untuk mendapatkan akses loyalty program, booking online, dan history transaksi Anda.</p>
+            </div>
+
+            {/* ACCESS KEY Field */}
+            <div>
+              <label className="block text-white font-medium mb-2">
+                🔑 Access Key *
+              </label>
+              <div className="space-y-2">
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Key className="text-purple-300" size={20} />
+                  </div>
+                  <input
+                    type="text"
+                    value={formData.accessKey}
+                    onChange={(e) => {
+                      setFormData({ ...formData, accessKey: e.target.value });
+                      setKeyValidated(false);
+                    }}
+                    className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    placeholder="CUSTOMER_BOZQ_ACCESS_1"
+                    required
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={validateAccessKey}
+                  disabled={validatingKey || keyValidated || !formData.accessKey}
+                  className="w-full py-2 bg-purple-600/50 hover:bg-purple-600 text-white rounded-lg text-sm font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {validatingKey ? 'Memvalidasi...' : keyValidated ? '✓ Access Key Valid' : 'Validasi Access Key'}
+                </button>
+                <p className="text-xs text-purple-300">
+                  Tanyakan access key ke staff OASIS Barbershop
+                </p>
+              </div>
             </div>
 
             {/* Email */}

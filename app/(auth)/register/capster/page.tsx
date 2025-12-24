@@ -12,6 +12,7 @@ export default function CapsterRegisterPage() {
   const [error, setError] = useState("");
 
   const [formData, setFormData] = useState({
+    accessKey: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -22,12 +23,27 @@ export default function CapsterRegisterPage() {
     bio: "",
   });
 
+  const [validatingKey, setValidatingKey] = useState(false);
+  const [keyValidated, setKeyValidated] = useState(false);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
     setLoading(true);
 
     // Validation
+    if (!formData.accessKey) {
+      setError("Mohon masukkan Access Key terlebih dahulu");
+      setLoading(false);
+      return;
+    }
+
+    if (!keyValidated) {
+      setError("Access Key belum divalidasi. Klik tombol Verify Access Key");
+      setLoading(false);
+      return;
+    }
+
     if (!formData.email || !formData.password || !formData.capsterName || !formData.phone) {
       setError("Mohon lengkapi semua field yang wajib diisi");
       setLoading(false);
@@ -65,10 +81,57 @@ export default function CapsterRegisterPage() {
         return;
       }
 
+      // Increment access key usage
+      await fetch('/api/access-key/increment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ accessKey: formData.accessKey }),
+      });
+
       // Success - will be redirected by AuthContext
     } catch (err: any) {
       setError(err.message || "Terjadi kesalahan");
       setLoading(false);
+    }
+  }
+
+  async function handleValidateKey() {
+    if (!formData.accessKey) {
+      setError("Mohon masukkan Access Key");
+      return;
+    }
+
+    setValidatingKey(true);
+    setError("");
+
+    try {
+      const response = await fetch('/api/validate-access-key', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          accessKey: formData.accessKey,
+          role: 'capster',
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success || !data.validation?.[0]?.is_valid) {
+        const message = data.validation?.[0]?.message || data.error || 'Invalid access key';
+        setError(message);
+        setKeyValidated(false);
+        setValidatingKey(false);
+        return;
+      }
+
+      setKeyValidated(true);
+      setError("");
+      alert(`✅ Access Key Valid! Welcome ${data.validation[0].key_name || 'Capster'}`);
+    } catch (err: any) {
+      setError(err.message || "Gagal validasi access key");
+      setKeyValidated(false);
+    } finally {
+      setValidatingKey(false);
     }
   }
 
@@ -97,6 +160,43 @@ export default function CapsterRegisterPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* ACCESS KEY - BOZQ */}
+            <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-teal-50 border-2 border-green-300 rounded-xl">
+              <label className="block text-sm font-bold text-green-800 mb-2">
+                🔑 Access Key (BOZQ) <span className="text-red-500">*</span>
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={formData.accessKey}
+                  onChange={(e) => {
+                    setFormData({ ...formData, accessKey: e.target.value });
+                    setKeyValidated(false);
+                  }}
+                  className="flex-1 px-4 py-3 border-2 border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent uppercase"
+                  placeholder="CAPSTER_BOZQ_ACCESS_1"
+                  disabled={keyValidated}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={handleValidateKey}
+                  disabled={validatingKey || keyValidated || !formData.accessKey}
+                  className="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  {validatingKey ? "Checking..." : keyValidated ? "✅ Valid" : "Verify"}
+                </button>
+              </div>
+              <p className="text-xs text-green-700 mt-2">
+                💡 Contoh: <code className="bg-white px-2 py-1 rounded">CAPSTER_BOZQ_ACCESS_1</code>
+              </p>
+              {keyValidated && (
+                <div className="mt-3 p-2 bg-green-100 border border-green-400 rounded-lg">
+                  <p className="text-sm text-green-800 font-medium">✅ Access Key verified! You can proceed with registration.</p>
+                </div>
+              )}
+            </div>
+
             {/* Email */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -249,11 +349,18 @@ export default function CapsterRegisterPage() {
           </div>
         </div>
 
-        {/* Info Notice */}
-        <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-          <p className="text-sm text-green-800">
-            <strong>✅ Auto-Approval Active:</strong> Setelah mendaftar, Anda langsung dapat mengakses dashboard capster tanpa perlu menunggu approval admin!
-          </p>
+        {/* Info Notices */}
+        <div className="mt-6 space-y-3">
+          <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-sm text-blue-800">
+              <strong>🔑 Access Key Required:</strong> Anda memerlukan BOZQ Access Key dari admin/owner untuk registrasi. Hubungi management jika belum memiliki.
+            </p>
+          </div>
+          <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+            <p className="text-sm text-green-800">
+              <strong>✅ Auto-Approval Active:</strong> Setelah mendaftar, Anda langsung dapat mengakses dashboard capster tanpa perlu menunggu approval admin!
+            </p>
+          </div>
         </div>
       </div>
     </div>
