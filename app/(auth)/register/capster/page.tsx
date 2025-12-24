@@ -160,10 +160,10 @@ export default function CapsterRegisterPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* ACCESS KEY - BOZQ */}
+            {/* ACCESS KEY */}
             <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-teal-50 border-2 border-green-300 rounded-xl">
               <label className="block text-sm font-bold text-green-800 mb-2">
-                🔑 Access Key (BOZQ) <span className="text-red-500">*</span>
+                🔑 Access Key <span className="text-red-500">*</span>
               </label>
               <div className="flex gap-2">
                 <input
@@ -174,7 +174,7 @@ export default function CapsterRegisterPage() {
                     setKeyValidated(false);
                   }}
                   className="flex-1 px-4 py-3 border-2 border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent uppercase"
-                  placeholder="CAPSTER_BOZQ_ACCESS_1"
+                  placeholder="Masukkan access key Anda"
                   disabled={keyValidated}
                   required
                 />
@@ -188,11 +188,11 @@ export default function CapsterRegisterPage() {
                 </button>
               </div>
               <p className="text-xs text-green-700 mt-2">
-                💡 Contoh: <code className="bg-white px-2 py-1 rounded">CAPSTER_BOZQ_ACCESS_1</code>
+                Access key tersedia dari management. Hubungi admin jika belum memiliki.
               </p>
               {keyValidated && (
                 <div className="mt-3 p-2 bg-green-100 border border-green-400 rounded-lg">
-                  <p className="text-sm text-green-800 font-medium">✅ Access Key verified! You can proceed with registration.</p>
+                  <p className="text-sm text-green-800 font-medium">✅ Access key terverifikasi! Anda dapat melanjutkan registrasi.</p>
                 </div>
               )}
             </div>
@@ -349,18 +349,11 @@ export default function CapsterRegisterPage() {
           </div>
         </div>
 
-        {/* Info Notices */}
-        <div className="mt-6 space-y-3">
-          <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-sm text-blue-800">
-              <strong>🔑 Access Key Required:</strong> Anda memerlukan BOZQ Access Key dari admin/owner untuk registrasi. Hubungi management jika belum memiliki.
-            </p>
-          </div>
-          <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-            <p className="text-sm text-green-800">
-              <strong>✅ Auto-Approval Active:</strong> Setelah mendaftar, Anda langsung dapat mengakses dashboard capster tanpa perlu menunggu approval admin!
-            </p>
-          </div>
+        {/* Info Notice */}
+        <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+          <p className="text-sm text-green-800">
+            <strong>✅ Auto-Approval Active:</strong> Setelah mendaftar, Anda langsung dapat mengakses dashboard capster tanpa perlu menunggu approval admin!
+          </p>
         </div>
       </div>
     </div>

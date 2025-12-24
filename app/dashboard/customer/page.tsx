@@ -4,11 +4,24 @@ import { AuthGuard } from "@/components/shared/AuthGuard";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { LogOut, User, Gift, Calendar, History } from "lucide-react";
 import LoyaltyTracker from "@/components/customer/LoyaltyTracker";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function CustomerDashboard() {
-  const { signOut, profile } = useAuth();
+  const { signOut, profile, user } = useAuth();
   const [activeTab, setActiveTab] = useState<'loyalty' | 'booking' | 'history'>('loyalty');
+
+  // DEBUG: Log user and profile info on mount
+  useEffect(() => {
+    console.log('🏠 Customer Dashboard mounted');
+    console.log('👤 User:', user);
+    console.log('📋 Profile:', profile);
+    if (profile) {
+      console.log('🆔 User ID:', user?.id);
+      console.log('📧 Email:', profile.email);
+      console.log('👨 Name:', profile.customer_name);
+      console.log('📱 Phone:', profile.customer_phone);
+    }
+  }, [user, profile]);
 
   return (
     <AuthGuard allowedRoles={['customer']}>

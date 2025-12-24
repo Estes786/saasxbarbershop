@@ -199,7 +199,7 @@ export default function RegisterPage() {
                       setKeyValidated(false);
                     }}
                     className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    placeholder="CUSTOMER_BOZQ_ACCESS_1"
+                    placeholder="Masukkan access key Anda"
                     required
                   />
                 </div>
@@ -212,7 +212,7 @@ export default function RegisterPage() {
                   {validatingKey ? 'Memvalidasi...' : keyValidated ? '✓ Access Key Valid' : 'Validasi Access Key'}
                 </button>
                 <p className="text-xs text-purple-300">
-                  Tanyakan access key ke staff OASIS Barbershop
+                  Access key tersedia di kartu member atau hubungi staff OASIS Barbershop
                 </p>
               </div>
             </div>

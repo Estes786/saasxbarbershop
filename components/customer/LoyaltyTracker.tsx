@@ -22,8 +22,12 @@ export default function LoyaltyTracker() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log('💳 LoyaltyTracker mounted with profile:', profile);
     if (profile?.customer_phone) {
+      console.log('📱 Fetching loyalty data for phone:', profile.customer_phone);
       fetchLoyaltyData();
+    } else {
+      console.warn('⚠️ No customer_phone found in profile:', profile);
     }
   }, [profile]);
 

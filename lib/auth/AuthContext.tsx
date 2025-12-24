@@ -52,6 +52,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   async function loadUserProfile(userId: string, retries = 3) {
     try {
       console.log(`🔄 Loading profile for user: ${userId} (retries left: ${retries})`);
+      console.log(`👤 Current logged in user ID: ${userId}`);
       
       // CRITICAL FIX: Add delay before query to ensure RLS is ready
       await new Promise(resolve => setTimeout(resolve, 300));
@@ -372,10 +373,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   async function signOut() {
-    await supabase.auth.signOut();
+    // CRITICAL: Clear all state FIRST before Supabase signOut
     setUser(null);
     setProfile(null);
+    setLoading(false);
+    
+    // Then sign out from Supabase
+    await supabase.auth.signOut();
+    
+    // Force a hard refresh to clear any cached state
     router.push('/login');
+    router.refresh();
   }
 
   async function refreshProfile() {
