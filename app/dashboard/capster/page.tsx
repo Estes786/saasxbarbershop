@@ -1,48 +1,33 @@
-"use client";
+'use client';
 
 import { useAuth } from "@/lib/auth/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase/client";
-import { predictMultipleCustomers, getUpcomingVisits, getChurnRiskCustomers, type CustomerVisitHistory, type PredictionResult } from "@/lib/analytics/customerPrediction";
-import { format, parseISO } from "date-fns";
-import { id } from "date-fns/locale";
-
-interface CapsterStats {
-  total_customers_served: number;
-  total_revenue_generated: number;
-  rating: number;
-  is_available: boolean;
-}
+import { LogOut, Users, TrendingUp, Clock } from "lucide-react";
+import QueueManagement from "@/components/capster/QueueManagement";
+import QueueDisplay from "@/components/capster/QueueDisplay";
+import CustomerPredictionsPanel from "@/components/capster/CustomerPredictionsPanel";
+import { createClient } from "@/lib/supabase/client";
 
 export default function CapsterDashboard() {
-  const { user, profile, loading: authLoading } = useAuth();
+  const { user, profile, loading: authLoading, signOut } = useAuth();
   const router = useRouter();
+  const supabase = createClient();
+  
   const [loading, setLoading] = useState(true);
-  const [capsterStats, setCapsterStats] = useState<CapsterStats | null>(null);
-  const [upcomingVisits, setUpcomingVisits] = useState<PredictionResult[]>([]);
-  const [churnRiskCustomers, setChurnRiskCustomers] = useState<PredictionResult[]>([]);
-  const [todayBookings, setTodayBookings] = useState<any[]>([]);
   const [capsterId, setCapsterId] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'queue' | 'predictions'>('queue');
 
   useEffect(() => {
-    console.log('🔄 Dashboard effect triggered:', { authLoading, user: !!user, profile });
-    
     if (!authLoading) {
       if (!user) {
-        console.log('❌ No user, redirecting to login');
         router.push("/login/capster");
       } else if (!profile) {
-        console.warn('⚠️ User exists but profile not loaded yet, waiting...');
-        // Wait for profile to load
         const timeout = setTimeout(() => {
-          console.error('❌ Profile loading timeout, redirecting to login');
           router.push("/login/capster");
-        }, 5000); // 5 second timeout
-        
+        }, 5000);
         return () => clearTimeout(timeout);
       } else if (profile.role !== "capster") {
-        console.log(`❌ Wrong role: ${profile.role}, redirecting`);
         if (profile.role === 'admin') {
           router.push("/dashboard/admin");
         } else if (profile.role === 'barbershop') {
@@ -51,180 +36,85 @@ export default function CapsterDashboard() {
           router.push("/dashboard/customer");
         }
       } else {
-        console.log('✅ Capster authenticated, loading dashboard data');
-        loadDashboardData();
+        loadCapsterData();
       }
     }
   }, [user, profile, authLoading, router]);
 
-  async function loadDashboardData() {
+  async function loadCapsterData() {
     try {
       setLoading(true);
 
-      // 1. Load or create capster record if not exists
+      // Load or create capster record
       let currentCapsterId = profile?.capster_id;
-      
-      if (!currentCapsterId) {
-        console.log('⚠️ No capster_id found, attempting to create capster record...');
-        // Try to create capster record
-        const { data: capsterData, error: capsterError } = await supabase
-          .from("capsters")
-          .insert({
-            user_id: profile?.id,
-            capster_name: profile?.customer_name || profile?.email || 'Capster',
-            phone: profile?.customer_phone || null,
-            specialization: 'all',
-            is_available: true,
-          } as any)
-          .select()
-          .single();
 
-        if (!capsterError && capsterData) {
-          const newCapsterId = (capsterData as any).id as string;
-          currentCapsterId = newCapsterId;
-          setCapsterId(newCapsterId);
-          console.log('✅ Capster record created:', newCapsterId);
-          
-          // Update user profile with capster_id
-          // @ts-ignore - Supabase types not generated for capster_id field yet
-          const { error: updateError } = await (supabase as any)
-            .from("user_profiles")
-            .update({ capster_id: newCapsterId })
-            .eq("id", profile?.id);
-            
-          if (!updateError) {
-            console.log('✅ User profile updated with capster_id');
-          }
+      if (!currentCapsterId && profile?.id) {
+        // Try to find existing capster by user_id
+        const { data: existingCapster } = await supabase
+          .from("capsters")
+          .select("id")
+          .eq("user_id", profile.id)
+          .maybeSingle();
+
+        if (existingCapster && 'id' in existingCapster) {
+          currentCapsterId = (existingCapster as any).id;
         } else {
-          console.error('❌ Failed to create capster record:', capsterError);
-        }
-      } else if (currentCapsterId) {
-        setCapsterId(currentCapsterId);
-      }
+          // Create new capster record
+          const { data: newCapster, error } = await supabase
+            .from("capsters")
+            .insert({
+              user_id: profile?.id,
+              capster_name: profile?.customer_name || profile?.email || 'Capster',
+              phone: profile?.customer_phone || null,
+              specialization: 'all',
+              is_available: true,
+            } as any)
+            .select()
+            .maybeSingle();
 
-      // 2. Load capster stats (if capster_id exists)
-      if (currentCapsterId) {
-        // @ts-ignore - Supabase types not generated for capsters table yet
-        const { data: capsterData } = await supabase
-          .from("capsters")
-          .select("*")
-          .eq("id", currentCapsterId)
-          .single();
+          if (!error && newCapster) {
+            currentCapsterId = (newCapster as any).id;
 
-        if (capsterData) {
-          setCapsterStats({
-            total_customers_served: (capsterData as any).total_customers_served || 0,
-            total_revenue_generated: (capsterData as any).total_revenue_generated || 0,
-            rating: (capsterData as any).rating || 0,
-            is_available: (capsterData as any).is_available || false,
-          });
-        }
-      }
-
-      // 3. Load customer visit history for predictions
-      // @ts-ignore - Supabase types not generated for barbershop_customers table yet
-      const { data: customers } = await supabase
-        .from("barbershop_customers")
-        .select("*")
-        .gte("total_visits", 1)
-        .order("last_visit_date", { ascending: false });
-
-      if (customers) {
-        // Transform data for prediction algorithm
-        const customerHistory: CustomerVisitHistory[] = customers.map((c: any) => ({
-          customer_phone: c.customer_phone,
-          customer_name: c.customer_name,
-          total_visits: c.total_visits,
-          first_visit_date: c.first_visit_date,
-          last_visit_date: c.last_visit_date,
-          average_days_between_visits: c.average_days_between_visits,
-          visit_dates: [c.first_visit_date, c.last_visit_date].filter(Boolean),
-          total_revenue: c.total_revenue || 0,
-          average_atv: c.average_atv || 0,
-        }));
-
-        // Get predictions
-        const upcoming = getUpcomingVisits(customerHistory, 7);
-        const churnRisk = getChurnRiskCustomers(customerHistory);
-
-        setUpcomingVisits(upcoming);
-        setChurnRiskCustomers(churnRisk);
-      }
-
-      // 4. Load today's bookings (if capster_id exists)
-      if (currentCapsterId) {
-        const today = format(new Date(), "yyyy-MM-dd");
-        // @ts-ignore - Supabase types not generated for bookings table yet
-        const { data: bookings } = await supabase
-          .from("bookings")
-          .select(`
-            *,
-            service:service_catalog(service_name, base_price)
-          `)
-          .eq("booking_date", today)
-          .eq("capster_id", currentCapsterId)
-          .order("booking_time", { ascending: true });
-
-        if (bookings) {
-          setTodayBookings(bookings);
+            // Update user profile with capster_id
+            await (supabase as any)
+              .from("user_profiles")
+              .update({ capster_id: (newCapster as any).id })
+              .eq("id", profile?.id || '');
+          }
         }
       }
 
+      setCapsterId(currentCapsterId || null);
       setLoading(false);
-    } catch (error) {
-      console.error("Error loading dashboard data:", error);
+
+    } catch (err) {
+      console.error('Error loading capster data:', err);
       setLoading(false);
-    }
-  }
-
-  async function toggleAvailability() {
-    if (!capsterId) {
-      console.error('Cannot toggle availability: No capster_id');
-      return;
-    }
-
-    const newStatus = !capsterStats?.is_available;
-    
-    const { error } = await supabase
-      .from("capsters")
-      // @ts-ignore - Supabase types not generated for capsters table yet
-      .update({ is_available: newStatus })
-      .eq("id", capsterId);
-
-    if (!error) {
-      setCapsterStats({ ...capsterStats!, is_available: newStatus });
     }
   }
 
   if (authLoading || loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-green-50 via-teal-50 to-emerald-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 font-medium">Memuat dashboard capster...</p>
-          <p className="text-gray-500 text-sm mt-2">
-            {authLoading ? 'Memverifikasi autentikasi...' : 'Memuat data dashboard...'}
-          </p>
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-green-500 border-t-transparent mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading dashboard...</p>
         </div>
       </div>
     );
   }
-  
-  // CRITICAL: Check if profile is loaded before rendering dashboard
-  if (!profile) {
+
+  if (!capsterId) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50">
-        <div className="text-center max-w-md">
-          <div className="text-6xl mb-4">⚠️</div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Profile Tidak Ditemukan</h1>
-          <p className="text-gray-600 mb-6">
-            Kami tidak dapat memuat profil Anda. Silakan coba login kembali.
-          </p>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50">
+        <div className="bg-white rounded-xl shadow-lg p-8 max-w-md text-center">
+          <p className="text-red-600 font-semibold mb-4">Capster ID tidak ditemukan</p>
+          <p className="text-gray-600 mb-6">Silakan hubungi admin untuk setup akun capster Anda.</p>
           <button
-            onClick={() => router.push('/login/capster')}
-            className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all"
+            onClick={() => signOut()}
+            className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg"
           >
-            Kembali ke Login
+            Logout
           </button>
         </div>
       </div>
@@ -232,217 +122,78 @@ export default function CapsterDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-teal-50 to-emerald-50">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50">
       {/* Header */}
-      <div className="bg-gradient-to-r from-green-600 to-teal-600 text-white shadow-lg">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
+      <header className="bg-white shadow-sm border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold">Dashboard Capster</h1>
-              <p className="text-green-100 mt-1">Selamat datang, {profile?.customer_name || "Capster"}!</p>
+              <h1 className="text-2xl font-bold text-gray-900">
+                ✂️ Capster Dashboard
+              </h1>
+              <p className="text-sm text-gray-600">
+                Selamat datang, {profile?.customer_name || 'Capster'}!
+              </p>
             </div>
             <button
-              onClick={toggleAvailability}
-              className={`px-6 py-3 rounded-lg font-semibold transition-all ${
-                capsterStats?.is_available
-                  ? "bg-green-500 hover:bg-green-400"
-                  : "bg-gray-500 hover:bg-gray-400"
-              }`}
+              onClick={() => signOut()}
+              className="flex items-center space-x-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
             >
-              {capsterStats?.is_available ? "✅ Available" : "⏸️ Unavailable"}
+              <LogOut size={18} />
+              <span>Logout</span>
             </button>
           </div>
         </div>
-      </div>
+      </header>
 
-      <div className="container mx-auto px-4 py-8">
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Total Customers</p>
-                <p className="text-3xl font-bold text-green-600">
-                  {capsterStats?.total_customers_served || 0}
-                </p>
-              </div>
-              <div className="text-4xl">👥</div>
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Tab Navigation */}
+        <div className="flex space-x-2 mb-6 bg-white rounded-lg p-1 shadow-sm">
+          <button
+            onClick={() => setActiveTab('queue')}
+            className={`flex-1 py-3 px-4 rounded-md font-medium transition-all ${
+              activeTab === 'queue'
+                ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-md'
+                : 'text-gray-600 hover:bg-gray-50'
+            }`}
+          >
+            <div className="flex items-center justify-center space-x-2">
+              <Users size={18} />
+              <span>Queue Management</span>
             </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Total Revenue</p>
-                <p className="text-3xl font-bold text-green-600">
-                  Rp {(capsterStats?.total_revenue_generated || 0).toLocaleString("id-ID")}
-                </p>
-              </div>
-              <div className="text-4xl">💰</div>
+          </button>
+          
+          <button
+            onClick={() => setActiveTab('predictions')}
+            className={`flex-1 py-3 px-4 rounded-md font-medium transition-all ${
+              activeTab === 'predictions'
+                ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-md'
+                : 'text-gray-600 hover:bg-gray-50'
+            }`}
+          >
+            <div className="flex items-center justify-center space-x-2">
+              <TrendingUp size={18} />
+              <span>Customer Predictions</span>
             </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Rating</p>
-                <p className="text-3xl font-bold text-green-600">
-                  {capsterStats?.rating?.toFixed(1) || "0.0"} ⭐
-                </p>
-              </div>
-              <div className="text-4xl">⭐</div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Today's Bookings</p>
-                <p className="text-3xl font-bold text-green-600">{todayBookings.length}</p>
-              </div>
-              <div className="text-4xl">📅</div>
-            </div>
-          </div>
+          </button>
         </div>
 
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Upcoming Visits Prediction (CORE FEATURE!) */}
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-              <span className="text-2xl mr-2">🔮</span>
-              Prediksi Customer akan Datang
-            </h2>
-            <p className="text-sm text-gray-600 mb-4">
-              Customer yang diprediksi akan datang dalam 7 hari ke depan
-            </p>
-            <div className="space-y-3 max-h-96 overflow-y-auto">
-              {upcomingVisits.length === 0 ? (
-                <p className="text-gray-500 text-center py-4">Tidak ada prediksi customer saat ini</p>
-              ) : (
-                upcomingVisits.map((prediction, idx) => (
-                  <div
-                    key={prediction.customer_phone}
-                    className="border border-green-200 rounded-lg p-4 hover:shadow-md transition-shadow"
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <div>
-                        <p className="font-semibold text-gray-900">{prediction.customer_name}</p>
-                        <p className="text-sm text-gray-600">{prediction.customer_phone}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm font-medium text-green-600">
-                          {prediction.days_until_visit === 0
-                            ? "Hari ini!"
-                            : prediction.days_until_visit === 1
-                            ? "Besok"
-                            : `${prediction.days_until_visit} hari lagi`}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          Confidence: {prediction.confidence_score}%
-                        </p>
-                      </div>
-                    </div>
-                    <p className="text-xs text-gray-600 mt-2">{prediction.recommendation}</p>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-
-          {/* Churn Risk Customers */}
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-              <span className="text-2xl mr-2">⚠️</span>
-              Customer Berisiko Churn
-            </h2>
-            <p className="text-sm text-gray-600 mb-4">
-              Customer yang sudah lama tidak datang - butuh retention action!
-            </p>
-            <div className="space-y-3 max-h-96 overflow-y-auto">
-              {churnRiskCustomers.length === 0 ? (
-                <p className="text-gray-500 text-center py-4">Semua customer dalam kondisi baik! 💚</p>
-              ) : (
-                churnRiskCustomers.map((customer) => (
-                  <div
-                    key={customer.customer_phone}
-                    className="border border-red-200 rounded-lg p-4 hover:shadow-md transition-shadow bg-red-50"
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <div>
-                        <p className="font-semibold text-gray-900">{customer.customer_name}</p>
-                        <p className="text-sm text-gray-600">{customer.customer_phone}</p>
-                      </div>
-                      <div className="text-right">
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            customer.churn_risk === "high"
-                              ? "bg-red-100 text-red-800"
-                              : "bg-yellow-100 text-yellow-800"
-                          }`}
-                        >
-                          {customer.churn_risk === "high" ? "HIGH RISK" : "MEDIUM RISK"}
-                        </span>
-                      </div>
-                    </div>
-                    <p className="text-xs text-gray-700 mt-2">{customer.recommendation}</p>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-
-          {/* Today's Queue */}
-          <div className="bg-white rounded-xl shadow-md p-6 lg:col-span-2">
-            <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-              <span className="text-2xl mr-2">📋</span>
-              Jadwal Hari Ini
-            </h2>
-            {todayBookings.length === 0 ? (
-              <p className="text-gray-500 text-center py-8">Tidak ada booking hari ini</p>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-green-50">
-                    <tr>
-                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Waktu</th>
-                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Customer</th>
-                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Layanan</th>
-                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Status</th>
-                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Harga</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200">
-                    {todayBookings.map((booking) => (
-                      <tr key={booking.id} className="hover:bg-gray-50">
-                        <td className="px-4 py-3 text-sm">{booking.booking_time}</td>
-                        <td className="px-4 py-3 text-sm font-medium">{booking.customer_name}</td>
-                        <td className="px-4 py-3 text-sm">{booking.service?.service_name || "-"}</td>
-                        <td className="px-4 py-3 text-sm">
-                          <span
-                            className={`px-2 py-1 rounded-full text-xs font-medium ${
-                              booking.status === "confirmed"
-                                ? "bg-green-100 text-green-800"
-                                : booking.status === "completed"
-                                ? "bg-blue-100 text-blue-800"
-                                : "bg-yellow-100 text-yellow-800"
-                            }`}
-                          >
-                            {booking.status}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3 text-sm">
-                          Rp {(booking.service?.base_price || 0).toLocaleString("id-ID")}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
+        {/* Tab Content */}
+        <div>
+          {activeTab === 'queue' && <QueueManagement capsterId={capsterId} />}
+          {activeTab === 'predictions' && <CustomerPredictionsPanel />}
         </div>
-      </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-white border-t border-gray-200 mt-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-sm text-gray-600">
+          <p>© 2025 Barbershop Kedungrandu. All rights reserved.</p>
+          <p className="mt-1">Jl. Raya Kedungrandu, Patikraja, Banyumas</p>
+          <p className="mt-2 text-xs text-gray-500">Powered by OASIS BI PRO</p>
+        </div>
+      </footer>
     </div>
   );
 }

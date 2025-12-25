@@ -4,6 +4,8 @@ import { AuthGuard } from "@/components/shared/AuthGuard";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { LogOut, User, Gift, Calendar, History } from "lucide-react";
 import LoyaltyTracker from "@/components/customer/LoyaltyTracker";
+import BookingForm from "@/components/customer/BookingForm";
+import BookingHistory from "@/components/customer/BookingHistory";
 import { useState, useEffect } from "react";
 
 export default function CustomerDashboard() {
@@ -122,40 +124,26 @@ export default function CustomerDashboard() {
             )}
 
             {activeTab === 'booking' && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center">
-                <Calendar size={48} className="mx-auto text-purple-600 mb-4" />
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Sistem Booking</h3>
-                <p className="text-gray-600 mb-6">
-                  Fitur booking online sedang dalam pengembangan. Segera hadir!
-                </p>
-                <div className="bg-purple-50 rounded-lg p-4 text-left">
-                  <p className="text-sm text-gray-700 mb-2">🚀 Fitur yang akan datang:</p>
-                  <ul className="text-sm text-gray-600 space-y-1 ml-4">
-                    <li>• Pilih jadwal cukur online</li>
-                    <li>• Request capster favorit</li>
-                    <li>• Reminder otomatis via WhatsApp</li>
-                    <li>• Lihat estimasi antrian</li>
-                  </ul>
-                </div>
+              <div>
+                {profile?.customer_phone ? (
+                  <BookingForm customerPhone={profile.customer_phone} />
+                ) : (
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+                    <p className="text-yellow-800">Nomor HP tidak tersedia. Silakan lengkapi profil Anda.</p>
+                  </div>
+                )}
               </div>
             )}
 
             {activeTab === 'history' && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center">
-                <History size={48} className="mx-auto text-purple-600 mb-4" />
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Riwayat Kunjungan</h3>
-                <p className="text-gray-600 mb-6">
-                  Fitur riwayat kunjungan sedang dalam pengembangan. Segera hadir!
-                </p>
-                <div className="bg-purple-50 rounded-lg p-4 text-left">
-                  <p className="text-sm text-gray-700 mb-2">🚀 Fitur yang akan datang:</p>
-                  <ul className="text-sm text-gray-600 space-y-1 ml-4">
-                    <li>• Lihat semua transaksi Anda</li>
-                    <li>• Detail layanan yang pernah diambil</li>
-                    <li>• Track progress kupon</li>
-                    <li>• Download invoice</li>
-                  </ul>
-                </div>
+              <div>
+                {profile?.customer_phone ? (
+                  <BookingHistory customerPhone={profile.customer_phone} />
+                ) : (
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+                    <p className="text-yellow-800">Nomor HP tidak tersedia. Silakan lengkapi profil Anda.</p>
+                  </div>
+                )}
               </div>
             )}
           </div>
