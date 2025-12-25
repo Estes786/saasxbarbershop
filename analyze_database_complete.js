@@ -1,157 +1,158 @@
 #!/usr/bin/env node
 
-const SUPABASE_URL = 'https://qwqmhvwqeynnyxaecqzw.supabase.co';
-const SUPABASE_SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF3cW1odndxZXlubnl4YWVjcXp3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NTk0NTYxOCwiZXhwIjoyMDgxNTIxNjE4fQ.pBkPeldz1NW0qCI17RHnCWVaGqmCCbrvmuWlo2skpbk';
+require('dotenv').config();
+const { createClient } = require('@supabase/supabase-js');
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false
+  }
+});
 
 async function analyzeDatabase() {
-  console.log('🔍 Analyzing Supabase Database Current State...\n');
+  console.log('\n🔍 ANALYZING SUPABASE DATABASE...\n');
+  console.log('========================================');
   
   try {
-    // Check tables
-    const tablesResp = await fetch(`${SUPABASE_URL}/rest/v1/?apikey=${SUPABASE_SERVICE_KEY}`, {
-      headers: {
-        'apikey': SUPABASE_SERVICE_KEY,
-        'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`
-      }
-    });
+    // 1. Check barbershop_customers schema
+    console.log('\n📊 TABLE: barbershop_customers');
+    console.log('----------------------------------------');
     
-    if (!tablesResp.ok) {
-      console.error('❌ Failed to connect to Supabase');
-      console.error('Response:', await tablesResp.text());
-      return;
-    }
+    const { data: customers, error: custError } = await supabase
+      .from('barbershop_customers')
+      .select('*')
+      .limit(5);
     
-    console.log('✅ Connected to Supabase successfully!\n');
-    
-    // Check existing tables
-    const tables = [
-      'user_profiles',
-      'barbershop_customers', 
-      'barbershop_transactions',
-      'bookings',
-      'barbershop_analytics_daily',
-      'barbershop_actionable_insights',
-      'barbershop_customer_reviews',
-      'service_catalog',
-      'capsters',
-      'booking_slots',
-      'customer_loyalty',
-      'customer_reviews'
-    ];
-    
-    console.log('📊 CHECKING TABLES:\n');
-    for (const table of tables) {
-      try {
-        const resp = await fetch(
-          `${SUPABASE_URL}/rest/v1/${table}?select=count`, 
-          {
-            method: 'HEAD',
-            headers: {
-              'apikey': SUPABASE_SERVICE_KEY,
-              'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
-              'Prefer': 'count=exact'
-            }
-          }
-        );
+    if (custError) {
+      console.log('❌ Error:', custError.message);
+    } else {
+      console.log('✅ Total records:', customers.length > 0 ? 'Found' : 'Empty');
+      
+      if (customers.length > 0) {
+        console.log('\n🔑 Schema columns:');
+        Object.keys(customers[0]).forEach(key => {
+          console.log(`   - ${key}: ${typeof customers[0][key]}`);
+        });
         
-        if (resp.ok) {
-          const count = resp.headers.get('content-range')?.split('/')[1] || '0';
-          console.log(`  ✅ ${table.padEnd(35)} - ${count} rows`);
-        } else {
-          console.log(`  ❌ ${table.padEnd(35)} - NOT EXISTS`);
+        // Check if user_id column exists
+        const hasUserId = customers[0].hasOwnProperty('user_id');
+        console.log(`\n🎯 user_id column: ${hasUserId ? '✅ EXISTS' : '❌ MISSING'}`);
+        
+        if (hasUserId) {
+          const linkedCount = customers.filter(c => c.user_id !== null).length;
+          const orphanedCount = customers.filter(c => c.user_id === null).length;
+          console.log(`   - Linked to users: ${linkedCount}`);
+          console.log(`   - Orphaned records: ${orphanedCount}`);
         }
-      } catch (err) {
-        console.log(`  ❌ ${table.padEnd(35)} - ERROR: ${err.message}`);
       }
     }
     
-    // Check user_profiles structure
-    console.log('\n📋 USER_PROFILES SAMPLE (first 5):');
-    const profilesResp = await fetch(
-      `${SUPABASE_URL}/rest/v1/user_profiles?select=id,email,full_name,role&limit=5`,
-      {
-        headers: {
-          'apikey': SUPABASE_SERVICE_KEY,
-          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`
-        }
-      }
-    );
+    // 2. Check user_profiles
+    console.log('\n\n📊 TABLE: user_profiles');
+    console.log('----------------------------------------');
     
-    if (profilesResp.ok) {
-      const profiles = await profilesResp.json();
-      console.table(profiles);
-    }
+    const { data: profiles, error: profError } = await supabase
+      .from('user_profiles')
+      .select('id, email, role, customer_phone')
+      .limit(10);
     
-    // Check bookings
-    console.log('\n📅 BOOKINGS SAMPLE (first 5):');
-    const bookingsResp = await fetch(
-      `${SUPABASE_URL}/rest/v1/bookings?select=*&limit=5`,
-      {
-        headers: {
-          'apikey': SUPABASE_SERVICE_KEY,
-          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`
-        }
-      }
-    );
-    
-    if (bookingsResp.ok) {
-      const bookings = await bookingsResp.json();
-      console.table(bookings);
+    if (profError) {
+      console.log('❌ Error:', profError.message);
     } else {
-      console.log('  ⚠️ Bookings table not accessible or empty');
+      console.log(`✅ Total profiles: ${profiles.length}`);
+      
+      const roleCount = {};
+      profiles.forEach(p => {
+        roleCount[p.role] = (roleCount[p.role] || 0) + 1;
+      });
+      
+      console.log('\n📋 Role distribution:');
+      Object.entries(roleCount).forEach(([role, count]) => {
+        console.log(`   - ${role}: ${count}`);
+      });
     }
     
-    // Check service_catalog
-    console.log('\n💇 SERVICE_CATALOG:');
-    const servicesResp = await fetch(
-      `${SUPABASE_URL}/rest/v1/service_catalog?select=*`,
-      {
-        headers: {
-          'apikey': SUPABASE_SERVICE_KEY,
-          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`
-        }
-      }
-    );
+    // 3. Check RLS policies
+    console.log('\n\n🔒 RLS POLICIES: barbershop_customers');
+    console.log('----------------------------------------');
     
-    if (servicesResp.ok) {
-      const services = await servicesResp.json();
-      if (services.length > 0) {
-        console.table(services);
+    const { data: policies, error: polError } = await supabase
+      .from('pg_policies')
+      .select('policyname, cmd, qual')
+      .eq('tablename', 'barbershop_customers');
+    
+    if (polError) {
+      console.log('⚠️  Could not fetch policies (may need superuser)');
+    } else if (policies && policies.length > 0) {
+      console.log(`✅ Found ${policies.length} policies:`);
+      policies.forEach(p => {
+        console.log(`   - ${p.policyname} (${p.cmd})`);
+      });
+    } else {
+      console.log('⚠️  No policies found');
+    }
+    
+    // 4. Test query with user_id
+    console.log('\n\n🧪 TEST: Query by user_id');
+    console.log('----------------------------------------');
+    
+    if (profiles && profiles.length > 0) {
+      const testUserId = profiles[0].id;
+      console.log(`Testing with user_id: ${testUserId}`);
+      
+      const { data: testData, error: testError } = await supabase
+        .from('barbershop_customers')
+        .select('*')
+        .eq('user_id', testUserId)
+        .maybeSingle();
+      
+      if (testError) {
+        console.log('❌ Error:', testError.message);
+      } else if (testData) {
+        console.log('✅ Query successful - found customer record');
       } else {
-        console.log('  ⚠️ Service catalog is empty - needs seeding');
+        console.log('⚠️  No customer record for this user_id');
       }
-    } else {
-      console.log('  ❌ Service catalog table does not exist');
     }
     
-    // Check capsters
-    console.log('\n✂️ CAPSTERS:');
-    const capstersResp = await fetch(
-      `${SUPABASE_URL}/rest/v1/capsters?select=*`,
-      {
-        headers: {
-          'apikey': SUPABASE_SERVICE_KEY,
-          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`
-        }
-      }
-    );
+    // 5. Summary
+    console.log('\n\n========================================');
+    console.log('📋 SUMMARY');
+    console.log('========================================');
     
-    if (capstersResp.ok) {
-      const capsters = await capstersResp.json();
-      if (capsters.length > 0) {
-        console.table(capsters);
+    if (customers && customers.length > 0) {
+      const hasUserId = customers[0].hasOwnProperty('user_id');
+      
+      if (hasUserId) {
+        console.log('✅ user_id column EXISTS');
+        console.log('✅ Schema ready for 1 USER = 1 DASHBOARD');
+        console.log('');
+        console.log('📝 Next steps:');
+        console.log('   1. Verify RLS policies enforce user_id');
+        console.log('   2. Update application code to use user_id');
+        console.log('   3. Test with multiple users');
       } else {
-        console.log('  ⚠️ Capsters table is empty - needs seeding');
+        console.log('❌ user_id column MISSING');
+        console.log('⚠️  Need to apply FIX_1_USER_1_DASHBOARD_ISOLATED_DATA.sql');
+        console.log('');
+        console.log('📝 Action required:');
+        console.log('   Run SQL fix in Supabase SQL Editor');
       }
     } else {
-      console.log('  ❌ Capsters table does not exist');
+      console.log('⚠️  No customer records found');
     }
     
-    console.log('\n✨ Database analysis complete!\n');
+    console.log('========================================\n');
     
   } catch (error) {
-    console.error('❌ Error analyzing database:', error.message);
+    console.error('\n❌ Fatal error:', error.message);
+    console.error(error);
   }
 }
 
+// Run analysis
 analyzeDatabase();
