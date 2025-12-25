@@ -1,63 +1,103 @@
-const { createClient } = require('@supabase/supabase-js');
+require('dotenv').config({ path: '.env.local' })
+const { createClient } = require('@supabase/supabase-js')
 
-const supabaseUrl = 'https://qwqmhvwqeynnyxaecqzw.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF3cW1odndxZXlubnl4YWVjcXp3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NTk0NTYxOCwiZXhwIjoyMDgxNTIxNjE4fQ.pBkPeldz1NW0qCI17RHnCWVaGqmCCbrvmuWlo2skpbk';
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+console.log('Using Supabase URL:', supabaseUrl)
 
-async function analyzeDatabase() {
-  console.log('🔍 ANALYZING SUPABASE DATABASE STATE...\n');
+const supabase = createClient(supabaseUrl, supabaseKey, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false
+  }
+})
+
+async function analyzeSupabaseState() {
+  console.log('\n🔍 ANALYZING SUPABASE STATE...\n')
+
+  // Check tables
+  console.log('📊 CHECKING EXISTING TABLES:\n')
   
-  // Check all tables
-  const tables = [
+  const tablesToCheck = [
     'user_profiles',
-    'barbershop_transactions', 
     'barbershop_customers',
-    'bookings',
+    'barbershop_transactions',
     'barbershop_analytics_daily',
-    'barbershop_actionable_leads',
-    'barbershop_campaign_tracking',
+    'barbershop_actionable_data',
+    'bookings',
     'service_catalog',
     'capsters',
     'booking_slots',
     'customer_loyalty',
-    'customer_reviews'
-  ];
+    'customer_reviews',
+    'access_keys'
+  ]
   
-  for (const table of tables) {
-    try {
-      const { data, error, count } = await supabase
-        .from(table)
-        .select('*', { count: 'exact', head: false });
-      
-      if (error) {
-        console.log(`❌ ${table}: Table not found or error - ${error.message}`);
-      } else {
-        console.log(`✅ ${table}: ${count} rows`);
-        if (data && data.length > 0) {
-          console.log(`   Sample: ${JSON.stringify(data[0], null, 2).substring(0, 200)}...`);
-        }
-      }
-    } catch (e) {
-      console.log(`❌ ${table}: Error - ${e.message}`);
+  const existingTables = []
+  const missingTables = []
+  
+  for (const table of tablesToCheck) {
+    const { count, error } = await supabase
+      .from(table)
+      .select('*', { count: 'exact', head: true })
+    
+    if (!error) {
+      console.log(`✅ ${table}: ${count} records`)
+      existingTables.push(table)
+    } else {
+      console.log(`❌ ${table}: NOT FOUND (${error.message})`)
+      missingTables.push(table)
     }
   }
   
-  // Check user roles distribution
-  console.log('\n📊 USER ROLES DISTRIBUTION:');
-  const { data: profiles } = await supabase
-    .from('user_profiles')
-    .select('role');
+  // Check auth users
+  console.log('\n👥 CHECKING AUTH USERS:\n')
+  const { data: { users }, error: usersError } = await supabase.auth.admin.listUsers()
   
-  if (profiles) {
-    const roles = profiles.reduce((acc, p) => {
-      acc[p.role] = (acc[p.role] || 0) + 1;
-      return acc;
-    }, {});
-    console.log(roles);
+  if (!usersError && users) {
+    console.log(`Total auth users: ${users.length}`)
+    
+    // Count by role
+    const { data: profiles } = await supabase
+      .from('user_profiles')
+      .select('role')
+    
+    if (profiles) {
+      const roleCounts = profiles.reduce((acc, p) => {
+        acc[p.role] = (acc[p.role] || 0) + 1
+        return acc
+      }, {})
+      
+      console.log('Role distribution:', roleCounts)
+    }
   }
   
-  console.log('\n✅ Analysis complete!');
+  // Check access keys
+  console.log('\n🔑 CHECKING ACCESS KEYS:\n')
+  const { data: accessKeys, error: keysError } = await supabase
+    .from('access_keys')
+    .select('*')
+  
+  if (!keysError && accessKeys) {
+    console.log(`Total access keys: ${accessKeys.length}`)
+    accessKeys.forEach(key => {
+      console.log(`  - ${key.key_name} (${key.role_type}): ${key.is_active ? '✅ Active' : '❌ Inactive'}`)
+    })
+  } else {
+    console.log('⚠️  Access keys table not found or empty')
+  }
+  
+  console.log('\n📋 SUMMARY:\n')
+  console.log(`✅ Existing tables: ${existingTables.length}/${tablesToCheck.length}`)
+  console.log(`❌ Missing tables: ${missingTables.length}`)
+  
+  if (missingTables.length > 0) {
+    console.log('\n🔥 TABLES TO CREATE:')
+    missingTables.forEach(table => console.log(`  - ${table}`))
+  }
+  
+  console.log('\n✨ ANALYSIS COMPLETE!\n')
 }
 
-analyzeDatabase().catch(console.error);
+analyzeSupabaseState().catch(console.error)
