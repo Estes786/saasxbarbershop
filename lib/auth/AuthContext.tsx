@@ -244,41 +244,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       console.log('✅ Auth user created:', authData.user.id);
 
-      // 2. If customer role and phone provided, create customer record FIRST (foreign key constraint)
-      if (role === 'customer' && customerData?.phone) {
-        console.log('📞 Checking for existing customer...');
-        const { data: existingCustomer } = await supabase
-          .from("barbershop_customers")
-          .select("customer_phone")
-          .eq("customer_phone", customerData.phone)
-          .single();
-
-        if (!existingCustomer) {
-          console.log('➕ Creating new customer record...');
-          // Create new customer record BEFORE profile
-          const { error: customerError } = await supabase.from("barbershop_customers").insert({
-            customer_phone: customerData.phone,
-            customer_name: customerData.name || email,
-            total_visits: 0,
-            total_revenue: 0,
-            average_atv: 0,
-            lifetime_value: 0,
-            coupon_count: 0,
-            coupon_eligible: false,
-            google_review_given: false,
-            churn_risk_score: 0,
-            first_visit_date: new Date().toISOString(),
-          } as any);
-
-          if (customerError) {
-            console.error("❌ Error creating customer:", customerError);
-            return { error: customerError };
-          }
-          console.log('✅ Customer record created');
-        } else {
-          console.log('✅ Customer already exists');
-        }
-      }
+      // 2. Customer record will be auto-created by trigger after profile creation
+      // No need to manually create customer record here
 
       // 3. Create user profile (after customer record)
       console.log('👤 Creating user profile...');
