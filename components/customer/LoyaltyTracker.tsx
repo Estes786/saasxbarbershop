@@ -17,31 +17,35 @@ interface LoyaltyData {
 }
 
 export default function LoyaltyTracker() {
-  const { profile } = useAuth();
+  const { profile, user } = useAuth();
   const [loyaltyData, setLoyaltyData] = useState<LoyaltyData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log('💳 LoyaltyTracker mounted with profile:', profile);
-    if (profile?.customer_phone) {
-      console.log('📱 Fetching loyalty data for phone:', profile.customer_phone);
+    console.log('💳 LoyaltyTracker mounted');
+    console.log('👤 User ID:', user?.id);
+    console.log('📋 Profile:', profile);
+    if (user?.id) {
+      console.log('🔍 Fetching loyalty data for user_id:', user.id);
       fetchLoyaltyData();
     } else {
-      console.warn('⚠️ No customer_phone found in profile:', profile);
+      console.warn('⚠️ No user ID found');
     }
-  }, [profile]);
+  }, [user, profile]);
 
   async function fetchLoyaltyData() {
     try {
-      if (!profile?.customer_phone) {
+      if (!user?.id) {
+        console.error('❌ Cannot fetch loyalty data: No user ID');
         setLoading(false);
         return;
       }
 
+      console.log('📡 Querying barbershop_customers for user_id:', user.id);
       const { data: customer, error } = await supabase
         .from("barbershop_customers")
         .select("*")
-        .eq("customer_phone", profile.customer_phone)
+        .eq("user_id", user.id)
         .single();
 
       if (error) throw error;
