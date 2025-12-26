@@ -7,6 +7,7 @@ import KHLTracker from "@/components/barbershop/KHLTracker";
 import ActionableLeads from "@/components/barbershop/ActionableLeads";
 import RevenueAnalytics from "@/components/barbershop/RevenueAnalytics";
 import TransactionsManager from "@/components/barbershop/TransactionsManager";
+import BookingMonitor from "@/components/admin/BookingMonitor";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { LogOut, LayoutDashboard } from "lucide-react";
 
@@ -53,6 +54,11 @@ export default function AdminDashboard() {
             {/* Main Content */}
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
               <div className="space-y-8">
+                {/* Booking Monitor - NEW! */}
+                <section>
+                  <BookingMonitor />
+                </section>
+
                 {/* KHL Progress Tracker */}
                 <section>
                   <KHLTracker />

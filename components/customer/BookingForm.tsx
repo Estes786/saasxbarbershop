@@ -15,8 +15,12 @@ interface Service {
 
 interface Capster {
   id: string;
+  capster_id: string;
   capster_name: string;
-  specialization: string;
+  full_name: string;
+  customer_name: string;
+  email: string;
+  specialization?: string;
 }
 
 interface BookingFormProps {
@@ -63,14 +67,27 @@ export default function BookingForm({ customerPhone }: BookingFormProps) {
 
   async function loadCapsters() {
     try {
+      // Load capsters from user_profiles table
       const { data, error } = await supabase
-        .from('capsters')
+        .from('user_profiles')
         .select('*')
-        .eq('is_active', true)
-        .order('capster_name');
+        .eq('role', 'capster')
+        .order('customer_name');
 
       if (error) throw error;
-      setCapsters(data || []);
+      
+      // Transform data to match Capster interface
+      const transformedData = (data || []).map((profile: any) => ({
+        id: profile.id,
+        capster_id: profile.capster_id || profile.id,
+        capster_name: profile.full_name || profile.customer_name || profile.email,
+        full_name: profile.full_name || '',
+        customer_name: profile.customer_name || '',
+        email: profile.email,
+        specialization: 'General Haircut' // Default specialization
+      }));
+      
+      setCapsters(transformedData);
     } catch (err: any) {
       console.error('Error loading capsters:', err);
       showToast('error', 'Gagal memuat capster');
@@ -189,13 +206,16 @@ export default function BookingForm({ customerPhone }: BookingFormProps) {
           >
             <option value="">Pilih capster...</option>
             {capsters.map((capster) => (
-              <option key={capster.id} value={capster.id}>
-                {capster.capster_name} - {capster.specialization}
+              <option key={capster.id} value={capster.capster_id}>
+                {capster.capster_name}
               </option>
             ))}
           </select>
           {selectedCapster && (
-            <p className="text-sm text-gray-500 mt-1">Spesialisasi: {selectedCapster.specialization}</p>
+            <p className="text-sm text-gray-500 mt-1">
+              Capster: {selectedCapster.capster_name} 
+              {selectedCapster.specialization && ` - ${selectedCapster.specialization}`}
+            </p>
           )}
         </div>
 

@@ -55,15 +55,49 @@ export default function QueueManagement({ capsterId }: QueueManagementProps) {
     try {
       setLoading(true);
 
+      // Get today's date range
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+
+      // Load bookings directly from bookings table
       const { data, error } = await supabase
-        .from('booking_queue_today')
-        .select('*')
+        .from('bookings')
+        .select(`
+          *,
+          service_catalog (
+            service_name,
+            duration_minutes
+          )
+        `)
         .eq('capster_id', capsterId)
-        .order('queue_position');
+        .gte('booking_date', today.toISOString())
+        .lt('booking_date', tomorrow.toISOString())
+        .in('status', ['pending', 'confirmed', 'in-progress', 'completed'])
+        .order('booking_date');
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error loading bookings:', error);
+        throw error;
+      }
 
-      const queueData = (data as any) || [];
+      // Transform data to match QueueItem interface
+      const queueData = (data || []).map((booking: any, index: number) => ({
+        id: booking.id,
+        customer_phone: booking.customer_phone || '',
+        customer_name: booking.customer_name || booking.customer_phone || 'Customer',
+        service_name: booking.service_catalog?.service_name || 'Service',
+        booking_date: booking.booking_date,
+        queue_number: booking.queue_number || (index + 1),
+        queue_position: index + 1,
+        status: booking.status,
+        estimated_start_time: booking.booking_date,
+        estimated_duration_minutes: booking.service_catalog?.duration_minutes || 30,
+        customer_notes: booking.customer_notes || '',
+        service_duration: booking.service_catalog?.duration_minutes || 30
+      }));
+
       setQueue(queueData);
       
       // Find currently serving customer
@@ -72,7 +106,7 @@ export default function QueueManagement({ capsterId }: QueueManagementProps) {
 
     } catch (err: any) {
       console.error('Error loading queue:', err);
-      showToast('error', 'Gagal memuat antrian');
+      showToast('error', 'Gagal memuat antrian: ' + err.message);
     } finally {
       setLoading(false);
     }
