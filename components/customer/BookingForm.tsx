@@ -68,11 +68,10 @@ export default function BookingForm({ customerPhone, customerName }: BookingForm
 
   async function loadCapsters() {
     try {
-      // Load capsters from capsters table directly
-      // FIXED: Changed is_active to is_available (correct database field name)
+      // Load capsters from capsters table directly with optimized query
       const { data, error } = await supabase
         .from('capsters')
-        .select('*')
+        .select('id, capster_name, specialization')
         .eq('is_available', true)
         .order('capster_name');
 
@@ -81,23 +80,21 @@ export default function BookingForm({ customerPhone, customerName }: BookingForm
         throw error;
       }
       
-      console.log('Loaded capsters:', data);
-      
-      // Transform data to match Capster interface
+      // Transform data to match Capster interface (optimized)
       const transformedData = (data || []).map((capster: any) => ({
         id: capster.id,
-        capster_id: capster.id, // Use capster table ID
+        capster_id: capster.id,
         capster_name: capster.capster_name,
         full_name: capster.capster_name,
         customer_name: capster.capster_name,
-        email: capster.email || '',
-        specialization: capster.specialization || 'General Haircut'
+        email: '',
+        specialization: capster.specialization || 'all'
       }));
       
       setCapsters(transformedData);
     } catch (err: any) {
       console.error('Error loading capsters:', err);
-      showToast('error', 'Gagal memuat capster: ' + err.message);
+      showToast('error', 'Gagal memuat capster');
     }
   }
 
