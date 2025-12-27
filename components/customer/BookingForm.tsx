@@ -25,9 +25,10 @@ interface Capster {
 
 interface BookingFormProps {
   customerPhone: string;
+  customerName?: string;
 }
 
-export default function BookingForm({ customerPhone }: BookingFormProps) {
+export default function BookingForm({ customerPhone, customerName }: BookingFormProps) {
   const { showToast } = useToast();
   const supabase = createClient();
 
@@ -68,10 +69,11 @@ export default function BookingForm({ customerPhone }: BookingFormProps) {
   async function loadCapsters() {
     try {
       // Load capsters from capsters table directly
+      // FIXED: Changed is_active to is_available (correct database field name)
       const { data, error } = await supabase
         .from('capsters')
         .select('*')
-        .eq('is_active', true)
+        .eq('is_available', true)
         .order('capster_name');
 
       if (error) {
@@ -112,13 +114,22 @@ export default function BookingForm({ customerPhone }: BookingFormProps) {
     try {
       const bookingDateTime = new Date(`${formData.booking_date}T${formData.booking_time}`);
 
+      // Determine service tier based on selected service price
+      const basePrice = selectedService?.base_price || 0;
+      const serviceTier = basePrice >= 50000 ? 'Premium' 
+                        : basePrice >= 25000 ? 'Mastery'
+                        : 'Basic';
+
       const { data, error } = await (supabase as any)
         .from('bookings')
         .insert({
           customer_phone: customerPhone,
+          customer_name: customerName || 'Guest',
           service_id: formData.service_id,
           capster_id: formData.capster_id,
           booking_date: bookingDateTime.toISOString(),
+          booking_time: formData.booking_time,
+          service_tier: serviceTier,
           customer_notes: formData.customer_notes,
           status: 'pending',
           booking_source: 'online'

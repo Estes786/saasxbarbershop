@@ -126,7 +126,10 @@ export default function CustomerDashboard() {
             {activeTab === 'booking' && (
               <div>
                 {profile?.customer_phone ? (
-                  <BookingForm customerPhone={profile.customer_phone} />
+                  <BookingForm 
+                    customerPhone={profile.customer_phone} 
+                    customerName={profile.customer_name}
+                  />
                 ) : (
                   <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
                     <p className="text-yellow-800">Nomor HP tidak tersedia. Silakan lengkapi profil Anda.</p>
