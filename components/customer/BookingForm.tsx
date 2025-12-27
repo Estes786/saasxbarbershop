@@ -67,30 +67,35 @@ export default function BookingForm({ customerPhone }: BookingFormProps) {
 
   async function loadCapsters() {
     try {
-      // Load capsters from user_profiles table
+      // Load capsters from capsters table directly
       const { data, error } = await supabase
-        .from('user_profiles')
+        .from('capsters')
         .select('*')
-        .eq('role', 'capster')
-        .order('customer_name');
+        .eq('is_active', true)
+        .order('capster_name');
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error from capsters table:', error);
+        throw error;
+      }
+      
+      console.log('Loaded capsters:', data);
       
       // Transform data to match Capster interface
-      const transformedData = (data || []).map((profile: any) => ({
-        id: profile.id,
-        capster_id: profile.capster_id || profile.id,
-        capster_name: profile.full_name || profile.customer_name || profile.email,
-        full_name: profile.full_name || '',
-        customer_name: profile.customer_name || '',
-        email: profile.email,
-        specialization: 'General Haircut' // Default specialization
+      const transformedData = (data || []).map((capster: any) => ({
+        id: capster.id,
+        capster_id: capster.id, // Use capster table ID
+        capster_name: capster.capster_name,
+        full_name: capster.capster_name,
+        customer_name: capster.capster_name,
+        email: capster.email || '',
+        specialization: capster.specialization || 'General Haircut'
       }));
       
       setCapsters(transformedData);
     } catch (err: any) {
       console.error('Error loading capsters:', err);
-      showToast('error', 'Gagal memuat capster');
+      showToast('error', 'Gagal memuat capster: ' + err.message);
     }
   }
 
@@ -205,11 +210,15 @@ export default function BookingForm({ customerPhone }: BookingFormProps) {
             required
           >
             <option value="">Pilih capster...</option>
-            {capsters.map((capster) => (
-              <option key={capster.id} value={capster.capster_id}>
-                {capster.capster_name}
-              </option>
-            ))}
+            {capsters.length === 0 ? (
+              <option disabled>Loading capsters...</option>
+            ) : (
+              capsters.map((capster) => (
+                <option key={capster.id} value={capster.id}>
+                  {capster.capster_name} {capster.specialization && `- ${capster.specialization}`}
+                </option>
+              ))
+            )}
           </select>
           {selectedCapster && (
             <p className="text-sm text-gray-500 mt-1">

@@ -3,10 +3,10 @@ module.exports = {
     {
       name: 'saasxbarbershop',
       script: 'npm',
-      args: 'run dev',
-      cwd: '/home/user/saasxbarbershop',
+      args: 'run start',
+      cwd: '/home/user/webapp',
       env: {
-        NODE_ENV: 'development',
+        NODE_ENV: 'production',
         PORT: 3000
       },
       watch: false,
