@@ -53,3 +53,9 @@ logs/
 # IDE
 .vscode/
 .idea/
+# Secret Keys - DO NOT COMMIT
+docs/06_secret_keys/credentials.md
+docs/06_secret_keys/*.md
+.env
+.env.local
+.env.*.local
