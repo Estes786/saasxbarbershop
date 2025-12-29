@@ -126,7 +126,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Main Heading */}
+            {/* Main Heading - Fresha-inspired */}
             <h1 className="text-5xl md:text-7xl font-bold text-center mb-6 leading-tight">
               <span className="bg-gradient-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-transparent">
                 Sekali Cocok,
@@ -135,37 +135,55 @@ export default function Home() {
               <span className="text-white">Pengen Balik Lagi</span>
             </h1>
 
-            {/* Subtitle */}
-            <p className="text-xl md:text-2xl text-purple-200 text-center mb-12 max-w-3xl mx-auto leading-relaxed">
-              Platform SaaS untuk barbershop yang bikin pelanggan loyal. Booking online, analytics cerdas, dan prediksi customer intelligence.
+            {/* Subtitle - More engaging */}
+            <p className="text-xl md:text-2xl text-purple-200 text-center mb-8 max-w-3xl mx-auto leading-relaxed">
+              Platform barbershop management yang bikin pelanggan loyal. 
+              <br />
+              <span className="text-purple-300 font-semibold">Booking mudah • Queue real-time • Analytics cerdas</span>
             </p>
 
-            {/* 3-ROLE NAVIGATION SECTION */}
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-center text-white mb-2">Pilih Siapa Anda</h2>
-              <p className="text-purple-200 text-center mb-6">Customer | Capster | Owner - Semua punya dashboard sendiri</p>
+            {/* Social Proof */}
+            <div className="flex justify-center items-center space-x-8 mb-12 text-purple-300">
+              <div className="flex items-center space-x-2">
+                <CheckCircle2 size={20} className="text-green-400" />
+                <span className="text-sm">Free to start</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <CheckCircle2 size={20} className="text-green-400" />
+                <span className="text-sm">Setup in 10 mins</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <CheckCircle2 size={20} className="text-green-400" />
+                <span className="text-sm">No credit card</span>
+              </div>
             </div>
 
-            {/* CTA Buttons - 3 Roles */}
+            {/* 3-ROLE NAVIGATION SECTION - Fresha-inspired */}
+            <div className="mb-8">
+              <h2 className="text-3xl font-bold text-center text-white mb-3">Siapa Anda?</h2>
+              <p className="text-purple-200 text-center mb-6 text-lg">Pilih role Anda untuk mulai menggunakan BALIK.LAGI</p>
+            </div>
+
+            {/* CTA Buttons - 3 Roles - Enhanced Fresha style */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 justify-center mb-16 max-w-5xl mx-auto">
               {/* Customer Role */}
-              <div className="group bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl p-6 hover:shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105">
+              <div className="group bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl p-8 hover:bg-white/15 hover:border-purple-400/50 hover:shadow-2xl hover:shadow-purple-500/30 transition-all duration-500 hover:-translate-y-2">
                 <div className="flex flex-col items-center text-white space-y-4">
-                  <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
-                    <Users size={32} />
+                  <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-blue-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                    <Users size={36} />
                   </div>
-                  <h3 className="text-xl font-bold">Customer</h3>
-                  <p className="text-sm text-purple-100 text-center">Booking mudah, loyalty points, riwayat lengkap</p>
-                  <div className="flex flex-col w-full space-y-2 mt-4">
+                  <h3 className="text-2xl font-bold">Customer</h3>
+                  <p className="text-sm text-purple-100 text-center leading-relaxed">Booking mudah, loyalty points otomatis, riwayat lengkap semua kunjungan Anda</p>
+                  <div className="flex flex-col w-full space-y-3 mt-6">
                     <Link
                       href="/register"
-                      className="w-full py-2 bg-white text-purple-600 rounded-lg font-semibold hover:bg-purple-50 transition-all duration-300 text-center"
+                      className="w-full py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl font-semibold hover:shadow-xl hover:shadow-purple-500/50 transition-all duration-300 text-center transform hover:scale-105"
                     >
-                      Register
+                      Register Gratis
                     </Link>
                     <Link
                       href="/login"
-                      className="w-full py-2 bg-white/10 border border-white/30 text-white rounded-lg hover:bg-white/20 transition-all duration-300 text-center"
+                      className="w-full py-3 bg-white/10 border border-white/30 text-white rounded-xl hover:bg-white/20 transition-all duration-300 text-center font-medium"
                     >
                       Login
                     </Link>
@@ -174,23 +192,23 @@ export default function Home() {
               </div>
 
               {/* Capster Role */}
-              <div className="group bg-gradient-to-br from-green-600 to-teal-600 rounded-2xl p-6 hover:shadow-2xl hover:shadow-green-500/50 transition-all duration-300 hover:scale-105">
+              <div className="group bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl p-8 hover:bg-white/15 hover:border-green-400/50 hover:shadow-2xl hover:shadow-green-500/30 transition-all duration-500 hover:-translate-y-2">
                 <div className="flex flex-col items-center text-white space-y-4">
-                  <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
-                    <Target size={32} />
+                  <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-teal-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                    <Target size={36} />
                   </div>
-                  <h3 className="text-xl font-bold">Capster/Barberman</h3>
-                  <p className="text-sm text-green-100 text-center">Kelola antrian, lihat performa, prediksi customer</p>
-                  <div className="flex flex-col w-full space-y-2 mt-4">
+                  <h3 className="text-2xl font-bold">Capster</h3>
+                  <p className="text-sm text-green-100 text-center leading-relaxed">Kelola antrian real-time, track performa harian, insights customer favorit Anda</p>
+                  <div className="flex flex-col w-full space-y-3 mt-6">
                     <Link
                       href="/register/capster"
-                      className="w-full py-2 bg-white text-green-600 rounded-lg font-semibold hover:bg-green-50 transition-all duration-300 text-center"
+                      className="w-full py-3 bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-xl font-semibold hover:shadow-xl hover:shadow-green-500/50 transition-all duration-300 text-center transform hover:scale-105"
                     >
-                      Register
+                      Register Gratis
                     </Link>
                     <Link
                       href="/login"
-                      className="w-full py-2 bg-white/10 border border-white/30 text-white rounded-lg hover:bg-white/20 transition-all duration-300 text-center"
+                      className="w-full py-3 bg-white/10 border border-white/30 text-white rounded-xl hover:bg-white/20 transition-all duration-300 text-center font-medium"
                     >
                       Login
                     </Link>
@@ -199,29 +217,30 @@ export default function Home() {
               </div>
 
               {/* Admin Role */}
-              <div className="group bg-gradient-to-br from-yellow-600 to-red-600 rounded-2xl p-6 hover:shadow-2xl hover:shadow-yellow-500/50 transition-all duration-300 hover:scale-105 relative">
-                <div className="absolute -top-2 -right-2 bg-gradient-to-r from-yellow-500 to-red-500 rounded-full px-3 py-1 text-xs font-bold text-white">
+              <div className="group bg-white/10 backdrop-blur-lg border-2 border-yellow-500/40 rounded-3xl p-8 hover:bg-white/15 hover:border-yellow-400/60 hover:shadow-2xl hover:shadow-yellow-500/30 transition-all duration-500 hover:-translate-y-2 relative overflow-hidden">
+                {/* Premium badge */}
+                <div className="absolute -top-1 -right-1 bg-gradient-to-r from-yellow-500 to-red-500 rounded-bl-2xl rounded-tr-3xl px-4 py-2 text-xs font-bold text-white shadow-lg">
                   <div className="flex items-center space-x-1">
                     <Crown size={14} />
                     <span>FOUNDER</span>
                   </div>
                 </div>
-                <div className="flex flex-col items-center text-white space-y-4">
-                  <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
-                    <Shield size={32} />
+                <div className="flex flex-col items-center text-white space-y-4 mt-4">
+                  <div className="w-20 h-20 bg-gradient-to-br from-yellow-500 to-red-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                    <Shield size={36} />
                   </div>
-                  <h3 className="text-xl font-bold">Admin/Owner</h3>
-                  <p className="text-sm text-yellow-100 text-center">Monitor bisnis, analytics lengkap, akses penuh</p>
-                  <div className="flex flex-col w-full space-y-2 mt-4">
+                  <h3 className="text-2xl font-bold">Owner</h3>
+                  <p className="text-sm text-yellow-100 text-center leading-relaxed">Full analytics dashboard, revenue tracking, business intelligence untuk growth</p>
+                  <div className="flex flex-col w-full space-y-3 mt-6">
                     <Link
                       href="/register/admin"
-                      className="w-full py-2 bg-white text-yellow-600 rounded-lg font-semibold hover:bg-yellow-50 transition-all duration-300 text-center"
+                      className="w-full py-3 bg-gradient-to-r from-yellow-600 to-red-600 text-white rounded-xl font-semibold hover:shadow-xl hover:shadow-yellow-500/50 transition-all duration-300 text-center transform hover:scale-105"
                     >
                       Register 🔒
                     </Link>
                     <Link
                       href="/login"
-                      className="w-full py-2 bg-white/10 border border-white/30 text-white rounded-lg hover:bg-white/20 transition-all duration-300 text-center"
+                      className="w-full py-3 bg-white/10 border border-white/30 text-white rounded-xl hover:bg-white/20 transition-all duration-300 text-center font-medium"
                     >
                       Login
                     </Link>
@@ -230,71 +249,88 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Quick Demo Button */}
-            <div className="flex justify-center mb-16">
+            {/* Quick Demo Button - Enhanced */}
+            <div className="flex flex-col items-center mb-16 space-y-4">
               <Link
                 href="/dashboard/barbershop"
-                className="px-8 py-3 bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-xl font-semibold hover:bg-white/20 transition-all duration-300 flex items-center space-x-2"
+                className="group px-10 py-4 bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-2xl font-semibold hover:bg-white/20 hover:border-purple-400/50 hover:shadow-xl hover:shadow-purple-500/30 transition-all duration-300 flex items-center space-x-3 transform hover:scale-105"
               >
-                <Sparkles size={20} />
-                <span>View Demo Dashboard</span>
+                <Sparkles size={22} className="group-hover:rotate-12 transition-transform" />
+                <span className="text-lg">Lihat Demo Dashboard</span>
+                <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
               </Link>
+              <p className="text-purple-300 text-sm">Tanpa registrasi • Lihat fitur lengkap • 100% gratis</p>
             </div>
 
-            {/* Feature Cards Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-              {/* Card 1 */}
-              <div className="group bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 hover:bg-white/15 transition-all duration-300 hover:scale-105">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mb-4 group-hover:rotate-12 transition-transform">
-                  <Target className="text-white" size={24} />
+            {/* Feature Cards Grid - Fresha-inspired */}
+            <div className="mb-12">
+              <h3 className="text-3xl font-bold text-white text-center mb-3">Kenapa BALIK.LAGI?</h3>
+              <p className="text-purple-200 text-center mb-10 text-lg">Platform lengkap untuk barbershop modern</p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+              {/* Card 1 - Revenue Tracking */}
+              <div className="group bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-8 hover:bg-white/15 hover:border-blue-400/30 hover:shadow-xl hover:shadow-blue-500/20 transition-all duration-500 hover:-translate-y-1">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-lg">
+                  <Target className="text-white" size={32} />
                 </div>
-                <h3 className="text-white font-bold text-xl mb-2">Target Revenue</h3>
-                <p className="text-purple-200">Monitor target bulanan (Rp 2.5M) dengan prediksi harian yang akurat</p>
+                <h3 className="text-white font-bold text-2xl mb-3">Target Revenue</h3>
+                <p className="text-purple-200 leading-relaxed">Monitor target bulanan dengan prediksi harian yang akurat. Tahu persis kapan target tercapai.</p>
               </div>
 
-              {/* Card 2 */}
-              <div className="group bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 hover:bg-white/15 transition-all duration-300 hover:scale-105">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mb-4 group-hover:rotate-12 transition-transform">
-                  <Users className="text-white" size={24} />
+              {/* Card 2 - Customer Intelligence */}
+              <div className="group bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-8 hover:bg-white/15 hover:border-purple-400/30 hover:shadow-xl hover:shadow-purple-500/20 transition-all duration-500 hover:-translate-y-1">
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-lg">
+                  <Users className="text-white" size={32} />
                 </div>
-                <h3 className="text-white font-bold text-xl mb-2">Customer Intelligence</h3>
-                <p className="text-purple-200">Prediksi siapa yang bakal balik lagi, siapa yang perlu diingatkan</p>
+                <h3 className="text-white font-bold text-2xl mb-3">Customer Intelligence</h3>
+                <p className="text-purple-200 leading-relaxed">Prediksi siapa yang bakal balik lagi, siapa yang perlu diingatkan. AI-powered insights.</p>
               </div>
 
-              {/* Card 3 */}
-              <div className="group bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 hover:bg-white/15 transition-all duration-300 hover:scale-105">
-                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mb-4 group-hover:rotate-12 transition-transform">
-                  <BarChart3 className="text-white" size={24} />
+              {/* Card 3 - Analytics */}
+              <div className="group bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-8 hover:bg-white/15 hover:border-green-400/30 hover:shadow-xl hover:shadow-green-500/20 transition-all duration-500 hover:-translate-y-1">
+                <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-lg">
+                  <BarChart3 className="text-white" size={32} />
                 </div>
-                <h3 className="text-white font-bold text-xl mb-2">Analytics Cerdas</h3>
-                <p className="text-purple-200">Trend revenue, layanan terpopuler, dan performa setiap capster</p>
+                <h3 className="text-white font-bold text-2xl mb-3">Analytics Cerdas</h3>
+                <p className="text-purple-200 leading-relaxed">Trend revenue, layanan terpopuler, performa setiap capster. Dashboard yang actionable.</p>
               </div>
             </div>
 
-            {/* Integration Flow */}
-            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
-              <h3 className="text-white font-bold text-2xl text-center mb-8">Bagaimana Cara Kerjanya?</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="text-center">
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl mb-4">
-                    <CheckCircle2 className="text-white" size={32} />
+            {/* Integration Flow - Enhanced */}
+            <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-3xl p-10 mb-12">
+              <h3 className="text-white font-bold text-3xl text-center mb-4">Bagaimana Cara Kerjanya?</h3>
+              <p className="text-purple-300 text-center mb-12 text-lg">Sistem end-to-end dari booking hingga analytics</p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div className="text-center group">
+                  <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-3xl mb-6 group-hover:scale-110 transition-transform duration-300 shadow-xl">
+                    <CheckCircle2 className="text-white" size={40} />
                   </div>
-                  <h4 className="text-white font-semibold text-lg mb-2">Customer Booking</h4>
-                  <p className="text-purple-200 text-sm">Pelanggan pilih capster & layanan favorit, booking langsung via platform</p>
+                  <div className="bg-white/5 rounded-2xl p-6 group-hover:bg-white/10 transition-all duration-300">
+                    <h4 className="text-white font-semibold text-xl mb-3">1. Customer Booking</h4>
+                    <p className="text-purple-200 text-sm leading-relaxed">Pelanggan pilih capster favorit, pilih layanan, booking langsung. Real-time availability.</p>
+                  </div>
                 </div>
-                <div className="text-center">
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl mb-4">
-                    <TrendingUp className="text-white" size={32} />
+                
+                <div className="text-center group">
+                  <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-3xl mb-6 group-hover:scale-110 transition-transform duration-300 shadow-xl">
+                    <TrendingUp className="text-white" size={40} />
                   </div>
-                  <h4 className="text-white font-semibold text-lg mb-2">Queue Management</h4>
-                  <p className="text-purple-200 text-sm">Capster lihat antrian real-time, update status layanan dengan mudah</p>
+                  <div className="bg-white/5 rounded-2xl p-6 group-hover:bg-white/10 transition-all duration-300">
+                    <h4 className="text-white font-semibold text-xl mb-3">2. Queue Management</h4>
+                    <p className="text-purple-200 text-sm leading-relaxed">Capster lihat antrian real-time, update status layanan. Customer dapat notifikasi otomatis.</p>
+                  </div>
                 </div>
-                <div className="text-center">
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl mb-4">
-                    <Sparkles className="text-white" size={32} />
+                
+                <div className="text-center group">
+                  <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-600 rounded-3xl mb-6 group-hover:scale-110 transition-transform duration-300 shadow-xl">
+                    <Sparkles className="text-white" size={40} />
                   </div>
-                  <h4 className="text-white font-semibold text-lg mb-2">Smart Analytics</h4>
-                  <p className="text-purple-200 text-sm">Owner dapat insights mendalam: prediksi revenue, customer behavior, dan actionable tips</p>
+                  <div className="bg-white/5 rounded-2xl p-6 group-hover:bg-white/10 transition-all duration-300">
+                    <h4 className="text-white font-semibold text-xl mb-3">3. Smart Analytics</h4>
+                    <p className="text-purple-200 text-sm leading-relaxed">Owner dapat insights mendalam: revenue prediction, customer behavior, actionable recommendations.</p>
+                  </div>
                 </div>
               </div>
             </div>
