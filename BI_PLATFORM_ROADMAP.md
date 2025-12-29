@@ -1,6 +1,6 @@
 # 📊 BI PLATFORM ROADMAP - SAAS x BARBERSHOP
 
-**Project:** OASIS BI PRO - Business Intelligence Platform untuk Barbershop  
+**Project:** BALIK.LAGI - Business Intelligence Platform untuk Barbershop  
 **Version:** 3.0 - From MVP to Digital Asset  
 **Date:** December 24, 2024
 
@@ -8,7 +8,7 @@
 
 ## 🎯 VISION
 
-**Menjadikan OASIS BI PRO sebagai DIGITAL ASSET ABADI - Platform BI pertama di Indonesia (bahkan dunia) yang khusus dirancang untuk industri barbershop dengan prediktif analytics, automation, dan exclusive access system.**
+**Menjadikan BALIK.LAGI sebagai DIGITAL ASSET ABADI - Platform BI pertama di Indonesia (bahkan dunia) yang khusus dirancang untuk industri barbershop dengan prediktif analytics, automation, dan exclusive access system.**
 
 ---
 
@@ -682,7 +682,7 @@ ROI: 2600%
 
 ## 🏆 CONCLUSION
 
-**OASIS BI PRO memiliki potensi besar untuk menjadi DIGITAL ASSET ABADI:**
+**BALIK.LAGI memiliki potensi besar untuk menjadi DIGITAL ASSET ABADI:**
 
 ✅ **Unique Value Proposition** - BI platform khusus barbershop  
 ✅ **Scalable Technology** - Serverless, multi-tenant ready  
@@ -691,7 +691,7 @@ ROI: 2600%
 ✅ **Network Effects** - Value meningkat dengan scale  
 ✅ **Exit Potential** - Acquisition or IPO path  
 
-**The key is execution!** Dengan roadmap ini, dalam 12-18 bulan OASIS BI PRO bisa menjadi platform dominan di industri barbershop Indonesia, dan dalam 3-5 tahun bisa ekspansi global.
+**The key is execution!** Dengan roadmap ini, dalam 12-18 bulan BALIK.LAGI bisa menjadi platform dominan di industri barbershop Indonesia, dan dalam 3-5 tahun bisa ekspansi global.
 
 ---
 

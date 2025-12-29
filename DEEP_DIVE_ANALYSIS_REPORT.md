@@ -1,6 +1,6 @@
 # 🔍 DEEP DIVE ANALYSIS REPORT
 
-**Project**: OASIS BI PRO x Barbershop Data Monetization  
+**Project**: BALIK.LAGI x Barbershop Data Monetization  
 **Date**: December 18, 2025  
 **Analyst**: AI Engineer  
 **Status**: 🔴 **CRITICAL ISSUES IDENTIFIED**
@@ -9,7 +9,7 @@
 
 ## 📋 EXECUTIVE SUMMARY
 
-Setelah melakukan deep dive analysis pada proyek OASIS BI PRO x Barbershop, saya menemukan **ROOT CAUSE utama** mengapa dashboard tidak menampilkan data dengan benar:
+Setelah melakukan deep dive analysis pada proyek BALIK.LAGI x Barbershop, saya menemukan **ROOT CAUSE utama** mengapa dashboard tidak menampilkan data dengan benar:
 
 ### 🎯 Root Cause Summary:
 
@@ -227,7 +227,7 @@ curl https://qwqmhvwqeynnyxaecqzw.supabase.co/functions/v1/aggregate-analytics \
                        │
                        ↓
              ┌─────────────────┐
-             │  OASIS BI PRO   │ (Dashboard)
+             │  BALIK.LAGI   │ (Dashboard)
              │    Dashboard    │
              └─────────────────┘
 ```

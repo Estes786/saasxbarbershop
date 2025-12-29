@@ -1,7 +1,7 @@
 # 📅 WEEK 1 IMPLEMENTATION: RE-BRANDING EXECUTION
 
 **Timeline**: 29 Desember 2025 - 4 Januari 2026 (7 hari)  
-**Goal**: Complete brand transformation dari OASIS BI PRO ke BALIK.LAGI  
+**Goal**: Complete brand transformation dari BALIK.LAGI ke BALIK.LAGI  
 **Theme**: "Pelan Tapi Pasti - Foundation First"
 
 ---
@@ -18,7 +18,7 @@
 ### **Success Metrics**
 ```
 By End of Week 1:
-✅ 0 occurrences of "OASIS BI PRO" in user-facing UI
+✅ 0 occurrences of "BALIK.LAGI" in user-facing UI
 ✅ Logo & brand guidelines documented
 ✅ Landing page reflects new brand
 ✅ 5+ modular documentation files completed
@@ -391,8 +391,8 @@ Complete documentation available in `/docs/` directory:
 
 **Key Changes Needed**:
 ```tsx
-// OLD (OASIS BI PRO)
-- Brand: "OASIS BI PRO"
+// OLD (BALIK.LAGI)
+- Brand: "BALIK.LAGI"
 - Colors: Purple/Blue gradient (tech vibe)
 - Tagline: "Transform Your Data Into Actionable Insights"
 - Description: "Platform BI terintegrasi untuk Barbershop"
@@ -465,7 +465,7 @@ Complete documentation available in `/docs/` directory:
 **Pattern to Follow**:
 ```tsx
 // OLD
-<h1 className="text-3xl font-bold">OASIS BI PRO - Customer Dashboard</h1>
+<h1 className="text-3xl font-bold">BALIK.LAGI - Customer Dashboard</h1>
 
 // NEW
 <h1 className="text-3xl font-heading font-bold text-brand-brown-900">
@@ -515,7 +515,7 @@ npm run build
 
 **Test Checklist**:
 - [ ] Landing page renders correctly
-- [ ] No "OASIS BI PRO" visible in UI
+- [ ] No "BALIK.LAGI" visible in UI
 - [ ] Colors match brand guidelines
 - [ ] All links work
 - [ ] Authentication flows work
@@ -557,7 +557,7 @@ cd /home/user/webapp
 git add .
 
 # Commit with descriptive message
-git commit -m "Re-branding Phase 1: OASIS BI PRO → BALIK.LAGI
+git commit -m "Re-branding Phase 1: BALIK.LAGI → BALIK.LAGI
 
 - Updated brand name across all user-facing components
 - Redesigned landing page with warm brown/beige color scheme

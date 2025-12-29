@@ -148,7 +148,7 @@ CREATE TRIGGER update_bookings_updated_at
    - Click "+ CREATE CREDENTIALS"
    - Select "OAuth 2.0 Client ID"
    - Application type: "Web application"
-   - Name: "OASIS BI PRO Barbershop"
+   - Name: "BALIK.LAGI Barbershop"
 
 3. **Configure URLs:**
 

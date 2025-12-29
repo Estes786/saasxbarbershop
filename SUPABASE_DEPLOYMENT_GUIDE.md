@@ -1,4 +1,4 @@
-# 🚀 SUPABASE DEPLOYMENT GUIDE - OASIS BI PRO x BARBERSHOP
+# 🚀 SUPABASE DEPLOYMENT GUIDE - BALIK.LAGI x BARBERSHOP
 
 **Target User**: Founder/Admin yang ingin deploy dan maintain aplikasi
 **Skill Level**: Beginner-friendly dengan panduan step-by-step

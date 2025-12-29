@@ -1,6 +1,6 @@
 # 📦 REQUIRED EDGE FUNCTIONS
 
-**Project**: OASIS BI PRO x Barbershop  
+**Project**: BALIK.LAGI x Barbershop  
 **Purpose**: Auto-populate aggregated tables for optimal performance
 
 ---

@@ -1,5 +1,5 @@
 # 🚀 COMPREHENSIVE SUPABASE CONFIGURATION GUIDE
-## OASIS BI PRO Barbershop - Authentication Complete Setup
+## BALIK.LAGI Barbershop - Authentication Complete Setup
 
 **Date**: December 19, 2025  
 **Application URL**: https://3000-ip2yojjfafejkwks39c3b-5634da27.sandbox.novita.ai  
@@ -139,7 +139,7 @@ If you have custom email service (Gmail, SendGrid, etc.):
 1. Enable: **Enable custom SMTP**
 2. Fill in:
    - **Sender email**: your@domain.com
-   - **Sender name**: OASIS BI PRO
+   - **Sender name**: BALIK.LAGI
    - **Host**: smtp.gmail.com (for Gmail)
    - **Port**: 587
    - **Username**: your@gmail.com
@@ -164,13 +164,13 @@ This is the main issue from your screenshots!
 
 1. **Go to Google Cloud Console**: https://console.cloud.google.com/apis/credentials
 2. **Create Project** (if you don't have one):
-   - Project name: "OASIS BI PRO Barbershop"
+   - Project name: "BALIK.LAGI Barbershop"
    - Click "Create"
 
 3. **Configure OAuth Consent Screen**:
    - Go to: OAuth consent screen (left sidebar)
    - User Type: **External**
-   - App name: OASIS BI PRO Barbershop
+   - App name: BALIK.LAGI Barbershop
    - User support email: your@email.com
    - Developer email: your@email.com
    - Click "Save and Continue"
@@ -183,7 +183,7 @@ This is the main issue from your screenshots!
    - Go to: Credentials (left sidebar)
    - Click: **+ CREATE CREDENTIALS** → OAuth client ID
    - Application type: **Web application**
-   - Name: "OASIS BI PRO Web Client"
+   - Name: "BALIK.LAGI Web Client"
    
    **CRITICAL - Authorized JavaScript origins**:
    ```

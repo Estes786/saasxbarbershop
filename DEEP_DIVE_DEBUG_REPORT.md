@@ -1,5 +1,5 @@
 # 🔬 DEEP DIVE DEBUGGING REPORT
-## OASIS BI PRO x Barbershop - Google OAuth Integration
+## BALIK.LAGI x Barbershop - Google OAuth Integration
 
 **Date**: December 19, 2025  
 **Status**: 🔴 **CRITICAL ISSUES IDENTIFIED**  

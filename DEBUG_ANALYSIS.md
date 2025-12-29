@@ -1,6 +1,6 @@
 # 🔍 DEBUG ANALYSIS - Real-Time Update Issue
 
-**Project**: OASIS BI PRO x Barbershop  
+**Project**: BALIK.LAGI x Barbershop  
 **Issue**: Dashboard tidak auto-update setelah transaksi baru ditambahkan  
 **Date**: December 17, 2025  
 **Status**: 🔍 ANALYSIS COMPLETE - FIXES READY

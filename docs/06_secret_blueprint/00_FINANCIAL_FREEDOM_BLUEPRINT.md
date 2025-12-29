@@ -1,7 +1,7 @@
 # 💎 SECRET BLUEPRINT: BALIK.LAGI → FINANCIAL FREEDOM
 
 **Date Created**: 29 Desember 2025  
-**Project**: Balik.Lagi System (Re-branding dari OASIS BI PRO)  
+**Project**: Balik.Lagi System (Re-branding dari BALIK.LAGI)  
 **Author**: Founder Journey - Dari Santri ke Digital Empire  
 **Status**: 🔐 **CONFIDENTIAL - ROADMAP TO FREEDOM**
 
@@ -91,7 +91,7 @@ Kredibilitas:
 
 **Marketing Angle**: "Dibuat oleh Capster, untuk Capster"
 
-### **3. EMOTIONAL BRANDING (Balik.Lagi > OASIS BI PRO)**
+### **3. EMOTIONAL BRANDING (Balik.Lagi > BALIK.LAGI)**
 
 **Brand Strength**:
 ```
@@ -102,7 +102,7 @@ BALIK.LAGI memiliki multi-layer meaning:
 └── Emotional Hook: Universal desire untuk "return"
 
 Compare to:
-├── OASIS BI PRO: Teknis, dingin, tidak memorable
+├── BALIK.LAGI: Teknis, dingin, tidak memorable
 ├── Majoo: Generic, tidak emosional
 └── Fresha: Foreign, tidak resonate dengan Indonesia
 ```
@@ -236,7 +236,7 @@ OPTION D: IPO / PE INVESTMENT (10+ years)
 **Critical Actions**:
 ```
 ✅ BRANDING & POSITIONING
-├── Complete re-brand: OASIS BI PRO → BALIK.LAGI
+├── Complete re-brand: BALIK.LAGI → BALIK.LAGI
 ├── Update all code, UI, documentation
 ├── Create brand story: "Dari Santri ke Barber ke Developer"
 └── Register trademark: BALIK.LAGI (HKI Indonesia)

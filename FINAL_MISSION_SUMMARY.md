@@ -26,7 +26,7 @@ Anda meminta saya untuk mengimplementasikan sistem **1 USER = 1 ROLE = 1 DASHBOA
 
 ```
 ┌──────────────────────────────────────────────────────────┐
-│              OASIS BI PRO BARBERSHOP                     │
+│              BALIK.LAGI BARBERSHOP                     │
 │        3-Role Hierarchical Architecture                  │
 │                                                          │
 │  Level 1: CUSTOMER (Isolated)    - user_id filter      │

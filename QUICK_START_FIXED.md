@@ -171,4 +171,4 @@ Untuk panduan detail, baca:
 
 ---
 
-🎉 **Selamat menggunakan OASIS BI PRO x Barbershop!**
+🎉 **Selamat menggunakan BALIK.LAGI x Barbershop!**

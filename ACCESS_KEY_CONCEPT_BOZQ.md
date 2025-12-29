@@ -8,7 +8,7 @@
 
 ## 📋 OVERVIEW
 
-Sistem **ACCESS KEY** dirancang untuk menjaga **EXCLUSIVITY** platform OASIS BI PRO x Barbershop dengan mencegah public signup yang tidak terauthorized. Setiap role (Customer, Capster, Admin) memerlukan SECRET ACCESS KEY unik untuk bisa melakukan registrasi.
+Sistem **ACCESS KEY** dirancang untuk menjaga **EXCLUSIVITY** platform BALIK.LAGI x Barbershop dengan mencegah public signup yang tidak terauthorized. Setiap role (Customer, Capster, Admin) memerlukan SECRET ACCESS KEY unik untuk bisa melakukan registrasi.
 
 ---
 
@@ -16,7 +16,7 @@ Sistem **ACCESS KEY** dirancang untuk menjaga **EXCLUSIVITY** platform OASIS BI 
 
 - ❌ **Mencegah public signup** yang tidak terauthorized
 - ✅ **Kontrol siapa yang bisa register** untuk setiap role
-- 🛡️ **Menjaga exclusivity platform** khusus untuk OASIS Barbershop
+- 🛡️ **Menjaga exclusivity platform** khusus untuk BALIK.LAGI Barbershop
 - 📊 **Tracking registrations** yang valid
 - 🔒 **Proteksi dari spam & data junk**
 
@@ -63,7 +63,7 @@ Usage: Unlimited
 **Target Audience:**
 - Capster resmi OASIS Barbershop
 - Barberman yang sudah di-hire
-- Staff barbershop yang bekerja di OASIS
+- Staff barbershop yang bekerja di BALIK.LAGI
 
 **Features:**
 - Auto-approval (tidak perlu waiting approval admin)

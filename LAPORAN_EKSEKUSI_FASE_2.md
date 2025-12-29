@@ -2,7 +2,7 @@
 
 **Tanggal**: 21 Desember 2025  
 **Agent**: Claude  
-**Project**: OASIS BI PRO x Barbershop SaaS  
+**Project**: BALIK.LAGI x Barbershop SaaS  
 **Status**: ✅ **MISSION ACCOMPLISHED - FASE 2**
 
 ---
@@ -330,5 +330,5 @@ Semua yang diminta sudah diselesaikan:
 
 ---
 
-© 2025 OASIS BI PRO x Barbershop Kedungrandu  
+© 2025 BALIK.LAGI x Barbershop Kedungrandu  
 **Last Updated**: 21 Desember 2025

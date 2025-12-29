@@ -1,4 +1,4 @@
-# OASIS BI PRO - Barbershop Management System
+# BALIK.LAGI - Barbershop Management System
 
 ## 🎉 AUTHENTICATION FIX COMPLETE!
 

@@ -8,7 +8,7 @@
 
 ## 📊 EXECUTIVE SUMMARY
 
-Saya telah **menyelesaikan SEMUA perbaikan code** untuk authentication issues pada aplikasi OASIS BI PRO x Barbershop. Tidak ada bug dalam code - masalahnya adalah **konfigurasi Supabase** yang belum complete.
+Saya telah **menyelesaikan SEMUA perbaikan code** untuk authentication issues pada aplikasi BALIK.LAGI x Barbershop. Tidak ada bug dalam code - masalahnya adalah **konfigurasi Supabase** yang belum complete.
 
 ### ✅ WHAT WAS COMPLETED
 

@@ -1,7 +1,7 @@
 # 🚀 DEEP RESEARCH: ARSITEKTUR BI PLATFORM BARBERSHOP SEBAGAI ASET DIGITAL ABADI
 
 **Tanggal**: 20 Desember 2025  
-**Proyek**: OASIS BI PRO x Barbershop  
+**Proyek**: BALIK.LAGI x Barbershop  
 **Status**: Production Ready → Evolusi ke Aset Digital Abadi  
 **Live URL**: https://3000-i95n3tfl5rk9ke84byjjo-02b9cc79.sandbox.novita.ai
 
@@ -628,7 +628,7 @@ export function useRealtimeBookings(date: string) {
 **Implementasi:**
 - [x] Hak Cipta source code (IN PROGRESS)
 - [ ] Patent untuk algoritma prediksi (jika applicable)
-- [ ] Trademark untuk brand "OASIS BI PRO"
+- [ ] Trademark untuk brand "BALIK.LAGI"
 - [ ] Trade secret untuk ML models & datasets
 
 **Metric:** Legal protection duration = 50 years (Hak Cipta Indonesia)
@@ -739,7 +739,7 @@ export function useRealtimeBookings(date: string) {
    - Biaya: Rp 5-10 juta (patent attorney)
 
 2. **Trademark Registration:**
-   - "OASIS BI PRO" word mark
+   - "BALIK.LAGI" word mark
    - Logo design
    - Biaya: Rp 2-5 juta
 

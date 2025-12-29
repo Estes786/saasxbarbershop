@@ -209,7 +209,7 @@ Tone: Friendly, story-driven, non-corporate
    ✅ Production deployed on Vercel
    
 🔄 FASE 2: RE-BRANDING IN PROGRESS
-   🔄 Brand identity OASIS BI PRO → BALIK.LAGI
+   🔄 Brand identity BALIK.LAGI → BALIK.LAGI
    🔄 UI/UX redesign
    ⏳ Documentation modularization
    ⏳ Landing page transformation
@@ -274,7 +274,7 @@ Tone: Friendly, story-driven, non-corporate
   - Solution: Added user_id FK + RLS policies
 
 ### **In Progress** 🔄
-- 🔄 **Re-branding OASIS BI PRO → BALIK.LAGI** (Week 1, 29 Des - 4 Jan)
+- 🔄 **Re-branding BALIK.LAGI → BALIK.LAGI** (Week 1, 29 Des - 4 Jan)
 - 🔄 **Documentation modularization** (Ongoing)
 
 ### **Planned Improvements** ⏳

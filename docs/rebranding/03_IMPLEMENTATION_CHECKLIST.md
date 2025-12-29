@@ -99,7 +99,7 @@ Dokumen ini adalah **action checklist** untuk execute re-branding. Setiap item d
 
 #### **File**: `app/page.tsx`
 
-**Current State**: OASIS BI PRO branding  
+**Current State**: BALIK.LAGI branding  
 **Target**: Complete BALIK.LAGI transformation
 
 **Sections to Implement**:

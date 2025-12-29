@@ -3,7 +3,7 @@
 **Date**: 29 Desember 2025  
 **Repository**: https://github.com/Estes786/saasxbarbershop  
 **Branch**: main  
-**Status**: ✅ Production Ready (with OASIS BI PRO branding)
+**Status**: ✅ Production Ready (with BALIK.LAGI branding)
 
 ---
 
@@ -65,7 +65,7 @@ Version Control: GitHub (Estes786/saasxbarbershop)
 │   │   ├── capster/       # Capster dashboard
 │   │   └── customer/      # Customer dashboard
 │   ├── layout.tsx         # Root layout with AuthProvider
-│   └── page.tsx           # Landing page (OASIS BI PRO branded)
+│   └── page.tsx           # Landing page (BALIK.LAGI branded)
 │
 ├── components/            # React components
 │   ├── admin/            # Admin-specific components
@@ -97,7 +97,7 @@ Version Control: GitHub (Estes786/saasxbarbershop)
 ├── ecosystem.config.cjs  # PM2 configuration
 ├── next.config.js        # Next.js configuration
 ├── package.json          # Dependencies (name: oasis-bi-pro-barbershop)
-├── README.md             # Main documentation (OASIS BI PRO)
+├── README.md             # Main documentation (BALIK.LAGI)
 ├── tailwind.config.ts    # Tailwind configuration
 └── tsconfig.json         # TypeScript configuration
 ```
@@ -255,12 +255,12 @@ access_keys                         # Registration access control
 
 ---
 
-## 🎨 UI/UX COMPONENTS (Current Branding: OASIS BI PRO)
+## 🎨 UI/UX COMPONENTS (Current Branding: BALIK.LAGI)
 
 ### **Landing Page** (`app/page.tsx`)
 ```tsx
 Current State:
-- Brand Name: "OASIS BI PRO"
+- Brand Name: "BALIK.LAGI"
 - Tagline: "Transform Your Data Into Actionable Insights"
 - Description: "Platform BI terintegrasi untuk Barbershop Kedungrandu"
 - Color Scheme: Purple/Blue gradient (tech-focused)
@@ -280,7 +280,7 @@ Current State:
 - ✅ Booking History (with status filtering)
 
 **Re-branding Needed**:
-- Header: "OASIS BI PRO" → "BALIK.LAGI"
+- Header: "BALIK.LAGI" → "BALIK.LAGI"
 - Wording: Technical → Friendly/hangat
 
 ### **Capster Dashboard** (`app/dashboard/capster/page.tsx`)

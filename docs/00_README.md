@@ -1,6 +1,6 @@
 # 📚 DOKUMENTASI BALIK.LAGI - SAAS x BARBERSHOP PLATFORM
 
-**Project Name**: Balik.Lagi System (formerly OASIS BI PRO)  
+**Project Name**: Balik.Lagi System (formerly BALIK.LAGI)  
 **Owner**: Estes786  
 **Created**: 28 Desember 2025  
 **Repository**: https://github.com/Estes786/saasxbarbershop
@@ -35,7 +35,7 @@ Refleksi spiritual dan filosofi di balik proyek
 
 ### **03. Business Concept**
 Konsep bisnis dan monetization strategy
-- Re-branding dari OASIS BI PRO ke Balik.Lagi
+- Re-branding dari BALIK.LAGI ke Balik.Lagi
 - Business model dan revenue streams
 - Market opportunity dan competitive analysis
 - Roadmap ke "Aset Digital Abadi"
@@ -95,13 +95,13 @@ npm run dev
 **Database**: ✅ Connected (Supabase)  
 **Authentication**: ✅ Working (Email + Google OAuth)  
 **Deployment**: ✅ Production Ready  
-**Re-branding**: 🔄 In Progress (OASIS BI PRO → Balik.Lagi)
+**Re-branding**: 🔄 In Progress (BALIK.LAGI → Balik.Lagi)
 
 ---
 
 ## 🎯 NEXT STEPS
 
-1. **Complete Re-branding** - Update all references from OASIS BI PRO to Balik.Lagi
+1. **Complete Re-branding** - Update all references from BALIK.LAGI to Balik.Lagi
 2. **Finalize Database Schema** - Implement missing tables (booking_slots, loyalty, reviews)
 3. **Build Booking System** - Killer feature for customer retention
 4. **Launch MVP** - Get first 5-10 paying customers

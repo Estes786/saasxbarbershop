@@ -1,6 +1,6 @@
 # 🔬 AUTONOMOUS DEEP RESEARCH REPORT: ROLE-BASED ACCESS CONTROL
 
-**Project**: OASIS BI PRO x Barbershop  
+**Project**: BALIK.LAGI x Barbershop  
 **Mission**: Implement Admin vs Customer Role Separation  
 **Mode**: 🤖 **FULL AUTONOMOUS - NO CHECKPOINTS**  
 **Date**: December 18, 2025  

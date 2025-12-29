@@ -130,7 +130,7 @@ Ini adalah langkah PALING PENTING. Tanpa execute script ini, secret key system t
 
 **Expected Result:**
 - `secret_keys`: 15 rows (all the keys listed above)
-- `barbershops`: 1 row (OASIS BI PRO Barbershop)
+- `barbershops`: 1 row (BALIK.LAGI Barbershop)
 - `transactions`: 0 rows (empty table, ready for use)
 
 ---

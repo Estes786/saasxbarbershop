@@ -1,6 +1,6 @@
 # 🎯 MASTER IMPLEMENTATION PLAN: BALIK.LAGI SYSTEM
 
-**Project**: Balik.Lagi (Re-branding dari OASIS BI PRO)  
+**Project**: Balik.Lagi (Re-branding dari BALIK.LAGI)  
 **Timeline**: 4 Minggu (28 Desember 2025 - 25 Januari 2026)  
 **Goal**: Complete re-branding + critical features + ready for first 5 paying customers
 
@@ -9,7 +9,7 @@
 ## 📊 OVERVIEW
 
 ### **Strategic Objectives**
-1. **Re-brand** dari OASIS BI PRO ke BALIK.LAGI (brand identity + technical implementation)
+1. **Re-brand** dari BALIK.LAGI ke BALIK.LAGI (brand identity + technical implementation)
 2. **Fix Critical Gaps** (double-booking prevention, real-time features)
 3. **Complete Booking System** (full customer-to-capster workflow)
 4. **Launch MVP** (ready untuk pilot customers)
@@ -31,7 +31,7 @@ Week 4: ✅ First paying customer (Rp 500K/month subscription)
 
 ## 📅 WEEK 1: RE-BRANDING EXECUTION (28 Des - 3 Jan 2026)
 
-**Theme**: "From OASIS BI PRO to BALIK.LAGI - Complete Brand Transformation"
+**Theme**: "From BALIK.LAGI to BALIK.LAGI - Complete Brand Transformation"
 
 ### **DAY 1-2: Brand Identity & Documentation** (Sabtu-Minggu)
 
@@ -80,13 +80,13 @@ Week 4: ✅ First paying customer (Rp 500K/month subscription)
 }
 
 # 2. Update README.md
-- Ganti semua "OASIS BI PRO" → "BALIK.LAGI"
+- Ganti semua "BALIK.LAGI" → "BALIK.LAGI"
 - Update tagline, description, features
 - Update screenshots (jika ada)
 
 # 3. Git commit & push
 git add .
-git commit -m "Re-branding: OASIS BI PRO → BALIK.LAGI (Phase 1)"
+git commit -m "Re-branding: BALIK.LAGI → BALIK.LAGI (Phase 1)"
 git push origin main
 ```
 
@@ -120,7 +120,7 @@ export const metadata: Metadata = {
 
 #### **A. Landing Page Redesign** (`app/page.tsx`)
 
-**Current**: OASIS BI PRO branding, technical focus  
+**Current**: BALIK.LAGI branding, technical focus  
 **Target**: BALIK.LAGI branding, emotional storytelling
 
 ```typescript
@@ -179,7 +179,7 @@ export const metadata: Metadata = {
 ### **DAY 7: Testing & Launch** (Jumat)
 
 #### **Re-branding Verification Checklist**
-- [ ] All pages display "BALIK.LAGI" (not "OASIS BI PRO")
+- [ ] All pages display "BALIK.LAGI" (not "BALIK.LAGI")
 - [ ] New logo visible on all pages
 - [ ] Tagline consistent everywhere
 - [ ] Meta tags updated (check source code)
@@ -1018,7 +1018,7 @@ If planning to hire team or delegate:
 
 ### **Week 1: Re-branding**
 ```
-✅ All "OASIS BI PRO" → "BALIK.LAGI" (100%)
+✅ All "BALIK.LAGI" → "BALIK.LAGI" (100%)
 ✅ New logo & visual identity live
 ✅ Landing page redesigned
 ✅ Documentation complete

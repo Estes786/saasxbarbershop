@@ -1,6 +1,6 @@
 # 🎨 RE-BRANDING DOCUMENTATION: BALIK.LAGI
 
-**Project**: BALIK.LAGI System (formerly OASIS BI PRO)  
+**Project**: BALIK.LAGI System (formerly BALIK.LAGI)  
 **Created**: 29 Desember 2025  
 **Status**: Week 1 Documentation Complete
 

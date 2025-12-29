@@ -1,4 +1,4 @@
-# 🚀 Deployment Guide - OASIS BI PRO
+# 🚀 Deployment Guide - BALIK.LAGI
 ## Updated: 23 Desember 2024
 
 ---

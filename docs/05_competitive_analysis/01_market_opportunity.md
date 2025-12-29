@@ -379,7 +379,7 @@ Founder = CAPSTER (tidak bisa di-copy!):
 
 ### **3. EMOTIONAL BRANDING**
 ```
-"BALIK.LAGI" > "OASIS BI PRO":
+"BALIK.LAGI" > "BALIK.LAGI":
 ├── Emosional vs Teknis
 ├── Memorable vs Generic
 ├── Story-driven vs Feature-driven

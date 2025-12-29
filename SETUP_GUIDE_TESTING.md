@@ -1,4 +1,4 @@
-# 🚀 SETUP & TESTING GUIDE - OASIS BI PRO BARBERSHOP
+# 🚀 SETUP & TESTING GUIDE - BALIK.LAGI BARBERSHOP
 
 **Tanggal**: 19 Desember 2025  
 **Sandbox URL**: https://3000-if6dfg0gou4tww2zt9mvq-2b54fc91.sandbox.novita.ai  
@@ -119,7 +119,7 @@ https://console.cloud.google.com/apis/credentials
 
 **Step 2**: Create OAuth 2.0 Client ID
 - Application type: **Web application**
-- Name: `OASIS BI PRO Barbershop`
+- Name: `BALIK.LAGI Barbershop`
 
 **Step 3**: Add Authorized JavaScript origins:
 ```
@@ -386,7 +386,7 @@ console.log('User:', data.session?.user);
 # Check server status
 curl -s https://3000-if6dfg0gou4tww2zt9mvq-2b54fc91.sandbox.novita.ai | grep -o '<title>.*</title>'
 
-# Expected: <title>OASIS BI PRO x Barbershop Data Monetization</title>
+# Expected: <title>BALIK.LAGI x Barbershop Data Monetization</title>
 
 # View server logs
 tail -f /tmp/nextjs.log

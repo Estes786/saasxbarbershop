@@ -1,6 +1,6 @@
 # 🚀 IMPLEMENTATION GUIDE - Role-Based Access Control
 
-**Project**: OASIS BI PRO x Barbershop  
+**Project**: BALIK.LAGI x Barbershop  
 **Feature**: Admin vs Customer Dashboard Separation  
 **Status**: ✅ **CODE COMPLETE - READY FOR DATABASE DEPLOYMENT**  
 **Date**: December 18, 2025

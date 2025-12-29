@@ -8,7 +8,7 @@
 
 ## 📋 RINGKASAN EKSEKUSI
 
-Saya telah berhasil melakukan **deep research** dan **comprehensive analysis** terhadap proyek **OASIS BI PRO x Barbershop** Anda. Berikut adalah hasil lengkapnya:
+Saya telah berhasil melakukan **deep research** dan **comprehensive analysis** terhadap proyek **BALIK.LAGI x Barbershop** Anda. Berikut adalah hasil lengkapnya:
 
 ---
 
@@ -368,7 +368,7 @@ Hak Cipta yang sedang Anda proses (Rp 200,000) adalah **foundational**:
 
 **Next steps IP:**
 - Patent filing (Rp 5-10 juta) untuk algoritma prediksi unik
-- Trademark registration (Rp 2-5 juta) untuk brand "OASIS BI PRO"
+- Trademark registration (Rp 2-5 juta) untuk brand "BALIK.LAGI"
 - Trade secret protection (NDA + non-compete untuk employee)
 
 ---

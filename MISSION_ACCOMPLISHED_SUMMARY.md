@@ -4,7 +4,7 @@
 
 **Date**: 23 Desember 2025  
 **Developer**: AI Assistant  
-**Project**: OASIS BI PRO - Barbershop Management System
+**Project**: BALIK.LAGI - Barbershop Management System
 
 ---
 

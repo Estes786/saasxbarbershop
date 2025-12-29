@@ -1,6 +1,6 @@
 # 🚀 ACCESS KEY SYSTEM - DEPLOYMENT GUIDE
 
-**Project**: OASIS BI PRO x Barbershop  
+**Project**: BALIK.LAGI x Barbershop  
 **Feature**: SECRET ACCESS KEY System (BOZQ Brand)  
 **Version**: 1.0.0  
 **Date**: December 24, 2024

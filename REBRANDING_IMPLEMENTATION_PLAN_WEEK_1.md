@@ -1,8 +1,8 @@
 # 🎯 RE-BRANDING IMPLEMENTATION PLAN - WEEK 1
 
-**Project**: BALIK.LAGI System (formerly OASIS BI PRO)  
+**Project**: BALIK.LAGI System (formerly BALIK.LAGI)  
 **Date**: 29 Desember 2025  
-**Goal**: Complete re-branding dari OASIS BI PRO → BALIK.LAGI  
+**Goal**: Complete re-branding dari BALIK.LAGI → BALIK.LAGI  
 **Duration**: Week 1 (29 Des - 4 Jan 2026)
 
 ---
@@ -15,7 +15,7 @@
 3. ✅ `app/page.tsx` - Line 89: Logo & brand name
 4. ✅ Git initialized with comprehensive .gitignore
 
-### **⚠️ Still Using OASIS BI PRO (15 references)**
+### **⚠️ Still Using BALIK.LAGI (15 references)**
 Total files to update: **11 files**
 
 #### **Authentication Pages (5 files)**
@@ -45,10 +45,10 @@ Total files to update: **11 files**
 
 | Old Brand | New Brand | Context |
 |-----------|-----------|---------|
-| `OASIS BI PRO` | `BALIK.LAGI` | Main brand name |
-| `OASIS BI PRO x Barbershop` | `BALIK.LAGI x Barbershop` | Full brand + context |
-| `Portal Customer OASIS BI PRO` | `Portal Customer BALIK.LAGI` | Auth portals |
-| `Powered by OASIS BI PRO` | `Powered by BALIK.LAGI` | Footer credits |
+| `BALIK.LAGI` | `BALIK.LAGI` | Main brand name |
+| `BALIK.LAGI x Barbershop` | `BALIK.LAGI x Barbershop` | Full brand + context |
+| `Portal Customer BALIK.LAGI` | `Portal Customer BALIK.LAGI` | Auth portals |
+| `Powered by BALIK.LAGI` | `Powered by BALIK.LAGI` | Footer credits |
 | `OASIS Barbershop` | `BALIK.LAGI Barbershop` | References to barbershop |
 
 ### **Access Key Updates (Already Correct)**
@@ -67,8 +67,8 @@ Total files to update: **11 files**
 
 #### **File 1: `app/(auth)/login/page.tsx`**
 **Changes:**
-- Line 22: `OASIS BI PRO` → `BALIK.LAGI`
-- Line 37: `Pelanggan OASIS BI PRO` → `Pelanggan BALIK.LAGI`
+- Line 22: `BALIK.LAGI` → `BALIK.LAGI`
+- Line 37: `Pelanggan BALIK.LAGI` → `Pelanggan BALIK.LAGI`
 
 **Impact**: Login landing page
 
@@ -76,7 +76,7 @@ Total files to update: **11 files**
 
 #### **File 2: `app/(auth)/login/customer/page.tsx`**
 **Changes:**
-- Line 80: `Portal Customer OASIS BI PRO` → `Portal Customer BALIK.LAGI`
+- Line 80: `Portal Customer BALIK.LAGI` → `Portal Customer BALIK.LAGI`
 
 **Impact**: Customer login form
 
@@ -84,7 +84,7 @@ Total files to update: **11 files**
 
 #### **File 3: `app/(auth)/login/capster/page.tsx`**
 **Changes:**
-- Line 80: `Portal Capster OASIS BI PRO` → `Portal Capster BALIK.LAGI`
+- Line 80: `Portal Capster BALIK.LAGI` → `Portal Capster BALIK.LAGI`
 
 **Impact**: Capster login form
 
@@ -92,7 +92,7 @@ Total files to update: **11 files**
 
 #### **File 4: `app/(auth)/register/page.tsx`**
 **Changes:**
-- Line 171: `OASIS BI PRO` → `BALIK.LAGI`
+- Line 171: `BALIK.LAGI` → `BALIK.LAGI`
 - Line 215: `staff OASIS Barbershop` → `staff BALIK.LAGI Barbershop`
 
 **Impact**: Customer registration page
@@ -101,7 +101,7 @@ Total files to update: **11 files**
 
 #### **File 5: `app/(auth)/register/capster/page.tsx`**
 **Changes:**
-- Line 150: `OASIS BI PRO Barbershop` → `BALIK.LAGI Barbershop`
+- Line 150: `BALIK.LAGI Barbershop` → `BALIK.LAGI Barbershop`
 
 **Impact**: Capster registration page
 
@@ -111,7 +111,7 @@ Total files to update: **11 files**
 
 #### **File 6: `app/dashboard/customer/page.tsx`**
 **Changes:**
-- Line 160: `Powered by OASIS BI PRO` → `Powered by BALIK.LAGI`
+- Line 160: `Powered by BALIK.LAGI` → `Powered by BALIK.LAGI`
 
 **Impact**: Customer dashboard footer
 
@@ -119,7 +119,7 @@ Total files to update: **11 files**
 
 #### **File 7: `app/dashboard/capster/page.tsx`**
 **Changes:**
-- Line 194: `Powered by OASIS BI PRO` → `Powered by BALIK.LAGI`
+- Line 194: `Powered by BALIK.LAGI` → `Powered by BALIK.LAGI`
 
 **Impact**: Capster dashboard footer
 
@@ -127,8 +127,8 @@ Total files to update: **11 files**
 
 #### **File 8: `app/dashboard/barbershop/page.tsx`**
 **Changes:**
-- Line 72: `OASIS BI PRO x Barbershop Kedungrandu` → `BALIK.LAGI x Barbershop Kedungrandu`
-- Line 109: `© 2025 OASIS BI PRO x Barbershop Kedungrandu` → `© 2025 BALIK.LAGI x Barbershop Kedungrandu`
+- Line 72: `BALIK.LAGI x Barbershop Kedungrandu` → `BALIK.LAGI x Barbershop Kedungrandu`
+- Line 109: `© 2025 BALIK.LAGI x Barbershop Kedungrandu` → `© 2025 BALIK.LAGI x Barbershop Kedungrandu`
 
 **Impact**: Barbershop overview dashboard
 
@@ -136,8 +136,8 @@ Total files to update: **11 files**
 
 #### **File 9: `app/dashboard/admin/page.tsx`**
 **Changes:**
-- Line 34: `OASIS BI PRO x Barbershop Kedungrandu` → `BALIK.LAGI x Barbershop Kedungrandu`
-- Line 88: `© 2025 OASIS BI PRO x Barbershop Kedungrandu` → `© 2025 BALIK.LAGI x Barbershop Kedungrandu`
+- Line 34: `BALIK.LAGI x Barbershop Kedungrandu` → `BALIK.LAGI x Barbershop Kedungrandu`
+- Line 88: `© 2025 BALIK.LAGI x Barbershop Kedungrandu` → `© 2025 BALIK.LAGI x Barbershop Kedungrandu`
 
 **Impact**: Admin dashboard
 
@@ -147,7 +147,7 @@ Total files to update: **11 files**
 
 #### **File 10: `app/page.tsx`**
 **Changes:**
-- Line 307: `© 2025 OASIS BI PRO x Barbershop Kedungrandu` → `© 2025 BALIK.LAGI x Barbershop Kedungrandu`
+- Line 307: `© 2025 BALIK.LAGI x Barbershop Kedungrandu` → `© 2025 BALIK.LAGI x Barbershop Kedungrandu`
 
 **Impact**: Homepage footer
 
@@ -155,7 +155,7 @@ Total files to update: **11 files**
 
 #### **File 11: `lib/analytics/customerPrediction.ts`**
 **Changes:**
-- Line 3: `Core differentiator for OASIS BI PRO x Barbershop` → `Core differentiator for BALIK.LAGI x Barbershop`
+- Line 3: `Core differentiator for BALIK.LAGI x Barbershop` → `Core differentiator for BALIK.LAGI x Barbershop`
 
 **Impact**: Code comment (documentation)
 
@@ -186,7 +186,7 @@ Total files to update: **11 files**
 
 ### **STEP 5: Git Commit** ⏳
 - [ ] Stage all changes: `git add .`
-- [ ] Commit: `git commit -m "Week 1: Complete re-branding OASIS BI PRO → BALIK.LAGI"`
+- [ ] Commit: `git commit -m "Week 1: Complete re-branding BALIK.LAGI → BALIK.LAGI"`
 - [ ] Verify commit success
 
 ### **STEP 6: GitHub Push** ⏳
@@ -199,7 +199,7 @@ Total files to update: **11 files**
 ## 🎯 SUCCESS CRITERIA
 
 ### **Week 1 Complete When:**
-1. ✅ All 15 "OASIS BI PRO" references replaced with "BALIK.LAGI"
+1. ✅ All 15 "BALIK.LAGI" references replaced with "BALIK.LAGI"
 2. ✅ Build passes without errors
 3. ✅ All pages accessible and functional
 4. ✅ Brand consistency across all UI

@@ -1,4 +1,4 @@
-# 🚀 QUICK REFERENCE - OASIS BI PRO x Barbershop
+# 🚀 QUICK REFERENCE - BALIK.LAGI x Barbershop
 
 **Last Updated**: December 17, 2025  
 **Status**: ✅ PRODUCTION READY
@@ -225,7 +225,7 @@ SELECT * FROM get_service_distribution(
 ### This Month
 - [ ] Achieve Rp 2.5M KHL target
 - [ ] Collect 50+ quality transactions
-- [ ] Launch OASIS BI PRO beta to other businesses
+- [ ] Launch BALIK.LAGI beta to other businesses
 
 ---
 

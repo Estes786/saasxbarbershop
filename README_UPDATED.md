@@ -1,4 +1,4 @@
-# 🚀 OASIS BI PRO - Barbershop Management System
+# 🚀 BALIK.LAGI - Barbershop Management System
 
 ## 🔥 CRITICAL UPDATE: 1 USER = 1 DASHBOARD (25 December 2025)
 
@@ -38,7 +38,7 @@
 
 ## 📋 Project Overview
 
-**OASIS BI PRO** adalah Business Intelligence Platform untuk barbershop dengan fitur:
+**BALIK.LAGI** adalah Business Intelligence Platform untuk barbershop dengan fitur:
 - ✅ **3-Role Authentication System** (Customer, Capster, Admin)
 - ✅ **ACCESS KEY System** untuk exclusivity (CUSTOMER_BOZQ_ACCESS_1, CAPSTER_BOZQ_ACCESS_1, ADMIN_BOZQ_ACCESS_1)
 - ✅ **Data Isolation Per User** - 1 USER = 1 DASHBOARD

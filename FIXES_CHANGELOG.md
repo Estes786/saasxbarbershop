@@ -436,7 +436,7 @@ https://saasxbarbershop.vercel.app/
 
 **Contact**:
 - GitHub: @Estes786
-- Project: OASIS BI PRO x Barbershop Kedungrandu
+- Project: BALIK.LAGI x Barbershop Kedungrandu
 
 ---
 

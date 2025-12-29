@@ -1,11 +1,11 @@
-# 🚀 OASIS BI PRO - Barbershop BI Platform
+# 🚀 BALIK.LAGI - Barbershop BI Platform
 ## Updated: 23 Desember 2024
 
 ---
 
 ## 📋 **Project Overview**
 
-**OASIS BI PRO** adalah **Business Intelligence Platform** untuk barbershop yang mengubah data transaksi menjadi insights actionable dengan AI-powered predictive analytics.
+**BALIK.LAGI** adalah **Business Intelligence Platform** untuk barbershop yang mengubah data transaksi menjadi insights actionable dengan AI-powered predictive analytics.
 
 ### **🎯 Project Goals:**
 1. **Study Case Real**: Menggunakan BOZQ Barbershop sebagai pilot project

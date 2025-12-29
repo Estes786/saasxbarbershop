@@ -518,7 +518,7 @@ Dengan foundation yang solid ini, kita telah menciptakan:
 
 ## 🙏 ACKNOWLEDGMENTS
 
-**Project**: OASIS BI PRO x Barbershop  
+**Project**: BALIK.LAGI x Barbershop  
 **Vision**: First BI Platform for Barbershops in Indonesia (and the world!)  
 **Team**: Building the future of barbershop management  
 

@@ -1,6 +1,6 @@
 # 📚 DOKUMENTASI MODULAR BALIK.LAGI SYSTEM
 
-**Project**: Balik.Lagi (Re-branding dari OASIS BI PRO)  
+**Project**: Balik.Lagi (Re-branding dari BALIK.LAGI)  
 **Owner**: Estes786  
 **Created**: 29 Desember 2025  
 **Repository**: https://github.com/Estes786/saasxbarbershop

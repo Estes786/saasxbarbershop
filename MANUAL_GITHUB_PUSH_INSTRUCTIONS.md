@@ -1,6 +1,6 @@
 # 📤 MANUAL GITHUB PUSH INSTRUCTIONS
 
-**Project**: OASIS BI PRO x Barbershop  
+**Project**: BALIK.LAGI x Barbershop  
 **Feature**: ACCESS KEY System (BOZQ Brand)  
 **Commits Ready**: 2 commits to push
 
@@ -142,7 +142,7 @@ git push origin main
 **PAT Token**: `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l`
 
 **Email**: hyydarr1@gmail.com  
-**Username**: Estes786 (or OASIS BI PRO)
+**Username**: Estes786 (or BALIK.LAGI)
 
 ---
 

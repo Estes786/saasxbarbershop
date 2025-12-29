@@ -1,7 +1,7 @@
 # 🚀 DEEP RESEARCH: ARSITEKTUR 3-ROLE BI PLATFORM BARBERSHOP SEBAGAI ASET DIGITAL ABADI
 
 **Tanggal**: 20 Desember 2025  
-**Proyek**: OASIS BI PRO x Barbershop  
+**Proyek**: BALIK.LAGI x Barbershop  
 **Status**: AUTONOMOUS EXECUTION - Building First-of-Its-Kind BI Platform  
 **Repository**: https://github.com/Estes786/saasxbarbershop.git
 

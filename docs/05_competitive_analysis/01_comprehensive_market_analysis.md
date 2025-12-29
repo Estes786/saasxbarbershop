@@ -331,7 +331,7 @@ Closest competitor: Majoo = 5/11, Squire = 6/11
 
 ### **3. Emotional Branding (Balik.Lagi)**
 - **Multi-layer meaning**: Customer, business, spiritual resonance
-- **Memorable**: "Balik.Lagi" sticks better than "OASIS BI PRO"
+- **Memorable**: "Balik.Lagi" sticks better than "BALIK.LAGI"
 - **Indonesian culture fit**: Universal desire untuk "return"
 - **Storytelling**: Santri → Barber → Developer (authentic journey)
 

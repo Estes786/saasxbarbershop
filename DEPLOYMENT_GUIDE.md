@@ -1,4 +1,4 @@
-# 🚀 DEPLOYMENT GUIDE - OASIS BI PRO x Barbershop
+# 🚀 DEPLOYMENT GUIDE - BALIK.LAGI x Barbershop
 
 **Status**: ✅ **PRODUCTION BUILD SUCCESSFUL**  
 **Date**: December 17, 2025
@@ -145,7 +145,7 @@ In Vercel dashboard, add these variables:
 ### Step 1: Create Spreadsheet
 
 1. **Open**: https://sheets.google.com
-2. **Create new**: "Barbershop Data - OASIS BI PRO"
+2. **Create new**: "Barbershop Data - BALIK.LAGI"
 3. **Go to**: Extensions > Apps Script
 
 ### Step 2: Setup Apps Script
@@ -310,7 +310,7 @@ Before going live:
 - Calculate ROI (revenue increase vs time invested)
 - Document success metrics for case study
 - Recruit beta users from barbershop network
-- Prepare OASIS BI PRO public launch
+- Prepare BALIK.LAGI public launch
 
 ---
 

@@ -1,4 +1,4 @@
-# 🚀 PANDUAN LENGKAP KONFIGURASI - OASIS BI PRO BARBERSHOP
+# 🚀 PANDUAN LENGKAP KONFIGURASI - BALIK.LAGI BARBERSHOP
 
 **Tanggal**: 19 Desember 2025  
 **Status**: ✅ **SIAP DIKONFIGURASI**  
@@ -89,7 +89,7 @@ Google OAuth memungkinkan user login dengan akun Google mereka - lebih mudah dan
 2. **Create OAuth Client ID**:
    - Click "Create Credentials" → "OAuth Client ID"
    - Application type: **Web application**
-   - Name: `OASIS BI PRO Barbershop`
+   - Name: `BALIK.LAGI Barbershop`
 
 3. **Authorized JavaScript origins**:
    Add these URLs (one per line):

@@ -1,12 +1,12 @@
-# 🎯 RE-BRANDING: DARI OASIS BI PRO KE BALIK.LAGI
+# 🎯 RE-BRANDING: DARI BALIK.LAGI KE BALIK.LAGI
 
 **Date**: 29 Desember 2025  
-**Decision**: Mengganti brand dari "OASIS BI PRO" menjadi "**BALIK.LAGI**"  
+**Decision**: Mengganti brand dari "BALIK.LAGI" menjadi "**BALIK.LAGI**"  
 **Reason**: Brand yang lebih emosional, memorable, dan aligned dengan filosofi hidup founder
 
 ---
 
-## 🧠 ANALISIS BRAND LAMA: OASIS BI PRO
+## 🧠 ANALISIS BRAND LAMA: BALIK.LAGI
 
 ### **Kelebihan**
 - ✅ Terdengar profesional dan teknis
@@ -66,7 +66,7 @@
 ```
 BALIK.LAGI vs COMPETITORS:
 
-├── vs OASIS BI PRO
+├── vs BALIK.LAGI
 │   └── Emosional > Teknis
 │       Memorable > Deskriptif
 │       Story-driven > Feature-driven
@@ -134,7 +134,7 @@ Powered by OASIS BI (Technical Brand)
 
 ## 📊 POSITIONING MATRIX
 
-### **Before (OASIS BI PRO)**
+### **Before (BALIK.LAGI)**
 ```
 Target: Tech-savvy business owners
 Message: "Professional BI tools for barbershops"
