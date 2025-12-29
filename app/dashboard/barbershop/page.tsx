@@ -69,7 +69,7 @@ export default function BarbershopDashboard() {
         <header className="bg-white shadow-sm border-b border-gray-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <h1 className="text-2xl font-bold text-gray-900">
-              🚀 OASIS BI PRO x Barbershop Kedungrandu
+              🚀 BALIK.LAGI x Barbershop Kedungrandu
             </h1>
             <p className="text-sm text-gray-600 mt-1">
               Data Monetization Dashboard - Real-time Insights
@@ -106,7 +106,7 @@ export default function BarbershopDashboard() {
         <footer className="bg-white border-t border-gray-200 mt-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-sm text-gray-600">
             <p>
-              © 2025 OASIS BI PRO x Barbershop Kedungrandu. All rights reserved.
+              © 2025 BALIK.LAGI x Barbershop Kedungrandu. All rights reserved.
             </p>
             <p className="mt-1">
               Jl. Raya Kedungrandu, Patikraja, Banyumas

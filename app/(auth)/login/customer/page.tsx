@@ -77,7 +77,7 @@ function CustomerLoginForm() {
             <User className="text-white" size={32} />
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">CUSTOMER LOGIN</h1>
-          <p className="text-gray-600">🎯 Portal Customer OASIS BI PRO</p>
+          <p className="text-gray-600">🎯 Portal Customer BALIK.LAGI</p>
         </div>
 
         {/* Customer Info */}

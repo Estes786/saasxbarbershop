@@ -77,7 +77,7 @@ function CapsterLoginForm() {
             <Scissors className="text-white" size={32} />
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">CAPSTER LOGIN</h1>
-          <p className="text-gray-600">✂️ Portal Capster OASIS BI PRO</p>
+          <p className="text-gray-600">✂️ Portal Capster BALIK.LAGI</p>
         </div>
 
         {/* Capster Info */}

@@ -19,7 +19,7 @@ export default function LoginPage() {
           <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-purple-500 to-blue-600 rounded-2xl mb-4 shadow-2xl">
             <Sparkles className="text-white" size={40} />
           </div>
-          <h1 className="text-4xl font-bold text-white mb-3">OASIS BI PRO</h1>
+          <h1 className="text-4xl font-bold text-white mb-3">BALIK.LAGI</h1>
           <p className="text-purple-200 text-lg">Pilih role Anda untuk login</p>
         </div>
 
@@ -34,7 +34,7 @@ export default function LoginPage() {
                 </div>
                 <h3 className="text-2xl font-bold text-white mb-2">Customer</h3>
                 <p className="text-purple-200 text-sm mb-4">
-                  Pelanggan OASIS BI PRO
+                  Pelanggan BALIK.LAGI
                 </p>
                 <div className="text-purple-300 text-sm font-medium group-hover:text-white transition-colors">
                   Login sebagai Customer →

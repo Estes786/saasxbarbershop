@@ -191,7 +191,7 @@ export default function CapsterDashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-sm text-gray-600">
           <p>© 2025 Barbershop Kedungrandu. All rights reserved.</p>
           <p className="mt-1">Jl. Raya Kedungrandu, Patikraja, Banyumas</p>
-          <p className="mt-2 text-xs text-gray-500">Powered by OASIS BI PRO</p>
+          <p className="mt-2 text-xs text-gray-500">Powered by BALIK.LAGI</p>
         </div>
       </footer>
     </div>

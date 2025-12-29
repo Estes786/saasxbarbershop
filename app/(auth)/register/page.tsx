@@ -168,7 +168,7 @@ export default function RegisterPage() {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-600 rounded-2xl mb-4">
             <Sparkles className="text-white" size={32} />
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">OASIS BI PRO</h1>
+          <h1 className="text-3xl font-bold text-white mb-2">BALIK.LAGI</h1>
           <p className="text-purple-200">Buat akun baru</p>
         </div>
 
@@ -212,7 +212,7 @@ export default function RegisterPage() {
                   {validatingKey ? 'Memvalidasi...' : keyValidated ? '✓ Access Key Valid' : 'Validasi Access Key'}
                 </button>
                 <p className="text-xs text-purple-300">
-                  Access key tersedia di kartu member atau hubungi staff OASIS Barbershop
+                  Access key tersedia di kartu member atau hubungi staff BALIK.LAGI Barbershop
                 </p>
               </div>
             </div>

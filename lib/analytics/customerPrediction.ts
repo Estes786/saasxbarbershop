@@ -1,6 +1,6 @@
 /**
  * PREDICTIVE ANALYTICS ALGORITHM
- * Core differentiator for OASIS BI PRO x Barbershop
+ * Core differentiator for BALIK.LAGI x Barbershop
  * 
  * This algorithm predicts when a customer will likely visit next
  * based on their historical visit patterns and behavior.

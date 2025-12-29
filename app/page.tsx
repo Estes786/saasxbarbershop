@@ -304,7 +304,7 @@ export default function Home() {
         {/* Footer */}
         <footer className="container mx-auto px-6 py-8 border-t border-white/10">
           <div className="flex flex-col md:flex-row justify-between items-center text-purple-300 text-sm">
-            <p>© 2025 OASIS BI PRO x Barbershop Kedungrandu. All rights reserved.</p>
+            <p>© 2025 BALIK.LAGI x Barbershop Kedungrandu. All rights reserved.</p>
             <p className="mt-2 md:mt-0">Jl. Raya Kedungrandu, Patikraja, Banyumas</p>
           </div>
         </footer>

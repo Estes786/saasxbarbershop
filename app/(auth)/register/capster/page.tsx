@@ -147,7 +147,7 @@ export default function CapsterRegisterPage() {
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Daftar Sebagai Capster</h1>
           <p className="text-gray-600">
-            Bergabung dengan tim OASIS BI PRO Barbershop
+            Bergabung dengan tim BALIK.LAGI Barbershop
           </p>
         </div>
 
