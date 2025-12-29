@@ -1,26 +1,25 @@
-# 🎯 MASTER IMPLEMENTATION PLAN: BALIK.LAGI SYSTEM
+# 🚀 MASTER IMPLEMENTATION PLAN: BALIK.LAGI RE-BRANDING
 
-**Project**: Balik.Lagi (Re-branding dari OASIS BI PRO)  
-**Timeline**: 4 Minggu (28 Desember 2025 - 25 Januari 2026)  
-**Goal**: Complete re-branding + critical features + ready for first 5 paying customers
+**Project**: Re-branding dari OASIS BI PRO → BALIK.LAGI  
+**Timeline**: 4 Minggu (29 Desember 2025 - 26 Januari 2026)  
+**Goal**: Complete re-branding + Launch BALIK.LAGI brand ke market
 
 ---
 
 ## 📊 OVERVIEW
 
 ### **Strategic Objectives**
-1. **Re-brand** dari OASIS BI PRO ke BALIK.LAGI (brand identity + technical implementation)
-2. **Fix Critical Gaps** (double-booking prevention, real-time features)
-3. **Complete Booking System** (full customer-to-capster workflow)
-4. **Launch MVP** (ready untuk pilot customers)
-5. **Prepare for Scale** (documentation, testing, monitoring)
+1. ✅ **Re-brand** dari OASIS BI PRO ke BALIK.LAGI
+2. ✅ **Update** semua technical assets (code, UI, docs)
+3. ✅ **Launch** brand baru ke market dengan impact maksimal
+4. ✅ **Acquire** first 10 paying customers
 
 ### **Success Metrics**
 ```
-Week 1: ✅ All references updated to BALIK.LAGI
-Week 2: ✅ Booking system 100% functional (no double-booking)
-Week 3: ✅ 3-5 pilot customers onboarded & using platform
-Week 4: ✅ First paying customer (Rp 500K/month subscription)
+Week 1: ✅ Technical re-branding complete
+Week 2: ✅ Brand assets & marketing ready
+Week 3: ✅ Soft launch dengan boss barbershop
+Week 4: ✅ Public launch + first 5-10 customers
 ```
 
 ---
@@ -29,1094 +28,537 @@ Week 4: ✅ First paying customer (Rp 500K/month subscription)
 
 ---
 
-## 📅 WEEK 1: RE-BRANDING EXECUTION (28 Des - 3 Jan 2026)
+## 📅 WEEK 1: TECHNICAL RE-BRANDING (29 Des - 5 Jan 2026)
 
-**Theme**: "From OASIS BI PRO to BALIK.LAGI - Complete Brand Transformation"
+### **Day 1-2: Codebase Updates**
 
-### **DAY 1-2: Brand Identity & Documentation** (Sabtu-Minggu)
-
-#### **Visual Identity Creation**
-- [ ] **Logo Design** (Canva atau Figma)
-  - Simple icon: Scissors + Return Arrow
-  - Wordmark: "BALIK.LAGI" dengan dot/period
-  - Monogram: "B.L" untuk app icon
-  - Export formats: SVG, PNG (multiple sizes)
-  
-- [ ] **Color Palette Finalization**
-  ```css
-  --primary-brown: #8B4513;
-  --secondary-beige: #F5E6D3;
-  --accent-red: #8B0000;
-  --text-dark: #2C1810;
-  --text-light: #F5F5F5;
-  ```
-
-- [ ] **Typography Setup**
-  - Heading: Playfair Display (or similar serif)
-  - Body: Inter / Open Sans
-  - Update `globals.css` dengan custom fonts
-
-#### **Documentation Completion**
-- [x] ✅ Personal Journey documentation
-- [x] ✅ Re-branding plan documentation
-- [x] ✅ Current state analysis documentation
-- [ ] **Spiritual Reflection** documentation
-- [ ] **Business Concept** documentation (detail monetization)
-- [ ] **Secret Keys** documentation (credentials management)
-
-**Deliverables**: Logo files, brand guidelines, complete documentation
-
----
-
-### **DAY 3-4: Technical Re-branding (Core Files)** (Senin-Selasa)
-
-#### **A. Repository & Package Updates**
+**✅ Package.json & Config Files**
 ```bash
-# 1. Update package.json
-{
-  "name": "balik-lagi-system",
-  "version": "2.0.0",
-  "description": "SaaS Platform untuk Barbershop Management - Bikin Pelanggan Balik Lagi"
-}
+# Update package name
+cd /home/user/webapp
+# package.json: "name": "balik-lagi-barbershop"
 
-# 2. Update README.md
-- Ganti semua "OASIS BI PRO" → "BALIK.LAGI"
-- Update tagline, description, features
-- Update screenshots (jika ada)
-
-# 3. Git commit & push
-git add .
-git commit -m "Re-branding: OASIS BI PRO → BALIK.LAGI (Phase 1)"
-git push origin main
+# Update all references:
+- package.json ✅
+- next.config.js ✅
+- ecosystem.config.cjs ✅
+- tsconfig.json ✅
+- README.md ✅
 ```
 
-#### **B. Environment Variables (optional rename)**
+**✅ Environment Variables**
 ```bash
-# .env.example updates (opsional, bisa tetap OASIS internal)
-# Frontend variables tetap NEXT_PUBLIC_SUPABASE_*
-# No breaking changes untuk database/API
+# Update .env.example
+NEXT_PUBLIC_APP_NAME="BALIK.LAGI"
+NEXT_PUBLIC_APP_TAGLINE="Sekali Cocok, Pengen Balik Lagi"
+NEXT_PUBLIC_POWERED_BY="OASIS BI"
 ```
 
-#### **C. Metadata & SEO Updates**
+**✅ UI Text Updates**
 ```typescript
-// app/layout.tsx
-export const metadata: Metadata = {
-  title: 'BALIK.LAGI - Sistem Barbershop Management',
-  description: 'Platform SaaS untuk membuat pelanggan barbershop Anda balik lagi. Booking online, loyalty tracking, dan business intelligence.',
-  keywords: ['barbershop', 'booking system', 'loyalty program', 'saas', 'indonesia'],
-  openGraph: {
-    title: 'BALIK.LAGI - Sekali Cocok, Pengen Balik Lagi',
-    description: 'Ekosistem barber & sistem yang bikin pelanggan pengen balik lagi',
-    images: ['/og-image.png'] // Need to create
-  }
-}
+// Find & replace ALL occurrences:
+"OASIS BI PRO" → "BALIK.LAGI"
+"Oasis" → "Balik.Lagi"
+
+// Keep:
+"Powered by OASIS BI" (footer, technical docs)
 ```
 
-**Deliverables**: Updated package.json, README, metadata, git history
+**Files to Update**:
+```
+app/
+├── layout.tsx (meta title, description)
+├── page.tsx (landing page text)
+├── (auth)/login/page.tsx (all variants)
+├── (auth)/register/page.tsx (all variants)
+└── dashboard/**/page.tsx (headers, titles)
 
----
-
-### **DAY 5-6: UI/UX Re-branding** (Rabu-Kamis)
-
-#### **A. Landing Page Redesign** (`app/page.tsx`)
-
-**Current**: OASIS BI PRO branding, technical focus  
-**Target**: BALIK.LAGI branding, emotional storytelling
-
-```typescript
-// Key sections to update:
-1. Hero Section
-   - New headline: "BALIK.LAGI - Sekali Cocok, Pengen Balik Lagi"
-   - Subheadline: "Ekosistem Barber & Sistem yang Bikin Pelanggan Pengen Balik Lagi"
-   - CTA: "Mulai Gratis" (bukan "Get Started")
-
-2. Value Proposition
-   - Feature 1: "Booking Online yang Mudah"
-   - Feature 2: "Pelanggan Balik Lagi Otomatis"
-   - Feature 3: "Loyalty Program Terintegrasi"
-
-3. Social Proof
-   - Testimonial dari BOZQ Barber (pilot customer)
-   - "Digunakan oleh barbershop terbaik di Indonesia"
-
-4. Pricing Section (optional untuk MVP)
-   - Freemium: Rp 0/bulan (50 bookings)
-   - Pro: Rp 500K/bulan (unlimited)
-   - Enterprise: Custom pricing
+components/
+├── auth/**/*.tsx (form titles)
+├── dashboard/**/*.tsx (widget titles)
+└── ui/**/*.tsx (brand references)
 ```
 
-#### **B. Dashboard Headers Update**
+### **Day 3-4: Database & Documentation**
 
-```typescript
-// components/shared/DashboardHeader.tsx (create if not exists)
-// Update all dashboard headers dengan:
-- Logo baru (top-left)
-- "BALIK.LAGI SYSTEM" branding
-- Tagline: "Bikin Pelanggan Balik Lagi"
+**✅ Database Updates**
+```sql
+-- Update any brand references in database
+-- (Currently none, safe to skip)
 
-// Files to update:
-- app/dashboard/customer/page.tsx
-- app/dashboard/capster/page.tsx
-- app/dashboard/admin/page.tsx
-- app/dashboard/barbershop/page.tsx
+-- Future: Add brand_name column if needed
 ```
 
-#### **C. Navigation & Buttons**
-
-```typescript
-// Update all CTAs & navigation labels:
-"Sign Up" → "Daftar Sekarang"
-"Log In" → "Masuk"
-"Dashboard" → "Dashboard Saya"
-"Book Now" → "Booking Sekarang"
-"View History" → "Riwayat Booking"
-```
-
-**Deliverables**: Redesigned landing page, updated dashboards, new branding everywhere
-
----
-
-### **DAY 7: Testing & Launch** (Jumat)
-
-#### **Re-branding Verification Checklist**
-- [ ] All pages display "BALIK.LAGI" (not "OASIS BI PRO")
-- [ ] New logo visible on all pages
-- [ ] Tagline consistent everywhere
-- [ ] Meta tags updated (check source code)
-- [ ] Favicon changed (browser tab icon)
-- [ ] Email templates updated (if any)
-- [ ] Error pages updated
-- [ ] 404 page branded
-
-#### **User Acceptance Testing**
-- [ ] Test all login flows (customer, capster, admin)
-- [ ] Test all dashboards render correctly
-- [ ] Test booking flow (create, view, cancel)
-- [ ] Test mobile responsiveness
-- [ ] Check cross-browser compatibility (Chrome, Safari, Firefox)
-
-#### **Deployment**
+**✅ Documentation Updates**
 ```bash
-# Build & Deploy
+# Update all .md files
+docs/
+├── README.md ✅
+├── */**.md ✅
+└── Archive old docs
+
+# Root level docs
+├── README.md ✅
+├── DEPLOYMENT_*.md ✅
+└── etc.
+```
+
+### **Day 5-7: Testing & Deployment**
+
+**✅ Testing Checklist**
+- [ ] All pages load correctly
+- [ ] Brand name displays everywhere
+- [ ] No broken references to "OASIS"
+- [ ] Meta tags updated (SEO)
+- [ ] Social share cards correct
+- [ ] Email templates updated
+
+**✅ Deployment**
+```bash
+# Build & test locally
 npm run build
-# Vercel auto-deploys on push to main
+npm run start
 
-# Verify production
-curl https://saasxbarbershop.vercel.app
-# Should show BALIK.LAGI branding
+# Deploy to Vercel
+git add .
+git commit -m "feat: Re-brand to BALIK.LAGI"
+git push origin main
+
+# Vercel auto-deploys
+# Verify: https://saasxbarbershop.vercel.app
 ```
-
-**Deliverables**: Re-branded production site, verification report
 
 ---
 
-## 📅 WEEK 2: CRITICAL FEATURES (4-10 Jan 2026)
+## 📅 WEEK 2: BRAND ASSETS & MARKETING (6 - 12 Jan 2026)
 
-**Theme**: "Zero Double-Bookings & Real-time Experience"
+### **Day 1-2: Visual Brand Identity**
 
-### **DAY 8-9: Booking Slots System** (Sabtu-Minggu)
+**✅ Logo Design**
+```
+Options:
+1. Use Canva Pro (quick, professional)
+2. Hire Fiverr designer (Rp 100K-300K)
+3. Use AI logo generator (Looka, Brandmark)
 
-#### **A. Database Schema**
-```sql
--- Create booking_slots table
-CREATE TABLE booking_slots (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  date DATE NOT NULL,
-  start_time TIME NOT NULL,
-  end_time TIME NOT NULL,
-  capster_id UUID REFERENCES capsters(id) ON DELETE CASCADE,
-  status TEXT DEFAULT 'available' CHECK (status IN ('available', 'booked', 'blocked')),
-  booking_id UUID REFERENCES bookings(id) ON DELETE SET NULL,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW(),
-  UNIQUE(date, start_time, capster_id)
-);
-
--- Indexes for performance
-CREATE INDEX idx_booking_slots_date ON booking_slots(date);
-CREATE INDEX idx_booking_slots_capster_id ON booking_slots(capster_id);
-CREATE INDEX idx_booking_slots_status ON booking_slots(status);
-
--- RLS Policies
-ALTER TABLE booking_slots ENABLE ROW LEVEL SECURITY;
-
--- Policy: Anyone can read available slots
-CREATE POLICY "public_read_available_slots" ON booking_slots
-  FOR SELECT USING (status = 'available');
-
--- Policy: Capster & Admin can manage their slots
-CREATE POLICY "capster_manage_own_slots" ON booking_slots
-  FOR ALL USING (
-    capster_id IN (
-      SELECT id FROM capsters WHERE user_id = auth.uid()
-    )
-    OR
-    EXISTS (
-      SELECT 1 FROM user_profiles
-      WHERE id = auth.uid() AND role IN ('admin', 'barbershop')
-    )
-  );
+Requirements:
+- Simple & memorable
+- Works in dark/light mode
+- Scalable (favicon to billboard)
+- Indonesia-centric color palette
 ```
 
-#### **B. Slot Generation Logic**
-```typescript
-// lib/booking/generateSlots.ts
-export async function generateSlotsForCapster(
-  capsterId: string,
-  date: Date,
-  workingHours: { start: string; end: string },
-  slotDuration: number = 30 // minutes
-) {
-  const slots = [];
-  const startTime = parseTime(workingHours.start); // e.g., "09:00"
-  const endTime = parseTime(workingHours.end);     // e.g., "17:00"
+**✅ Color Palette**
+```css
+/* Balik.Lagi Brand Colors */
+:root {
+  --primary: #2563eb; /* Trust blue */
+  --secondary: #f59e0b; /* Warm amber */
+  --accent: #10b981; /* Growth green */
+  --neutral: #64748b; /* Professional gray */
   
-  let currentTime = startTime;
-  while (currentTime < endTime) {
-    const slotEnd = addMinutes(currentTime, slotDuration);
-    slots.push({
-      date,
-      start_time: formatTime(currentTime),
-      end_time: formatTime(slotEnd),
-      capster_id: capsterId,
-      status: 'available'
-    });
-    currentTime = slotEnd;
-  }
-  
-  // Bulk insert to Supabase
-  const { error } = await supabase
-    .from('booking_slots')
-    .insert(slots);
-  
-  if (error) throw error;
-  return slots.length;
+  /* Semantic colors */
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --info: #3b82f6;
 }
 ```
 
-#### **C. Auto-generate Slots (Daily Cron)**
-```typescript
-// app/api/cron/generate-slots/route.ts
-// Called by Vercel Cron (or manual trigger)
-export async function GET(request: Request) {
-  // Generate slots for next 7 days
-  const capsters = await getActiveCapsters();
-  const startDate = new Date();
-  const endDate = addDays(startDate, 7);
-  
-  for (let date = startDate; date <= endDate; date = addDays(date, 1)) {
-    for (const capster of capsters) {
-      await generateSlotsForCapster(
-        capster.id,
-        date,
-        capster.working_hours
-      );
-    }
-  }
-  
-  return Response.json({ success: true, message: '7 days slots generated' });
-}
+**✅ Typography**
+```
+Primary Font: Inter (modern, readable)
+Secondary Font: Plus Jakarta Sans (friendly, professional)
+Mono Font: JetBrains Mono (code, numbers)
 ```
 
-**Deliverables**: Booking slots table, generation logic, cron job
+### **Day 3-4: Marketing Materials**
 
----
+**✅ Landing Page Redesign**
+```
+Hero Section:
+- Headline: "Bikin Customer Balik Lagi, Rezeki Balik Lagi"
+- Subheadline: "Platform SaaS untuk Barbershop Indonesia"
+- CTA: "Coba Gratis 1 Bulan"
 
-### **DAY 10-11: Double-Booking Prevention** (Senin-Selasa)
+Features Section:
+- Booking System
+- Loyalty Tracker
+- Queue Management
+- WhatsApp Notifications (coming soon)
 
-#### **A. Availability Checker API**
-```typescript
-// app/api/bookings/check-availability/route.ts
-export async function POST(request: Request) {
-  const { date, time, capster_id, service_duration } = await request.json();
-  
-  // 1. Get all slots within the service duration
-  const requiredSlots = calculateRequiredSlots(time, service_duration);
-  
-  // 2. Check if all slots are available
-  const { data: slots } = await supabase
-    .from('booking_slots')
-    .select('*')
-    .eq('date', date)
-    .eq('capster_id', capster_id)
-    .in('start_time', requiredSlots)
-    .eq('status', 'available');
-  
-  // 3. Return availability
-  const isAvailable = slots.length === requiredSlots.length;
-  
-  return Response.json({
-    available: isAvailable,
-    available_slots: slots,
-    reason: !isAvailable ? 'Some slots already booked' : null
-  });
-}
+Testimonials:
+- Boss barbershop quote
+- Before/After metrics
+
+Pricing:
+- Starter: Rp 199K/bulan
+- Professional: Rp 499K/bulan
+- Enterprise: Rp 999K/bulan
 ```
 
-#### **B. Atomic Booking Creation**
-```typescript
-// app/api/bookings/create/route.ts
-export async function POST(request: Request) {
-  const { customer_id, capster_id, date, time, service_id } = await request.json();
-  
-  // Transaction: Book slots + Create booking (atomic)
-  const { data, error } = await supabase.rpc('create_booking_atomic', {
-    p_customer_id: customer_id,
-    p_capster_id: capster_id,
-    p_date: date,
-    p_time: time,
-    p_service_id: service_id
-  });
-  
-  if (error) {
-    return Response.json({ error: 'Booking failed' }, { status: 409 });
-  }
-  
-  // Send confirmation (email/WhatsApp)
-  await sendBookingConfirmation(data.booking_id);
-  
-  return Response.json({ booking: data }, { status: 201 });
-}
+**✅ Sales Deck (10 Slides)**
+```
+1. Cover: BALIK.LAGI logo
+2. Problem: Barbershop challenges
+3. Solution: BALIK.LAGI features
+4. How It Works: 3-step process
+5. Founder Story: Capster → Developer
+6. Case Study: Boss barbershop results
+7. Pricing: Clear tiers
+8. Comparison: vs Competitors
+9. Roadmap: Future features
+10. CTA: Free trial offer
 ```
 
-#### **C. Database Function (Atomic Transaction)**
-```sql
--- PostgreSQL Function for atomic booking
-CREATE OR REPLACE FUNCTION create_booking_atomic(
-  p_customer_id UUID,
-  p_capster_id UUID,
-  p_date DATE,
-  p_time TIME,
-  p_service_id UUID
-) RETURNS JSONB AS $$
-DECLARE
-  v_booking_id UUID;
-  v_service_duration INT;
-  v_required_slots TIME[];
-BEGIN
-  -- 1. Get service duration
-  SELECT duration_minutes INTO v_service_duration
-  FROM service_catalog WHERE id = p_service_id;
-  
-  -- 2. Calculate required slots
-  v_required_slots := calculate_time_slots(p_time, v_service_duration);
-  
-  -- 3. Lock and check availability (FOR UPDATE)
-  PERFORM * FROM booking_slots
-  WHERE date = p_date
-    AND capster_id = p_capster_id
-    AND start_time = ANY(v_required_slots)
-    AND status = 'available'
-  FOR UPDATE;
-  
-  -- 4. If not enough slots, abort
-  IF (SELECT COUNT(*) FROM booking_slots
-      WHERE date = p_date AND capster_id = p_capster_id
-        AND start_time = ANY(v_required_slots) AND status = 'available'
-     ) < array_length(v_required_slots, 1)
-  THEN
-    RAISE EXCEPTION 'Slots not available';
-  END IF;
-  
-  -- 5. Create booking
-  INSERT INTO bookings (customer_id, capster_id, booking_date, booking_time, service_id, status)
-  VALUES (p_customer_id, p_capster_id, p_date, p_time, p_service_id, 'pending')
-  RETURNING id INTO v_booking_id;
-  
-  -- 6. Mark slots as booked
-  UPDATE booking_slots
-  SET status = 'booked', booking_id = v_booking_id, updated_at = NOW()
-  WHERE date = p_date
-    AND capster_id = p_capster_id
-    AND start_time = ANY(v_required_slots);
-  
-  -- 7. Return booking ID
-  RETURN jsonb_build_object('booking_id', v_booking_id);
-END;
-$$ LANGUAGE plpgsql;
+**✅ Demo Video (5 minutes)**
+```
+Script:
+1. Hook: "Gue capster kayak lu..." (30s)
+2. Problem: Manual booking chaos (1min)
+3. Solution: Live demo di barbershop (2min)
+4. Results: Before/After metrics (1min)
+5. CTA: "DM gue untuk free trial" (30s)
+
+Location: Record di BOZQ Barbershop (boss permission)
+Equipment: Smartphone + tripod
+Editing: CapCut (free, easy)
 ```
 
-**Deliverables**: Availability API, atomic booking function, zero double-booking guarantee
+### **Day 5-7: Social Media Setup**
 
----
+**✅ Instagram Account**
+```
+Handle: @balik.lagi.id
+Bio: "Platform SaaS untuk Barbershop 💈
+      Dibuat oleh Capster, untuk Capster
+      Coba gratis 1 bulan 👇"
+Link: balik-lagi.id
 
-### **DAY 12-13: Real-time Features** (Rabu-Kamis)
-
-#### **A. Supabase Realtime Subscriptions**
-```typescript
-// lib/hooks/useRealtimeBookings.ts
-import { useEffect, useState } from 'react';
-import { createClient } from '@/lib/supabase/client';
-
-export function useRealtimeBookings(capsterId?: string) {
-  const [bookings, setBookings] = useState([]);
-  const supabase = createClient();
-  
-  useEffect(() => {
-    // Initial fetch
-    fetchBookings();
-    
-    // Subscribe to changes
-    const channel = supabase
-      .channel('bookings-realtime')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'bookings',
-          filter: capsterId ? `capster_id=eq.${capsterId}` : undefined
-        },
-        (payload) => {
-          console.log('Booking update:', payload);
-          handleRealtimeUpdate(payload);
-        }
-      )
-      .subscribe();
-    
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [capsterId]);
-  
-  const handleRealtimeUpdate = (payload: any) => {
-    if (payload.eventType === 'INSERT') {
-      setBookings(prev => [...prev, payload.new]);
-    } else if (payload.eventType === 'UPDATE') {
-      setBookings(prev =>
-        prev.map(b => b.id === payload.new.id ? payload.new : b)
-      );
-    } else if (payload.eventType === 'DELETE') {
-      setBookings(prev => prev.filter(b => b.id !== payload.old.id));
-    }
-  };
-  
-  return { bookings, refresh: fetchBookings };
-}
+Content Plan (Week 1):
+- Post 1: Founder story
+- Post 2: Demo video
+- Post 3: Testimonial boss
+- Post 4: Behind-the-scenes development
+- Post 5: Free trial announcement
 ```
 
-#### **B. Update Components to Use Realtime**
-```typescript
-// components/capster/QueueDisplay.tsx
-import { useRealtimeBookings } from '@/lib/hooks/useRealtimeBookings';
+**✅ WhatsApp Business**
+```
+Number: (your capster number)
+Profile: BALIK.LAGI logo
+Status: "DM untuk free trial!"
 
-export function QueueDisplay({ capsterId }: Props) {
-  const { bookings } = useRealtimeBookings(capsterId);
-  
-  // Filter today's bookings
-  const todayBookings = bookings.filter(b =>
-    isToday(new Date(b.booking_date))
-  ).sort((a, b) => compareAsc(a.booking_time, b.booking_time));
-  
-  return (
-    <div>
-      {todayBookings.map(booking => (
-        <BookingCard key={booking.id} booking={booking} />
-      ))}
-    </div>
-  );
-}
+Auto-reply:
+"Halo! Terima kasih sudah tertarik dengan BALIK.LAGI.
+Kami platform SaaS khusus barbershop Indonesia.
+Free trial 1 bulan, setup gratis!
+Mau info lebih lanjut?"
 ```
 
-**Deliverables**: Real-time hooks, live queue updates, instant status changes
-
----
-
-### **DAY 14: Testing & Bug Fixes** (Jumat)
-
-#### **Test Scenarios**
-1. **Double-Booking Prevention**
-   - [ ] Test: 2 customers book same capster, same time → 1 succeeds, 1 fails
-   - [ ] Test: Booking spans multiple slots (60min service) → all slots locked
-   - [ ] Test: Concurrent booking requests → handled atomically
-
-2. **Real-time Updates**
-   - [ ] Test: Capster dashboard shows new booking instantly (no refresh)
-   - [ ] Test: Status change reflects immediately across all dashboards
-   - [ ] Test: Cancellation frees up slots instantly
-
-3. **Edge Cases**
-   - [ ] Test: Booking at exact closing time
-   - [ ] Test: Booking with capster on leave/unavailable
-   - [ ] Test: Network interruption during booking
-
-**Deliverables**: Test report, bug fixes, production-ready booking system
-
----
-
-## 📅 WEEK 3: PILOT ONBOARDING (11-17 Jan 2026)
-
-**Theme**: "Get First Customers Using the Platform"
-
-### **DAY 15-16: Pilot Customer Setup** (Sabtu-Minggu)
-
-#### **A. BOZQ Barber Onboarding**
+**✅ Facebook Page** (optional)
 ```
-1. Create Admin Account for BOZQ Owner
-   - Email: [owner email]
-   - Role: admin
-   - Access key: ADMIN_BOZQ_ACCESS_1
-
-2. Create Capster Accounts (for all barbers at BOZQ)
-   - Import existing capsters list
-   - Auto-approve via access key
-   - Setup working hours & specializations
-
-3. Migrate Existing Customer Data (if any)
-   - Export from previous system (if exists)
-   - Import to barbershop_customers table
-   - Link to user_profiles (optional)
-
-4. Training Session (1-2 hours)
-   - How to use admin dashboard
-   - How to manage bookings
-   - How to read analytics
-   - How to handle customer queries
-```
-
-#### **B. Documentation for End Users**
-```markdown
-# BALIK.LAGI User Guide
-
-## Untuk Customer:
-1. Cara daftar akun
-2. Cara booking layanan
-3. Cara lihat riwayat booking
-4. Cara cancel/reschedule
-5. Cara redeem loyalty points
-
-## Untuk Capster:
-1. Cara login & lihat jadwal hari ini
-2. Cara update status booking
-3. Cara lihat customer predictions
-4. Cara tracking earnings
-
-## Untuk Admin/Owner:
-1. Cara monitor semua booking
-2. Cara baca KHL analytics
-3. Cara export reports
-4. Cara manage access keys
-```
-
-**Deliverables**: BOZQ fully onboarded, user guides created
-
----
-
-### **DAY 17-19: Feedback Collection & Iteration** (Senin-Rabu)
-
-#### **User Feedback Loop**
-```
-Day 17 (Monday):
-- Morning: Check BOZQ usage (how many bookings created?)
-- Afternoon: Call/WhatsApp check-in dengan owner
-- Evening: Collect pain points & feature requests
-
-Day 18 (Tuesday):
-- Prioritize fixes based on feedback
-- Fix critical bugs (if any)
-- Improve UX based on confusion points
-- Deploy hotfixes
-
-Day 19 (Wednesday):
-- Re-test with BOZQ team
-- Verify all feedback addressed
-- Document lessons learned
-- Prepare for next pilot customer
-```
-
-#### **Metrics to Track**
-```
-Week 3 Success Metrics:
-- [ ] 10+ bookings created via platform
-- [ ] 0 double-bookings occurred
-- [ ] <5% booking cancellation rate
-- [ ] >80% user satisfaction (quick survey)
-- [ ] <30 seconds average booking time
-```
-
-**Deliverables**: Feedback report, bug fixes, improved UX
-
----
-
-### **DAY 20-21: Scaling to 2nd & 3rd Pilot** (Kamis-Jumat)
-
-#### **Outreach to 2 More Barbershops**
-```
-Target Profile:
-- Small-medium barbershop (1-3 locations)
-- 2-5 capsters
-- Active customer base (50+ regulars)
-- Tech-savvy owner (or willing to learn)
-- Located in same city (easy support)
-
-Pitch:
-"Kami dari BALIK.LAGI, platform baru yang membantu barbershop
-mengelola booking dan bikin pelanggan balik lagi. BOZQ Barber
-sudah pakai dan terbantu. Mau coba gratis 1 bulan?"
-
-Offer:
-- Gratis 1 bulan (normally Rp 500K/bulan)
-- Personal onboarding & training
-- Priority support via WhatsApp
-- Feature requests considered
-```
-
-#### **Onboarding Process (per barbershop)**
-```
-1. Discovery Call (30 mins)
-   - Understand their current system
-   - Explain BALIK.LAGI value proposition
-   - Show live demo
-
-2. Setup Session (1 hour)
-   - Create admin account
-   - Add capsters
-   - Import customer data (if any)
-   - Configure settings
-
-3. Training Session (1 hour)
-   - Walk through each dashboard
-   - Practice booking flow
-   - Q&A session
-
-4. Follow-up (Day 3, 7, 14)
-   - Check usage & issues
-   - Collect feedback
-   - Offer additional training if needed
-```
-
-**Deliverables**: 2-3 additional pilot customers, onboarding playbook
-
----
-
-## 📅 WEEK 4: MONETIZATION & SCALE PREP (18-25 Jan 2026)
-
-**Theme**: "From Free Pilot to First Paid Customer"
-
-### **DAY 22-23: Subscription System** (Sabtu-Minggu)
-
-#### **A. Pricing Tiers Setup**
-```typescript
-// lib/billing/plans.ts
-export const PLANS = {
-  FREE: {
-    name: 'Free Trial',
-    price: 0,
-    duration: 30, // days
-    limits: {
-      bookings: 50,
-      capsters: 3,
-      locations: 1,
-      analytics: 'basic',
-      support: 'email'
-    }
-  },
-  PRO: {
-    name: 'Pro',
-    price: 500000, // Rp 500K
-    duration: 30,
-    limits: {
-      bookings: Infinity,
-      capsters: Infinity,
-      locations: 3,
-      analytics: 'advanced',
-      support: 'whatsapp'
-    }
-  },
-  ENTERPRISE: {
-    name: 'Enterprise',
-    price: 2000000, // Rp 2M
-    duration: 30,
-    limits: {
-      bookings: Infinity,
-      capsters: Infinity,
-      locations: Infinity,
-      analytics: 'premium',
-      support: 'dedicated'
-    }
-  }
-};
-```
-
-#### **B. Usage Tracking & Limits**
-```sql
--- Add to barbershop_customers or create subscriptions table
-CREATE TABLE subscriptions (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  barbershop_id UUID REFERENCES user_profiles(id),
-  plan TEXT DEFAULT 'FREE', -- FREE/PRO/ENTERPRISE
-  status TEXT DEFAULT 'active', -- active/cancelled/expired
-  current_period_start DATE NOT NULL,
-  current_period_end DATE NOT NULL,
-  bookings_count INT DEFAULT 0,
-  bookings_limit INT DEFAULT 50,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- Function to check if can create booking
-CREATE OR REPLACE FUNCTION can_create_booking(p_barbershop_id UUID)
-RETURNS BOOLEAN AS $$
-DECLARE
-  v_subscription subscriptions%ROWTYPE;
-BEGIN
-  SELECT * INTO v_subscription
-  FROM subscriptions
-  WHERE barbershop_id = p_barbershop_id
-    AND status = 'active'
-    AND current_period_end >= CURRENT_DATE
-  LIMIT 1;
-  
-  IF v_subscription IS NULL THEN
-    RETURN FALSE; -- No active subscription
-  END IF;
-  
-  IF v_subscription.bookings_count >= v_subscription.bookings_limit
-     AND v_subscription.bookings_limit != -1 -- -1 = unlimited
-  THEN
-    RETURN FALSE; -- Limit reached
-  END IF;
-  
-  RETURN TRUE;
-END;
-$$ LANGUAGE plpgsql;
-```
-
-#### **C. Upgrade Prompt UI**
-```typescript
-// components/billing/UpgradePrompt.tsx
-export function UpgradePrompt({ currentPlan, usage }: Props) {
-  if (currentPlan === 'FREE' && usage.bookings >= 40) {
-    return (
-      <Alert variant="warning">
-        <AlertCircle className="h-4 w-4" />
-        <AlertTitle>Limit Soon</AlertTitle>
-        <AlertDescription>
-          Anda sudah menggunakan {usage.bookings}/50 bookings.
-          Upgrade ke Pro untuk unlimited bookings!
-          <Button variant="outline" className="mt-2">
-            Upgrade Sekarang (Rp 500K/bulan)
-          </Button>
-        </AlertDescription>
-      </Alert>
-    );
-  }
-  
-  return null;
-}
-```
-
-**Deliverables**: Subscription system, usage tracking, upgrade flow
-
----
-
-### **DAY 24-25: Payment Integration** (Senin-Selasa)
-
-#### **A. Midtrans Integration (Indonesia)**
-```typescript
-// lib/payment/midtrans.ts
-import Midtrans from 'midtrans-client';
-
-const snap = new Midtrans.Snap({
-  isProduction: process.env.NODE_ENV === 'production',
-  serverKey: process.env.MIDTRANS_SERVER_KEY,
-  clientKey: process.env.MIDTRANS_CLIENT_KEY
-});
-
-export async function createPaymentToken(params: {
-  order_id: string;
-  amount: number;
-  customer_email: string;
-}) {
-  const transaction = await snap.createTransaction({
-    transaction_details: {
-      order_id: params.order_id,
-      gross_amount: params.amount
-    },
-    customer_details: {
-      email: params.customer_email
-    },
-    credit_card: {
-      secure: true
-    }
-  });
-  
-  return transaction.token;
-}
-```
-
-#### **B. Payment Flow**
-```typescript
-// app/api/payments/create-transaction/route.ts
-export async function POST(request: Request) {
-  const { plan, barbershop_id } = await request.json();
-  
-  // 1. Create order
-  const order_id = `ORDER-${Date.now()}-${barbershop_id}`;
-  const amount = PLANS[plan].price;
-  
-  // 2. Get payment token
-  const token = await createPaymentToken({
-    order_id,
-    amount,
-    customer_email: user.email
-  });
-  
-  // 3. Save pending payment
-  await supabase.from('payments').insert({
-    order_id,
-    barbershop_id,
-    plan,
-    amount,
-    status: 'pending',
-    payment_token: token
-  });
-  
-  // 4. Return token untuk frontend
-  return Response.json({ token });
-}
-```
-
-#### **C. Webhook Handler (Payment Notification)**
-```typescript
-// app/api/payments/webhook/route.ts
-export async function POST(request: Request) {
-  const notification = await request.json();
-  
-  // Verify signature (Midtrans security)
-  const isValid = verifySignature(notification);
-  if (!isValid) {
-    return Response.json({ error: 'Invalid signature' }, { status: 401 });
-  }
-  
-  const { order_id, transaction_status } = notification;
-  
-  if (transaction_status === 'settlement') {
-    // Payment success!
-    await supabase.from('payments')
-      .update({ status: 'paid' })
-      .eq('order_id', order_id);
-    
-    // Activate subscription
-    await activateSubscription(order_id);
-    
-    // Send confirmation email
-    await sendPaymentConfirmation(order_id);
-  }
-  
-  return Response.json({ success: true });
-}
-```
-
-**Deliverables**: Payment integration, subscription activation, webhook handler
-
----
-
-### **DAY 26-27: First Paid Customer** (Rabu-Kamis)
-
-#### **Conversion Strategy**
-```
-Target: BOZQ Barber (pilot yang sudah puas)
-
-Approach:
-1. Week 3 feedback call:
-   "Bagaimana pengalaman pakai BALIK.LAGI selama 2 minggu?"
-   
-2. Value reminder:
-   "Anda sudah create 25+ bookings, 0 double-booking, customer happy"
-   
-3. Soft pitch:
-   "Minggu depan trial berakhir. Kami tawarkan harga khusus early adopter:
-    Rp 500K/bulan (normally Rp 750K) + gratis 1 bulan pertama"
-   
-4. Close:
-   "Kalau cocok, kami setup payment sekarang. Kalau ada concern, kami dengar dulu."
-```
-
-#### **Success Scenario**
-```
-IF BOZQ agrees:
-- Setup Midtrans account for them (or guide self-setup)
-- Create first payment transaction
-- Activate Pro subscription
-- Celebrate first paid customer! 🎉
-
-IF BOZQ hesitates:
-- Ask: "Apa yang kurang?"
-- Offer: "Extend trial 1 minggu lagi?"
-- Note: Feature requests for improvement
-- Follow up Day 28
-```
-
-**Deliverables**: First paying customer (goal: Rp 500K MRR)
-
----
-
-### **DAY 28: Documentation & Handoff** (Jumat)
-
-#### **Final Documentation**
-```
-1. Technical Documentation
-   - API documentation (endpoints, payloads)
-   - Database schema documentation
-   - Deployment guide
-   - Troubleshooting guide
-
-2. Business Documentation
-   - Onboarding playbook
-   - Customer success guide
-   - Pricing justification
-   - Sales pitch templates
-
-3. Legal & Compliance
-   - Terms of Service
-   - Privacy Policy
-   - Data Processing Agreement
-   - Refund Policy
-```
-
-#### **Handoff Preparation (if needed)**
-```
-If planning to hire team or delegate:
-- Code walkthrough documentation
-- Access credentials (in secure vault)
-- Customer list & contact info
-- Support ticket system setup
-```
-
-**Deliverables**: Complete documentation, ready for scale
-
----
-
-## 🎯 POST-4-WEEK GOALS
-
-### **Month 2 Objectives** (Feb 2026)
-1. **10 Paying Customers** (Rp 5M MRR)
-2. **Advanced Features**:
-   - WhatsApp integration (booking confirmations)
-   - Loyalty rewards redemption
-   - Review system (post-service rating)
-3. **Marketing Launch**:
-   - Landing page SEO optimization
-   - Social media presence (Instagram, TikTok)
-   - First 3 case studies published
-
-### **Month 3 Objectives** (Mar 2026)
-1. **25 Paying Customers** (Rp 12.5M MRR)
-2. **Product Expansion**:
-   - Mobile app (PWA)
-   - Multi-location support
-   - API for integrations
-3. **Fundraising Prep**:
-   - Pitch deck creation
-   - Financial model validation
-   - Investor outreach (if needed)
-
----
-
-## 📊 SUCCESS METRICS (4-Week Dashboard)
-
-### **Week 1: Re-branding**
-```
-✅ All "OASIS BI PRO" → "BALIK.LAGI" (100%)
-✅ New logo & visual identity live
-✅ Landing page redesigned
-✅ Documentation complete
-```
-
-### **Week 2: Features**
-```
-✅ Booking slots table implemented
-✅ Double-booking prevention working (0 errors)
-✅ Real-time updates functional
-✅ All tests passing
-```
-
-### **Week 3: Pilots**
-```
-✅ 3 pilot customers onboarded
-✅ 30+ bookings created via platform
-✅ 85%+ user satisfaction
-✅ <3 critical bugs reported
-```
-
-### **Week 4: Monetization**
-```
-✅ Subscription system live
-✅ Payment integration working
-✅ 1+ paying customer (Rp 500K+ MRR)
-✅ Documentation complete
+Focus: Instagram first (more barbershop audience)
+Facebook: Create for credibility
+Content: Cross-post dari Instagram
 ```
 
 ---
 
-## 🚨 RISK MITIGATION
+## 📅 WEEK 3: SOFT LAUNCH (13 - 19 Jan 2026)
 
-### **Risk 1: Re-branding Breaks Features**
-**Mitigation**: 
-- Update UI incrementally, not all-at-once
-- Keep backend/database names stable (internal "oasis" OK)
-- Test after each major change
+### **Day 1-3: Boss Barbershop Onboarding**
 
-### **Risk 2: Double-Booking Despite Prevention**
-**Mitigation**:
-- Use database-level constraints (UNIQUE indexes)
-- Test with concurrent requests (load testing)
-- Have rollback plan (manual booking management)
+**✅ Re-brand Boss's System**
+```
+1. Update UI dengan BALIK.LAGI brand
+2. Train boss & capster team (1 hour session)
+3. Collect feedback & iterate
+4. Setup analytics tracking (customer growth)
+```
 
-### **Risk 3: Pilot Customers Don't Convert**
-**Mitigation**:
-- Set clear expectations (trial period = 30 days)
-- Collect feedback early & iterate fast
-- Offer extended trial if close to converting
-- Have backup plan (find more pilots)
+**✅ Testimonial Collection**
+```
+Questions untuk Boss:
+1. "Sebelum pakai BALIK.LAGI, apa challenge terbesar?"
+2. "Setelah pakai BALIK.LAGI, apa yang berubah?"
+3. "Feature apa yang paling membantu?"
+4. "Mau recommend ke barbershop lain?"
 
-### **Risk 4: Payment Integration Issues**
-**Mitigation**:
-- Test in Midtrans sandbox first
-- Have manual payment alternative (bank transfer)
-- Delay monetization if needed (focus on product first)
+Format:
+- Video testimonial (1-2 minutes)
+- Written quote untuk website
+- WhatsApp screenshot (organic)
+```
+
+### **Day 4-5: Case Study Creation**
+
+**✅ Before/After Metrics**
+```
+Collect data dari boss barbershop:
+
+BEFORE (manual system):
+├── Average bookings/day: ?
+├── No-show rate: ?
+├── Customer return rate: ?
+└── Time spent on admin: ?
+
+AFTER (Balik.Lagi):
+├── Bookings increased: +X%
+├── No-show reduced: -X%
+├── Return rate: +X%
+└── Admin time saved: X hours/week
+```
+
+**✅ Case Study Document**
+```
+Title: "Bagaimana BOZQ Barbershop Tingkatkan 
+        Customer Retention 30% dengan BALIK.LAGI"
+
+Format:
+1. Challenge (150 words)
+2. Solution (200 words)
+3. Implementation (150 words)
+4. Results (200 words)
+5. Testimonial (quote)
+6. CTA (try free trial)
+```
+
+### **Day 6-7: Beta Testing (5 capster friends)**
+
+**✅ Outreach Script**
+```
+Message template (WhatsApp):
+"Bro, gue bikin app buat boss gue dan hasilnya bagus banget.
+Customer jadi sering balik lagi, booking jadi rapi.
+
+Gue lagi cari 5 barbershop untuk free trial 1 bulan.
+Setup gratis, training gratis, support full 1 bulan.
+
+Lu mau coba?"
+```
+
+**✅ Onboarding Process**
+```
+1. Discovery call (30 min): Understand their pain points
+2. Demo session (30 min): Show how it works
+3. Setup (1 hour): Import data, configure settings
+4. Training (1 hour): Boss + capster team training
+5. Support (1 month): WhatsApp support unlimited
+```
 
 ---
 
-## 🎓 KEY PRINCIPLES
+## 📅 WEEK 4: PUBLIC LAUNCH (20 - 26 Jan 2026)
 
-### **1. Done is Better Than Perfect**
-- Ship MVP features, iterate based on feedback
-- Don't over-engineer early (YAGNI principle)
-- Focus on what customers actually need
+### **Day 1-2: Launch Campaign Prep**
 
-### **2. Talk to Customers Daily**
-- Don't build in isolation
-- Every feature should solve real pain point
-- Feedback loop < 24 hours
+**✅ Launch Announcement**
+```
+Instagram Post:
+"🚀 LAUNCHING: BALIK.LAGI
 
-### **3. Stay Humble & Adaptive**
-- Be ready to pivot if something not working
-- Admit mistakes fast, fix faster
-- Customer success > being "right"
+Platform SaaS pertama di Indonesia yang 
+KHUSUS untuk barbershop!
+
+Dibuat oleh capster, untuk capster.
+Udah dipakai sama [Boss Barbershop Name] dan hasilnya:
+✅ Booking naik 40%
+✅ Customer balik lagi terus
+✅ Admin jadi rapi
+
+FREE TRIAL 1 BULAN untuk 10 barbershop pertama!
+DM sekarang: 'TRIAL'"
+
+📸 Image: Demo screenshot + testimonial
+🎥 Video: 30s teaser
+```
+
+**✅ Landing Page Launch Mode**
+```
+Banner: "🎉 LAUNCHING NOW! Free trial 1 bulan 
+         untuk 10 barbershop pertama"
+
+Countdown: "Tersisa X slot"
+CTA: "Daftar Sekarang" → Lead capture form
+```
+
+### **Day 3-5: Community Outreach**
+
+**✅ WhatsApp Groups**
+```
+Target: Capster community groups
+Message:
+"Halo teman-teman capster!
+Gue mau share something yang udah bantu boss gue banget.
+[Continue with personal story + offer]"
+
+Groups to join:
+- Barbershop Indonesia
+- Komunitas Capster
+- Barber Network
+- etc.
+```
+
+**✅ Instagram Stories Blitz**
+```
+Day 1-7 daily stories:
+- Behind-the-scenes development
+- Customer success stories
+- Live demo sessions
+- Q&A about barbershop challenges
+- Free trial reminder
+```
+
+**✅ Direct Outreach (50 barbershops)**
+```
+Research: Find 50 barbershops on Instagram
+Message: Personalized DM (not spam)
+
+Template:
+"Halo bang! Gue lihat [Barbershop Name] keren banget.
+Gue juga capster di BOZQ, dan gue bikin platform buat 
+bantu barbershop kayak kita. Boleh gue share info?"
+```
+
+### **Day 6-7: Launch Week Wrap-up**
+
+**✅ Metrics Tracking**
+```
+Track:
+├── Website visitors
+├── Instagram followers
+├── Free trial sign-ups
+├── Demo call bookings
+└── Conversion to paying customers
+```
+
+**✅ Customer Success Setup**
+```
+For each trial customer:
+├── Welcome email/WhatsApp
+├── Onboarding checklist
+├── Weekly check-in calls
+├── Feedback collection
+└── Upsell to paid plan (end of month 1)
+```
 
 ---
 
-## 🚀 LET'S EXECUTE!
+## 📋 COMPLETE CHECKLIST
 
-**This is not just a plan. This is a commitment.**
+### **TECHNICAL (Week 1)**
+- [ ] Update package.json name
+- [ ] Update all UI text references
+- [ ] Update meta tags & SEO
+- [ ] Update email templates
+- [ ] Update documentation
+- [ ] Test all features
+- [ ] Deploy to production
+- [ ] Verify deployment
 
-**4 minggu dari sekarang (25 Januari 2026):**
-- ✅ BALIK.LAGI brand fully launched
-- ✅ Booking system 100% reliable
-- ✅ 3+ pilot customers using daily
-- ✅ 1+ paying customer (Rp 500K MRR)
-- ✅ Foundation untuk scale ke 100+ customers
+### **BRANDING (Week 2)**
+- [ ] Create logo (3 versions: full, icon, text)
+- [ ] Define color palette
+- [ ] Setup brand guidelines doc
+- [ ] Redesign landing page
+- [ ] Create sales deck (10 slides)
+- [ ] Record demo video (5 min)
+- [ ] Setup Instagram account
+- [ ] Setup WhatsApp Business
 
-**Mari kita buktikan bahwa "aset digital abadi" bukan mimpi.**
+### **SOFT LAUNCH (Week 3)**
+- [ ] Re-brand boss's system
+- [ ] Collect testimonial (video + text)
+- [ ] Create case study document
+- [ ] Reach out 5 capster friends
+- [ ] Onboard 3-5 beta testers
+- [ ] Collect feedback & iterate
+- [ ] Prepare launch campaign
+
+### **PUBLIC LAUNCH (Week 4)**
+- [ ] Instagram launch post
+- [ ] Landing page launch banner
+- [ ] WhatsApp group outreach (5+ groups)
+- [ ] Direct DM campaign (50 barbershops)
+- [ ] Daily Instagram stories (7 days)
+- [ ] Track metrics daily
+- [ ] Setup customer success process
+- [ ] First paying customer 🎉
 
 ---
 
-**Created**: 28 Desember 2025  
-**Status**: Ready for Execution  
-**Next Review**: 3 Januari 2026 (end of Week 1)
+## 🎯 SUCCESS CRITERIA
+
+### **Week 1 Success**:
+✅ All technical changes deployed  
+✅ No broken functionality  
+✅ BALIK.LAGI brand visible everywhere
+
+### **Week 2 Success**:
+✅ Logo & brand assets complete  
+✅ Landing page live  
+✅ Demo video recorded  
+✅ Social media active
+
+### **Week 3 Success**:
+✅ Boss barbershop testimonial collected  
+✅ 3-5 beta customers onboarded  
+✅ Case study published
+
+### **Week 4 Success**:
+✅ Public launch executed  
+✅ 50+ barbershops reached  
+✅ 10-20 free trial sign-ups  
+✅ 5-10 demo calls booked  
+✅ **FIRST PAYING CUSTOMER** 🎉
 
 ---
 
-**FROM PLAN TO ACTION - LET'S BUILD! 🔥**
+## 💰 BUDGET (Minimal)
+
+```
+Logo Design: Rp 100K-300K (Fiverr/Canva Pro)
+Domain: Rp 150K/year (balik-lagi.id)
+WhatsApp Business: FREE
+Instagram: FREE
+Video Editing: FREE (CapCut)
+Hosting: FREE (current Vercel + Supabase)
+Marketing: Rp 0 (organic only)
+
+TOTAL: ~Rp 500K one-time investment
+```
+
+---
+
+## 🚀 NEXT STEPS (Month 2-3)
+
+**After successful launch**:
+1. Scale to 50 customers (Month 2)
+2. Implement WhatsApp notifications
+3. Add payment integration
+4. Build affiliate program
+5. Hire first team member (sales/CS)
+
+---
+
+## 🙏 FOUNDER COMMITMENT
+
+**This is THE moment.**
+
+Timeline:
+- Start: 29 Desember 2025
+- Week 1 complete: 5 Januari 2026
+- Week 2 complete: 12 Januari 2026
+- Week 3 complete: 19 Januari 2026
+- **PUBLIC LAUNCH: 26 Januari 2026**
+
+**Bismillahirrahmanirrahim.**
+
+Let's build **BALIK.LAGI** into a brand that barbershops across Indonesia will love and trust.
+
+---
+
+**Created**: 29 Desember 2025  
+**Status**: ✅ READY TO EXECUTE  
+**Next Review**: Weekly progress check-ins
