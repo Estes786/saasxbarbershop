@@ -86,7 +86,7 @@ export default function Home() {
               <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-600 rounded-lg flex items-center justify-center">
                 <Sparkles className="text-white" size={20} />
               </div>
-              <span className="text-white font-bold text-xl">OASIS BI PRO</span>
+              <span className="text-white font-bold text-xl">BALIK.LAGI</span>
             </div>
             <div className="flex items-center space-x-3">
               {/* Toggle Admin Option - Secret Button */}

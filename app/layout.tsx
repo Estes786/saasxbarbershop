@@ -4,8 +4,8 @@ import { AuthProvider } from "@/lib/auth/AuthContext";
 import { ToastProvider } from "@/lib/context/ToastContext";
 
 export const metadata: Metadata = {
-  title: "OASIS BI PRO x Barbershop Data Monetization",
-  description: "Real-time business intelligence dashboard untuk barbershop",
+  title: "BALIK.LAGI - Platform Manajemen Barbershop",
+  description: "Sekali Cocok, Pengen Balik Lagi. Platform SaaS untuk barbershop yang bikin pelanggan loyal.",
 };
 
 export default function RootLayout({
