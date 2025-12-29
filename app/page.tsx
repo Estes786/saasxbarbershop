@@ -122,28 +122,28 @@ export default function Home() {
             <div className="flex justify-center mb-6">
               <div className="inline-flex items-center space-x-2 bg-purple-500/20 backdrop-blur-sm border border-purple-500/30 rounded-full px-4 py-2">
                 <Sparkles className="text-purple-300" size={16} />
-                <span className="text-purple-200 text-sm font-medium">Data Monetization Engine</span>
+                <span className="text-purple-200 text-sm font-medium">Ekosistem Barber & Sistem yang Bikin Pelanggan Balik Lagi</span>
               </div>
             </div>
 
             {/* Main Heading */}
             <h1 className="text-5xl md:text-7xl font-bold text-center mb-6 leading-tight">
               <span className="bg-gradient-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-transparent">
-                Transform Your Data
+                Sekali Cocok,
               </span>
               <br />
-              <span className="text-white">Into Actionable Insights</span>
+              <span className="text-white">Pengen Balik Lagi</span>
             </h1>
 
             {/* Subtitle */}
             <p className="text-xl md:text-2xl text-purple-200 text-center mb-12 max-w-3xl mx-auto leading-relaxed">
-              Platform BI terintegrasi untuk Barbershop Kedungrandu yang mengubah data transaksi menjadi prediksi revenue dan customer intelligence
+              Platform SaaS untuk barbershop yang bikin pelanggan loyal. Booking online, analytics cerdas, dan prediksi customer intelligence.
             </p>
 
             {/* 3-ROLE NAVIGATION SECTION */}
             <div className="mb-8">
-              <h2 className="text-2xl font-bold text-center text-white mb-2">Pilih Role Anda</h2>
-              <p className="text-purple-200 text-center mb-6">3-Role Architecture: Customer → Capster → Admin</p>
+              <h2 className="text-2xl font-bold text-center text-white mb-2">Pilih Siapa Anda</h2>
+              <p className="text-purple-200 text-center mb-6">Customer | Capster | Owner - Semua punya dashboard sendiri</p>
             </div>
 
             {/* CTA Buttons - 3 Roles */}
@@ -155,7 +155,7 @@ export default function Home() {
                     <Users size={32} />
                   </div>
                   <h3 className="text-xl font-bold">Customer</h3>
-                  <p className="text-sm text-purple-100 text-center">Booking online, loyalty points, reviews</p>
+                  <p className="text-sm text-purple-100 text-center">Booking mudah, loyalty points, riwayat lengkap</p>
                   <div className="flex flex-col w-full space-y-2 mt-4">
                     <Link
                       href="/register"
@@ -180,7 +180,7 @@ export default function Home() {
                     <Target size={32} />
                   </div>
                   <h3 className="text-xl font-bold">Capster/Barberman</h3>
-                  <p className="text-sm text-green-100 text-center">Predictive analytics, queue management</p>
+                  <p className="text-sm text-green-100 text-center">Kelola antrian, lihat performa, prediksi customer</p>
                   <div className="flex flex-col w-full space-y-2 mt-4">
                     <Link
                       href="/register/capster"
@@ -210,8 +210,8 @@ export default function Home() {
                   <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
                     <Shield size={32} />
                   </div>
-                  <h3 className="text-xl font-bold">Admin</h3>
-                  <p className="text-sm text-yellow-100 text-center">Full system access, audit & management</p>
+                  <h3 className="text-xl font-bold">Admin/Owner</h3>
+                  <p className="text-sm text-yellow-100 text-center">Monitor bisnis, analytics lengkap, akses penuh</p>
                   <div className="flex flex-col w-full space-y-2 mt-4">
                     <Link
                       href="/register/admin"
@@ -248,8 +248,8 @@ export default function Home() {
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mb-4 group-hover:rotate-12 transition-transform">
                   <Target className="text-white" size={24} />
                 </div>
-                <h3 className="text-white font-bold text-xl mb-2">KHL Tracking</h3>
-                <p className="text-purple-200">Monitor target Rp 2.5M/bulan secara real-time dengan prediksi harian</p>
+                <h3 className="text-white font-bold text-xl mb-2">Target Revenue</h3>
+                <p className="text-purple-200">Monitor target bulanan (Rp 2.5M) dengan prediksi harian yang akurat</p>
               </div>
 
               {/* Card 2 */}
@@ -257,8 +257,8 @@ export default function Home() {
                 <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mb-4 group-hover:rotate-12 transition-transform">
                   <Users className="text-white" size={24} />
                 </div>
-                <h3 className="text-white font-bold text-xl mb-2">Actionable Leads</h3>
-                <p className="text-purple-200">Identifikasi churn risk, coupon eligible, dan review targets otomatis</p>
+                <h3 className="text-white font-bold text-xl mb-2">Customer Intelligence</h3>
+                <p className="text-purple-200">Prediksi siapa yang bakal balik lagi, siapa yang perlu diingatkan</p>
               </div>
 
               {/* Card 3 */}
@@ -266,35 +266,35 @@ export default function Home() {
                 <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mb-4 group-hover:rotate-12 transition-transform">
                   <BarChart3 className="text-white" size={24} />
                 </div>
-                <h3 className="text-white font-bold text-xl mb-2">Revenue Analytics</h3>
-                <p className="text-purple-200">Analisis trend revenue, ATV distribution, dan service performance</p>
+                <h3 className="text-white font-bold text-xl mb-2">Analytics Cerdas</h3>
+                <p className="text-purple-200">Trend revenue, layanan terpopuler, dan performa setiap capster</p>
               </div>
             </div>
 
             {/* Integration Flow */}
             <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
-              <h3 className="text-white font-bold text-2xl text-center mb-8">Sistem Terintegrasi End-to-End</h3>
+              <h3 className="text-white font-bold text-2xl text-center mb-8">Bagaimana Cara Kerjanya?</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div className="text-center">
                   <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl mb-4">
                     <CheckCircle2 className="text-white" size={32} />
                   </div>
-                  <h4 className="text-white font-semibold text-lg mb-2">Data Collection</h4>
-                  <p className="text-purple-200 text-sm">Google Sheets untuk input transaksi real-time dari barbershop</p>
+                  <h4 className="text-white font-semibold text-lg mb-2">Customer Booking</h4>
+                  <p className="text-purple-200 text-sm">Pelanggan pilih capster & layanan favorit, booking langsung via platform</p>
                 </div>
                 <div className="text-center">
                   <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl mb-4">
                     <TrendingUp className="text-white" size={32} />
                   </div>
-                  <h4 className="text-white font-semibold text-lg mb-2">Data Processing</h4>
-                  <p className="text-purple-200 text-sm">Supabase database & edge functions untuk analytics pipeline</p>
+                  <h4 className="text-white font-semibold text-lg mb-2">Queue Management</h4>
+                  <p className="text-purple-200 text-sm">Capster lihat antrian real-time, update status layanan dengan mudah</p>
                 </div>
                 <div className="text-center">
                   <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl mb-4">
                     <Sparkles className="text-white" size={32} />
                   </div>
-                  <h4 className="text-white font-semibold text-lg mb-2">Actionable Insights</h4>
-                  <p className="text-purple-200 text-sm">Dashboard prediktif dengan WhatsApp integration untuk action</p>
+                  <h4 className="text-white font-semibold text-lg mb-2">Smart Analytics</h4>
+                  <p className="text-purple-200 text-sm">Owner dapat insights mendalam: prediksi revenue, customer behavior, dan actionable tips</p>
                 </div>
               </div>
             </div>
@@ -304,8 +304,8 @@ export default function Home() {
         {/* Footer */}
         <footer className="container mx-auto px-6 py-8 border-t border-white/10">
           <div className="flex flex-col md:flex-row justify-between items-center text-purple-300 text-sm">
-            <p>© 2025 BALIK.LAGI x Barbershop Kedungrandu. All rights reserved.</p>
-            <p className="mt-2 md:mt-0">Jl. Raya Kedungrandu, Patikraja, Banyumas</p>
+            <p>© 2025 BALIK.LAGI. Bikin pelanggan pengen balik lagi.</p>
+            <p className="mt-2 md:mt-0">Built with ❤️ for barbershop Indonesia</p>
           </div>
         </footer>
       </div>
