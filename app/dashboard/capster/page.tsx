@@ -123,21 +123,28 @@ export default function CapsterDashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      {/* Header - Fresha-inspired */}
+      <header className="bg-white/80 backdrop-blur-lg shadow-sm border-b border-gray-200/50 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
-                ✂️ Capster Dashboard
-              </h1>
-              <p className="text-sm text-gray-600">
-                Selamat datang, {profile?.customer_name || 'Capster'}!
-              </p>
+              <div className="flex items-center space-x-3 mb-2">
+                <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <span className="text-2xl">✂️</span>
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                    Capster Dashboard
+                  </h1>
+                  <p className="text-sm text-gray-600 font-medium">
+                    Selamat datang, {profile?.customer_name || 'Capster'}!
+                  </p>
+                </div>
+              </div>
             </div>
             <button
               onClick={() => signOut()}
-              className="flex items-center space-x-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
+              className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300 font-medium"
             >
               <LogOut size={18} />
               <span>Logout</span>
@@ -148,32 +155,32 @@ export default function CapsterDashboard() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Tab Navigation */}
-        <div className="flex space-x-2 mb-6 bg-white rounded-lg p-1 shadow-sm">
+        {/* Tab Navigation - Enhanced */}
+        <div className="flex space-x-3 mb-8 bg-white/60 backdrop-blur-lg rounded-2xl p-2 shadow-md border border-gray-200/50">
           <button
             onClick={() => setActiveTab('queue')}
-            className={`flex-1 py-3 px-4 rounded-md font-medium transition-all ${
+            className={`flex-1 py-4 px-6 rounded-xl font-semibold transition-all duration-300 ${
               activeTab === 'queue'
-                ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-md'
-                : 'text-gray-600 hover:bg-gray-50'
+                ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-xl shadow-green-500/30 scale-105'
+                : 'text-gray-600 hover:bg-white hover:shadow-md'
             }`}
           >
             <div className="flex items-center justify-center space-x-2">
-              <Users size={18} />
+              <Users size={20} className={activeTab === 'queue' ? 'animate-pulse' : ''} />
               <span>Queue Management</span>
             </div>
           </button>
           
           <button
             onClick={() => setActiveTab('predictions')}
-            className={`flex-1 py-3 px-4 rounded-md font-medium transition-all ${
+            className={`flex-1 py-4 px-6 rounded-xl font-semibold transition-all duration-300 ${
               activeTab === 'predictions'
-                ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-md'
-                : 'text-gray-600 hover:bg-gray-50'
+                ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-xl shadow-green-500/30 scale-105'
+                : 'text-gray-600 hover:bg-white hover:shadow-md'
             }`}
           >
             <div className="flex items-center justify-center space-x-2">
-              <TrendingUp size={18} />
+              <TrendingUp size={20} className={activeTab === 'predictions' ? 'animate-pulse' : ''} />
               <span>Customer Predictions</span>
             </div>
           </button>

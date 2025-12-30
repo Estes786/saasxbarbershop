@@ -27,22 +27,22 @@ export default function CustomerDashboard() {
 
   return (
     <AuthGuard allowedRoles={['customer']}>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50">
-        {/* Header */}
-        <header className="bg-white shadow-sm border-b border-gray-200">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50">
+        {/* Header - Fresha-inspired */}
+        <header className="bg-white/80 backdrop-blur-lg shadow-sm border-b border-gray-200/50 sticky top-0 z-50">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
             <div className="flex justify-between items-center">
               <div>
-                <h1 className="text-xl font-bold text-gray-900">
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-1">
                   Selamat Datang, {profile?.customer_name || 'Customer'}! 👋
                 </h1>
-                <p className="text-sm text-gray-600">
-                  Barbershop Kedungrandu - Dashboard Anda
+                <p className="text-sm text-gray-600 font-medium">
+                  🏢 BALIK.LAGI - Barbershop Kedungrandu
                 </p>
               </div>
               <button
                 onClick={() => signOut()}
-                className="flex items-center space-x-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
+                className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300 font-medium"
               >
                 <LogOut size={18} />
                 <span>Logout</span>
@@ -53,44 +53,44 @@ export default function CustomerDashboard() {
 
         {/* Main Content */}
         <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Tab Navigation */}
-          <div className="flex space-x-2 mb-6 bg-white rounded-lg p-1 shadow-sm">
+          {/* Tab Navigation - Enhanced */}
+          <div className="flex space-x-3 mb-8 bg-white/60 backdrop-blur-lg rounded-2xl p-2 shadow-md border border-gray-200/50">
             <button
               onClick={() => setActiveTab('loyalty')}
-              className={`flex-1 py-3 px-4 rounded-md font-medium transition-all ${
+              className={`flex-1 py-4 px-6 rounded-xl font-semibold transition-all duration-300 ${
                 activeTab === 'loyalty'
-                  ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-50'
+                  ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-xl shadow-purple-500/30 scale-105'
+                  : 'text-gray-600 hover:bg-white hover:shadow-md'
               }`}
             >
               <div className="flex items-center justify-center space-x-2">
-                <Gift size={18} />
+                <Gift size={20} className={activeTab === 'loyalty' ? 'animate-pulse' : ''} />
                 <span>Loyalitas</span>
               </div>
             </button>
             <button
               onClick={() => setActiveTab('booking')}
-              className={`flex-1 py-3 px-4 rounded-md font-medium transition-all ${
+              className={`flex-1 py-4 px-6 rounded-xl font-semibold transition-all duration-300 ${
                 activeTab === 'booking'
-                  ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-50'
+                  ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-xl shadow-purple-500/30 scale-105'
+                  : 'text-gray-600 hover:bg-white hover:shadow-md'
               }`}
             >
               <div className="flex items-center justify-center space-x-2">
-                <Calendar size={18} />
+                <Calendar size={20} className={activeTab === 'booking' ? 'animate-pulse' : ''} />
                 <span>Booking</span>
               </div>
             </button>
             <button
               onClick={() => setActiveTab('history')}
-              className={`flex-1 py-3 px-4 rounded-md font-medium transition-all ${
+              className={`flex-1 py-4 px-6 rounded-xl font-semibold transition-all duration-300 ${
                 activeTab === 'history'
-                  ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-50'
+                  ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-xl shadow-purple-500/30 scale-105'
+                  : 'text-gray-600 hover:bg-white hover:shadow-md'
               }`}
             >
               <div className="flex items-center justify-center space-x-2">
-                <History size={18} />
+                <History size={20} className={activeTab === 'history' ? 'animate-pulse' : ''} />
                 <span>Riwayat</span>
               </div>
             </button>
