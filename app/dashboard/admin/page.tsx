@@ -3,9 +3,10 @@
 import { AuthGuard } from "@/components/shared/AuthGuard";
 import { RefreshProvider } from "@/lib/context/RefreshContext";
 import { ToastProvider } from "@/lib/context/ToastContext";
-import KHLTracker from "@/components/barbershop/KHLTracker";
-import ActionableLeads from "@/components/barbershop/ActionableLeads";
-import RevenueAnalytics from "@/components/barbershop/RevenueAnalytics";
+// R0.1: Hide advanced analytics
+// import KHLTracker from "@/components/barbershop/KHLTracker";
+// import ActionableLeads from "@/components/barbershop/ActionableLeads";
+// import RevenueAnalytics from "@/components/barbershop/RevenueAnalytics";
 import TransactionsManager from "@/components/barbershop/TransactionsManager";
 import BookingMonitor from "@/components/admin/BookingMonitor";
 import { useAuth } from "@/lib/auth/AuthContext";
@@ -19,7 +20,7 @@ export default function AdminDashboard() {
       <ToastProvider>
         <RefreshProvider>
           <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50">
-            {/* Header - Fresha-inspired */}
+            {/* Header - R0.1: Simplified */}
             <header className="bg-white/80 backdrop-blur-lg shadow-sm border-b border-gray-200/50 sticky top-0 z-50">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
                 <div className="flex justify-between items-center">
@@ -33,7 +34,7 @@ export default function AdminDashboard() {
                           Admin Dashboard
                         </h1>
                         <p className="text-xs text-gray-500">
-                          🚀 BALIK.LAGI - Business Intelligence
+                          🚀 BALIK.LAGI - Kondisi Hari Ini
                         </p>
                       </div>
                     </div>
@@ -55,39 +56,49 @@ export default function AdminDashboard() {
               </div>
             </header>
 
-            {/* Main Content - Enhanced with modern spacing */}
+            {/* Main Content - R0.1: Simplified */}
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-              {/* Welcome Banner */}
+              {/* Welcome Banner - R0.1: Calmer tone */}
               <div className="mb-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-3xl p-8 text-white shadow-xl">
-                <h2 className="text-3xl font-bold mb-2">Welcome back, Owner! 👋</h2>
-                <p className="text-purple-100 text-lg">Here's what's happening with your business today.</p>
+                <h2 className="text-3xl font-bold mb-2">Selamat datang, Owner! 👋</h2>
+                <p className="text-purple-100 text-lg">Ringkasan barbershop hari ini.</p>
               </div>
 
               <div className="space-y-6">
-                {/* Booking Monitor - NEW! */}
+                {/* Booking Monitor - Keep for basic overview */}
                 <section className="transform hover:scale-[1.01] transition-transform duration-300">
                   <BookingMonitor />
                 </section>
 
-                {/* KHL Progress Tracker */}
+                {/* R0.1: Hidden Advanced Analytics */}
+                {/* 
                 <section className="transform hover:scale-[1.01] transition-transform duration-300">
                   <KHLTracker />
                 </section>
 
-                {/* Actionable Leads */}
                 <section className="transform hover:scale-[1.01] transition-transform duration-300">
                   <ActionableLeads />
                 </section>
 
-                {/* Revenue Analytics */}
                 <section className="transform hover:scale-[1.01] transition-transform duration-300">
                   <RevenueAnalytics />
                 </section>
+                */}
 
-                {/* Transactions Manager */}
+                {/* Transactions Manager - Keep for basic data view */}
                 <section className="transform hover:scale-[1.01] transition-transform duration-300">
                   <TransactionsManager />
                 </section>
+
+                {/* R0.1: Information Box */}
+                <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 text-center">
+                  <p className="text-blue-800 font-semibold mb-2">📊 Release 0.1 - Menjaga Aliran Dasar</p>
+                  <p className="text-blue-700 text-sm">
+                    Dashboard ini fokus pada informasi penting hari ini: booking, antrian, dan riwayat sederhana.
+                    <br />
+                    <span className="font-medium">Target tracking & analytics mendalam akan hadir di update berikutnya.</span>
+                  </p>
+                </div>
               </div>
             </main>
 
@@ -98,10 +109,10 @@ export default function AdminDashboard() {
                   © 2025 <span className="font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">BALIK.LAGI</span> - Barbershop Management Platform
                 </p>
                 <p className="mt-2 text-xs text-gray-500">
-                  🏢 Barbershop Kedungrandu • Jl. Raya Kedungrandu, Patikraja, Banyumas
+                  Sekali Cocok, Pengen Balik Lagi
                 </p>
                 <p className="mt-3 text-xs text-purple-600 font-medium">
-                  Built with ❤️ for barbershop owners
+                  Built with ❤️ for barbershop Indonesia
                 </p>
               </div>
             </footer>

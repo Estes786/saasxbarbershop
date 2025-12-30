@@ -139,7 +139,7 @@ export default function Home() {
             <p className="text-xl md:text-2xl text-purple-200 text-center mb-8 max-w-3xl mx-auto leading-relaxed">
               Platform barbershop management yang bikin pelanggan loyal. 
               <br />
-              <span className="text-purple-300 font-semibold">Booking mudah • Queue real-time • Analytics cerdas</span>
+              <span className="text-purple-300 font-semibold">Booking mudah • Antrian jelas • Kerja lebih tenang</span>
             </p>
 
             {/* Social Proof */}
@@ -222,7 +222,7 @@ export default function Home() {
                 <div className="absolute -top-1 -right-1 bg-gradient-to-r from-yellow-500 to-red-500 rounded-bl-2xl rounded-tr-3xl px-4 py-2 text-xs font-bold text-white shadow-lg">
                   <div className="flex items-center space-x-1">
                     <Crown size={14} />
-                    <span>FOUNDER</span>
+                    <span>OWNER</span>
                   </div>
                 </div>
                 <div className="flex flex-col items-center text-white space-y-4 mt-4">
@@ -230,7 +230,7 @@ export default function Home() {
                     <Shield size={36} />
                   </div>
                   <h3 className="text-2xl font-bold">Owner</h3>
-                  <p className="text-sm text-yellow-100 text-center leading-relaxed">Full analytics dashboard, revenue tracking, business intelligence untuk growth</p>
+                  <p className="text-sm text-yellow-100 text-center leading-relaxed">Melihat kondisi barbershop dengan tenang, tanpa ribet. Ringkasan harian yang jelas.</p>
                   <div className="flex flex-col w-full space-y-3 mt-6">
                     <Link
                       href="/register/admin"
@@ -269,31 +269,31 @@ export default function Home() {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-              {/* Card 1 - Revenue Tracking */}
-              <div className="group bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-8 hover:bg-white/15 hover:border-blue-400/30 hover:shadow-xl hover:shadow-blue-500/20 transition-all duration-500 hover:-translate-y-1">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-lg">
-                  <Target className="text-white" size={32} />
-                </div>
-                <h3 className="text-white font-bold text-2xl mb-3">Target Revenue</h3>
-                <p className="text-purple-200 leading-relaxed">Monitor target bulanan dengan prediksi harian yang akurat. Tahu persis kapan target tercapai.</p>
-              </div>
-
-              {/* Card 2 - Customer Intelligence */}
+              {/* Card 1 - Booking Mudah (R0.1) */}
               <div className="group bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-8 hover:bg-white/15 hover:border-purple-400/30 hover:shadow-xl hover:shadow-purple-500/20 transition-all duration-500 hover:-translate-y-1">
                 <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-lg">
                   <Users className="text-white" size={32} />
                 </div>
-                <h3 className="text-white font-bold text-2xl mb-3">Customer Intelligence</h3>
-                <p className="text-purple-200 leading-relaxed">Prediksi siapa yang bakal balik lagi, siapa yang perlu diingatkan. AI-powered insights.</p>
+                <h3 className="text-white font-bold text-2xl mb-3">Booking Mudah</h3>
+                <p className="text-purple-200 leading-relaxed">Pelanggan datang sesuai waktu, tanpa nunggu lama. Pilih capster & layanan favorit dengan mudah.</p>
               </div>
 
-              {/* Card 3 - Analytics */}
+              {/* Card 2 - Antrian Jelas (R0.1) */}
+              <div className="group bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-8 hover:bg-white/15 hover:border-blue-400/30 hover:shadow-xl hover:shadow-blue-500/20 transition-all duration-500 hover:-translate-y-1">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-lg">
+                  <Target className="text-white" size={32} />
+                </div>
+                <h3 className="text-white font-bold text-2xl mb-3">Antrian Jelas</h3>
+                <p className="text-purple-200 leading-relaxed">Barber kerja lebih tenang, pelanggan tidak gelisah. Queue real-time yang sederhana & jelas.</p>
+              </div>
+
+              {/* Card 3 - Reminder Otomatis (R0.1) */}
               <div className="group bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-8 hover:bg-white/15 hover:border-green-400/30 hover:shadow-xl hover:shadow-green-500/20 transition-all duration-500 hover:-translate-y-1">
                 <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-lg">
-                  <BarChart3 className="text-white" size={32} />
+                  <CheckCircle2 className="text-white" size={32} />
                 </div>
-                <h3 className="text-white font-bold text-2xl mb-3">Analytics Cerdas</h3>
-                <p className="text-purple-200 leading-relaxed">Trend revenue, layanan terpopuler, performa setiap capster. Dashboard yang actionable.</p>
+                <h3 className="text-white font-bold text-2xl mb-3">Reminder Otomatis</h3>
+                <p className="text-purple-200 leading-relaxed">Janji dijaga, pelanggan balik dengan konsisten. Pengingat via WhatsApp/Email.</p>
               </div>
             </div>
 
@@ -328,8 +328,8 @@ export default function Home() {
                     <Sparkles className="text-white" size={40} />
                   </div>
                   <div className="bg-white/5 rounded-2xl p-6 group-hover:bg-white/10 transition-all duration-300">
-                    <h4 className="text-white font-semibold text-xl mb-3">3. Smart Analytics</h4>
-                    <p className="text-purple-200 text-sm leading-relaxed">Owner dapat insights mendalam: revenue prediction, customer behavior, actionable recommendations.</p>
+                    <h4 className="text-white font-semibold text-xl mb-3">3. Riwayat & Reminder</h4>
+                    <p className="text-purple-200 text-sm leading-relaxed">Owner dapat ringkasan hari ini: booking, selesai, batal. Sederhana & jelas. Reminder otomatis untuk pelanggan.</p>
                   </div>
                 </div>
               </div>
