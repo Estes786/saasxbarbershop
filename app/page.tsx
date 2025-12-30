@@ -135,9 +135,9 @@ export default function Home() {
               <span className="text-white">Pengen Balik Lagi</span>
             </h1>
 
-            {/* Subtitle - More engaging */}
+            {/* Subtitle - R0.1 Philosophy */}
             <p className="text-xl md:text-2xl text-purple-200 text-center mb-8 max-w-3xl mx-auto leading-relaxed">
-              Platform barbershop management yang bikin pelanggan loyal. 
+              Barbershop bukan soal ramai sesaat. Tapi soal waktu yang rapi, kerja yang tenang, dan pelanggan yang merasa cocok.
               <br />
               <span className="text-purple-300 font-semibold">Booking mudah • Antrian jelas • Kerja lebih tenang</span>
             </p>
@@ -230,7 +230,7 @@ export default function Home() {
                     <Shield size={36} />
                   </div>
                   <h3 className="text-2xl font-bold">Owner</h3>
-                  <p className="text-sm text-yellow-100 text-center leading-relaxed">Melihat kondisi barbershop dengan tenang, tanpa ribet. Ringkasan harian yang jelas.</p>
+                  <p className="text-sm text-yellow-100 text-center leading-relaxed">Melihat kondisi barbershop dengan tenang. Ringkasan hari ini: booking, antrian, selesai. Sederhana & jelas.</p>
                   <div className="flex flex-col w-full space-y-3 mt-6">
                     <Link
                       href="/register/admin"
@@ -262,10 +262,10 @@ export default function Home() {
               <p className="text-purple-300 text-sm">Tanpa registrasi • Lihat fitur lengkap • 100% gratis</p>
             </div>
 
-            {/* Feature Cards Grid - Fresha-inspired */}
+            {/* Feature Cards Grid - R0.1 Philosophy */}
             <div className="mb-12">
               <h3 className="text-3xl font-bold text-white text-center mb-3">Kenapa BALIK.LAGI?</h3>
-              <p className="text-purple-200 text-center mb-10 text-lg">Platform lengkap untuk barbershop modern</p>
+              <p className="text-purple-200 text-center mb-10 text-lg">Menjaga hal-hal dasar. Karena kalau yang dasar rapi, yang lain akan menyusul dengan sendirinya.</p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
@@ -275,7 +275,7 @@ export default function Home() {
                   <Users className="text-white" size={32} />
                 </div>
                 <h3 className="text-white font-bold text-2xl mb-3">Booking Mudah</h3>
-                <p className="text-purple-200 leading-relaxed">Pelanggan datang sesuai waktu, tanpa nunggu lama. Pilih capster & layanan favorit dengan mudah.</p>
+                <p className="text-purple-200 leading-relaxed">Pelanggan datang sesuai waktu. Booking sederhana supaya pelanggan tahu kapan datang, barber tahu kapan mulai, tidak saling menunggu.</p>
               </div>
 
               {/* Card 2 - Antrian Jelas (R0.1) */}
@@ -284,7 +284,7 @@ export default function Home() {
                   <Target className="text-white" size={32} />
                 </div>
                 <h3 className="text-white font-bold text-2xl mb-3">Antrian Jelas</h3>
-                <p className="text-purple-200 leading-relaxed">Barber kerja lebih tenang, pelanggan tidak gelisah. Queue real-time yang sederhana & jelas.</p>
+                <p className="text-purple-200 leading-relaxed">Kerja lebih tenang, tanpa saling mendahului. Antrian real-time membantu barber fokus satu per satu, pelanggan merasa dihargai.</p>
               </div>
 
               {/* Card 3 - Reminder Otomatis (R0.1) */}
@@ -293,14 +293,14 @@ export default function Home() {
                   <CheckCircle2 className="text-white" size={32} />
                 </div>
                 <h3 className="text-white font-bold text-2xl mb-3">Reminder Otomatis</h3>
-                <p className="text-purple-200 leading-relaxed">Janji dijaga, pelanggan balik dengan konsisten. Pengingat via WhatsApp/Email.</p>
+                <p className="text-purple-200 leading-relaxed">Janji dijaga, bukan dilupakan. Pengingat otomatis membantu mengurangi batal mendadak, membuat pelanggan lebih konsisten balik.</p>
               </div>
             </div>
 
-            {/* Integration Flow - Enhanced */}
+            {/* Integration Flow - R0.1 Simplified */}
             <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-3xl p-10 mb-12">
               <h3 className="text-white font-bold text-3xl text-center mb-4">Bagaimana Cara Kerjanya?</h3>
-              <p className="text-purple-300 text-center mb-12 text-lg">Sistem end-to-end dari booking hingga analytics</p>
+              <p className="text-purple-300 text-center mb-12 text-lg">Sederhana. Fokus pada yang penting.</p>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
                 <div className="text-center group">
@@ -308,8 +308,8 @@ export default function Home() {
                     <CheckCircle2 className="text-white" size={40} />
                   </div>
                   <div className="bg-white/5 rounded-2xl p-6 group-hover:bg-white/10 transition-all duration-300">
-                    <h4 className="text-white font-semibold text-xl mb-3">1. Customer Booking</h4>
-                    <p className="text-purple-200 text-sm leading-relaxed">Pelanggan pilih capster favorit, pilih layanan, booking langsung. Real-time availability.</p>
+                    <h4 className="text-white font-semibold text-xl mb-3">1. Booking</h4>
+                    <p className="text-purple-200 text-sm leading-relaxed">Pelanggan pilih waktu yang cocok. Barber tahu jadwal hari ini. Tidak saling menunggu.</p>
                   </div>
                 </div>
                 
@@ -318,8 +318,8 @@ export default function Home() {
                     <TrendingUp className="text-white" size={40} />
                   </div>
                   <div className="bg-white/5 rounded-2xl p-6 group-hover:bg-white/10 transition-all duration-300">
-                    <h4 className="text-white font-semibold text-xl mb-3">2. Queue Management</h4>
-                    <p className="text-purple-200 text-sm leading-relaxed">Capster lihat antrian real-time, update status layanan. Customer dapat notifikasi otomatis.</p>
+                    <h4 className="text-white font-semibold text-xl mb-3">2. Antrian</h4>
+                    <p className="text-purple-200 text-sm leading-relaxed">Barber lihat siapa sekarang, siapa berikutnya. Pelanggan tahu giliran mereka. Tenang, tidak panik.</p>
                   </div>
                 </div>
                 
@@ -328,8 +328,8 @@ export default function Home() {
                     <Sparkles className="text-white" size={40} />
                   </div>
                   <div className="bg-white/5 rounded-2xl p-6 group-hover:bg-white/10 transition-all duration-300">
-                    <h4 className="text-white font-semibold text-xl mb-3">3. Riwayat & Reminder</h4>
-                    <p className="text-purple-200 text-sm leading-relaxed">Owner dapat ringkasan hari ini: booking, selesai, batal. Sederhana & jelas. Reminder otomatis untuk pelanggan.</p>
+                    <h4 className="text-white font-semibold text-xl mb-3">3. Selesai</h4>
+                    <p className="text-purple-200 text-sm leading-relaxed">Owner lihat ringkasan hari ini: berapa booking, berapa selesai. Owner tenang. Reminder otomatis jaga pelanggan balik lagi.</p>
                   </div>
                 </div>
               </div>

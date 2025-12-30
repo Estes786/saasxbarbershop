@@ -1,7 +1,8 @@
 # 🚀 BALIK.LAGI SYSTEM - Barbershop SaaS Platform
 
 **Tagline**: "Sekali Cocok, Pengen Balik Lagi"  
-**Status**: ✅ **Production Ready** - Re-branding Phase 1  
+**Status**: ✅ **Release 0.1** - Menjaga Aliran Dasar  
+**Philosophy**: "Ketenangan di atas kecanggihan"  
 **URL**: https://saasxbarbershop.vercel.app (migrating to baliklagi.id)
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/Estes786/saasxbarbershop)
@@ -12,15 +13,25 @@
 
 ## 🎯 TENTANG BALIK.LAGI
 
-**Balik.Lagi** adalah platform SaaS (Software as a Service) untuk manajemen barbershop yang dirancang untuk:
+**Balik.Lagi** adalah platform SaaS untuk manajemen barbershop yang fokus pada **ketenangan & ritme kerja**.
 
-1. **Memudahkan Customer** - Booking online, loyalty tracking, history management
-2. **Memberdayakan Capster** - Queue management, performance tracking, customer insights
-3. **Membantu Owner** - Business intelligence, analytics, actionable insights
-4. **Menjadi Aset Digital Abadi** - IP/HKI, white-label licensing, recurring revenue
+### **Release 0.1 Philosophy**
+> **"Dashboard bukan tempat memantau angka.  
+> Tapi tempat memastikan hari berjalan dengan rapi."**
 
-> **"Kami tidak sekadar membangun booking app.  
-> Kami membangun ekosistem yang bikin orang pengen balik."**
+**Dirancang untuk:**
+1. **Customer** - Booking mudah, datang sesuai waktu, tidak saling menunggu
+2. **Capster** - Kerja lebih tenang, antrian jelas, fokus satu per satu  
+3. **Owner** - Lihat kondisi hari ini: booking, selesai, batal. Sederhana & jelas.
+
+### **Yang TIDAK ada di R0.1 (by design)**
+❌ Analytics mendalam  
+❌ Revenue tracking  
+❌ Performance metrics  
+❌ Ranking atau perbandingan  
+❌ Target & tekanan  
+
+**Why?** Karena sistem yang menenangkan, bertahan lama.
 
 ---
 
@@ -38,11 +49,11 @@
 - ✅ **Performance Metrics** - Total service, rating, revenue
 - ✅ **Customer History** - Preferensi & pola kunjungan pelanggan
 
-### **📊 Untuk Admin/Owner**
-- ✅ **KHL Tracking** - Monitor target revenue (Rp 2.5M/bulan)
-- ✅ **Actionable Leads** - Identifikasi churn risk, coupon eligible
-- ✅ **Revenue Analytics** - Trend, ATV distribution, service performance
-- ✅ **Multi-Capster Monitoring** - Overview semua barber & booking
+### **📊 Untuk Owner (R0.1 - Simplified)**
+- ✅ **Booking Monitor** - Lihat booking hari ini dengan status jelas
+- ✅ **Transactions Manager** - Riwayat transaksi sederhana
+- ✅ **Queue Overview** - Status antrian real-time
+- ℹ️ **Advanced Analytics** - Coming in R0.2 (setelah aliran stabil)
 
 ---
 
@@ -199,25 +210,21 @@ Tone: Friendly, story-driven, non-corporate
 
 ## 📊 PROJECT METRICS
 
-### **Current Status** (29 Desember 2025)
+### **Current Status** (30 Desember 2025)
 ```
-✅ FASE 1: FOUNDATION COMPLETE
-   ✅ Authentication & 3-Role System
-   ✅ ACCESS KEY System
-   ✅ 1 USER = 1 DASHBOARD isolation
-   ✅ Booking System with real-time queue
-   ✅ Production deployed on Vercel
+✅ RELEASE 0.1: MENJAGA ALIRAN DASAR
+   ✅ Landing page dengan philosophy R0.1
+   ✅ Dashboard simplified (fokus pada ketenangan)
+   ✅ Booking & antrian real-time
+   ✅ 3-Role system: Customer, Capster, Owner
+   ✅ Advanced analytics disembunyikan (by design)
+   ✅ Tone manusiawi, tidak menjanjikan angka
+   ✅ Master Implementation Plan documented
    
-🔄 FASE 2: RE-BRANDING IN PROGRESS
-   🔄 Brand identity BALIK.LAGI → BALIK.LAGI
-   🔄 UI/UX redesign
-   ⏳ Documentation modularization
-   ⏳ Landing page transformation
-   
-⏳ FASE 3: PREDICTIVE ANALYTICS (Planned)
-   ⏳ Customer visit prediction
-   ⏳ Churn risk calculation
-   ⏳ Loyalty automation
+⏳ RELEASE 0.2: MEMBUKA YANG PERLU (Future)
+   ⏳ Analytics (dengan syarat ketat)
+   ⏳ Monetization planning
+   ⏳ Premium features
 ```
 
 ### **Codebase Stats**
