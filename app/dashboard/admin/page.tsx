@@ -11,9 +11,59 @@ import TransactionsManager from "@/components/barbershop/TransactionsManager";
 import BookingMonitor from "@/components/admin/BookingMonitor";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { LogOut, LayoutDashboard } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
 export default function AdminDashboard() {
   const { signOut, profile } = useAuth();
+  const router = useRouter();
+  const [checkingOnboarding, setCheckingOnboarding] = useState(true);
+  const supabase = createClient();
+
+  useEffect(() => {
+    checkOnboardingStatus();
+  }, [profile]);
+
+  async function checkOnboardingStatus() {
+    // Only check if user is admin
+    if (!profile || profile.role !== 'admin') {
+      setCheckingOnboarding(false);
+      return;
+    }
+
+    try {
+      const { data, error } = await (supabase as any).rpc('get_onboarding_status');
+      
+      if (error) {
+        console.error('Error checking onboarding:', error);
+        setCheckingOnboarding(false);
+        return;
+      }
+
+      // If admin hasn't completed onboarding, redirect to onboarding page
+      if (data && !data.onboarding_completed) {
+        router.push('/onboarding');
+        return;
+      }
+
+      setCheckingOnboarding(false);
+    } catch (error) {
+      console.error('Onboarding check error:', error);
+      setCheckingOnboarding(false);
+    }
+  }
+
+  if (checkingOnboarding) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-orange-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Memeriksa status onboarding...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <AuthGuard allowedRoles={['admin']}>
