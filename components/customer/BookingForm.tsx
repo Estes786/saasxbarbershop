@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useToast } from '@/lib/context/ToastContext';
-import { Calendar, Clock, User, MessageSquare, CheckCircle } from 'lucide-react';
+import { Calendar, Clock, User, MessageSquare, CheckCircle, MapPin } from 'lucide-react';
+import BranchSelector from './BranchSelector';
 
 interface Service {
   id: string;
@@ -38,6 +39,7 @@ export default function BookingForm({ customerPhone, customerName }: BookingForm
   const [success, setSuccess] = useState(false);
 
   const [formData, setFormData] = useState({
+    branch_id: '',
     service_id: '',
     capster_id: '',
     booking_date: '',
@@ -46,17 +48,25 @@ export default function BookingForm({ customerPhone, customerName }: BookingForm
   });
 
   useEffect(() => {
-    loadServices();
-    loadCapsters();
-  }, []);
+    if (formData.branch_id) {
+      loadServices();
+      loadCapsters();
+    }
+  }, [formData.branch_id]);
 
   async function loadServices() {
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('service_catalog')
         .select('*')
-        .eq('is_active', true)
-        .order('display_order');
+        .eq('is_active', true);
+
+      // Filter by branch if selected
+      if (formData.branch_id) {
+        query = query.eq('branch_id', formData.branch_id);
+      }
+
+      const { data, error } = await query.order('display_order');
 
       if (error) throw error;
       setServices(data || []);
@@ -68,12 +78,17 @@ export default function BookingForm({ customerPhone, customerName }: BookingForm
 
   async function loadCapsters() {
     try {
-      // Load capsters from capsters table directly with optimized query
-      const { data, error } = await supabase
+      let query = supabase
         .from('capsters')
-        .select('id, capster_name, specialization')
-        .eq('is_available', true)
-        .order('capster_name');
+        .select('id, capster_name, specialization, branch_id')
+        .eq('is_available', true);
+
+      // Filter by branch if selected
+      if (formData.branch_id) {
+        query = query.eq('branch_id', formData.branch_id);
+      }
+
+      const { data, error } = await query.order('capster_name');
 
       if (error) {
         console.error('Error from capsters table:', error);
@@ -101,8 +116,8 @@ export default function BookingForm({ customerPhone, customerName }: BookingForm
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     
-    if (!formData.service_id || !formData.capster_id || !formData.booking_date) {
-      showToast('error', 'Mohon lengkapi semua data');
+    if (!formData.branch_id || !formData.service_id || !formData.capster_id || !formData.booking_date) {
+      showToast('error', 'Mohon lengkapi semua data termasuk pilih cabang');
       return;
     }
 
@@ -122,6 +137,7 @@ export default function BookingForm({ customerPhone, customerName }: BookingForm
         .insert({
           customer_phone: customerPhone,
           customer_name: customerName || 'Guest',
+          branch_id: formData.branch_id,
           service_id: formData.service_id,
           capster_id: formData.capster_id,
           booking_date: bookingDateTime.toISOString(),
@@ -142,6 +158,7 @@ export default function BookingForm({ customerPhone, customerName }: BookingForm
       // Reset form after 3 seconds
       setTimeout(() => {
         setFormData({
+          branch_id: '',
           service_id: '',
           capster_id: '',
           booking_date: '',
@@ -181,63 +198,87 @@ export default function BookingForm({ customerPhone, customerName }: BookingForm
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Service Selection */}
+        {/* Branch Selection - PHASE 3 */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            <User className="w-4 h-4 inline mr-2" />
-            Pilih Layanan
+            <MapPin className="w-4 h-4 inline mr-2" />
+            Pilih Cabang
           </label>
-          <select
-            value={formData.service_id}
-            onChange={(e) => setFormData({ ...formData, service_id: e.target.value })}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            required
-          >
-            <option value="">Pilih layanan...</option>
-            {services.map((service) => (
-              <option key={service.id} value={service.id}>
-                {service.service_name} - Rp {service.base_price.toLocaleString()} ({service.duration_minutes} menit)
-              </option>
-            ))}
-          </select>
-          {selectedService && (
-            <p className="text-sm text-gray-500 mt-1">{selectedService.description}</p>
-          )}
+          <BranchSelector
+            selectedBranchId={formData.branch_id}
+            onSelectBranch={(branchId) => {
+              setFormData({ 
+                ...formData, 
+                branch_id: branchId,
+                service_id: '', // Reset service when branch changes
+                capster_id: ''  // Reset capster when branch changes
+              });
+            }}
+          />
         </div>
+
+        {/* Service Selection */}
+        {formData.branch_id && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              <User className="w-4 h-4 inline mr-2" />
+              Pilih Layanan
+            </label>
+            <select
+              value={formData.service_id}
+              onChange={(e) => setFormData({ ...formData, service_id: e.target.value })}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              required
+            >
+              <option value="">Pilih layanan...</option>
+              {services.map((service) => (
+                <option key={service.id} value={service.id}>
+                  {service.service_name} - Rp {service.base_price.toLocaleString()} ({service.duration_minutes} menit)
+                </option>
+              ))}
+            </select>
+            {selectedService && (
+              <p className="text-sm text-gray-500 mt-1">{selectedService.description}</p>
+            )}
+          </div>
+        )}
 
         {/* Capster Selection */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            <User className="w-4 h-4 inline mr-2" />
-            Pilih Capster
-          </label>
-          <select
-            value={formData.capster_id}
-            onChange={(e) => setFormData({ ...formData, capster_id: e.target.value })}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            required
-          >
-            <option value="">Pilih capster...</option>
-            {capsters.length === 0 ? (
-              <option disabled>Loading capsters...</option>
-            ) : (
-              capsters.map((capster) => (
-                <option key={capster.id} value={capster.id}>
-                  {capster.capster_name} {capster.specialization && `- ${capster.specialization}`}
-                </option>
-              ))
+        {formData.branch_id && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              <User className="w-4 h-4 inline mr-2" />
+              Pilih Capster
+            </label>
+            <select
+              value={formData.capster_id}
+              onChange={(e) => setFormData({ ...formData, capster_id: e.target.value })}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              required
+            >
+              <option value="">Pilih capster...</option>
+              {capsters.length === 0 ? (
+                <option disabled>Loading capsters...</option>
+              ) : (
+                capsters.map((capster) => (
+                  <option key={capster.id} value={capster.id}>
+                    {capster.capster_name} {capster.specialization && `- ${capster.specialization}`}
+                  </option>
+                ))
+              )}
+            </select>
+            {selectedCapster && (
+              <p className="text-sm text-gray-500 mt-1">
+                Capster: {selectedCapster.capster_name} 
+                {selectedCapster.specialization && ` - ${selectedCapster.specialization}`}
+              </p>
             )}
-          </select>
-          {selectedCapster && (
-            <p className="text-sm text-gray-500 mt-1">
-              Capster: {selectedCapster.capster_name} 
-              {selectedCapster.specialization && ` - ${selectedCapster.specialization}`}
-            </p>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Date Selection */}
-        <div>
+        {formData.branch_id && (
+          <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             <Calendar className="w-4 h-4 inline mr-2" />
             Tanggal Booking
@@ -251,9 +292,11 @@ export default function BookingForm({ customerPhone, customerName }: BookingForm
             required
           />
         </div>
+        )}
 
         {/* Time Selection */}
-        <div>
+        {formData.branch_id && (
+          <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             <Clock className="w-4 h-4 inline mr-2" />
             Waktu Booking
@@ -271,9 +314,11 @@ export default function BookingForm({ customerPhone, customerName }: BookingForm
             ))}
           </select>
         </div>
+        )}
 
         {/* Customer Notes */}
-        <div>
+        {formData.branch_id && (
+          <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             <MessageSquare className="w-4 h-4 inline mr-2" />
             Catatan (Opsional)
@@ -286,6 +331,7 @@ export default function BookingForm({ customerPhone, customerName }: BookingForm
             rows={3}
           />
         </div>
+        )}
 
         {/* Summary */}
         {selectedService && selectedCapster && formData.booking_date && (
@@ -303,13 +349,15 @@ export default function BookingForm({ customerPhone, customerName }: BookingForm
         )}
 
         {/* Submit Button */}
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-lg font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-        >
-          {loading ? 'Memproses...' : '🔥 Booking Sekarang'}
-        </button>
+        {formData.branch_id && (
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-lg font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+          >
+            {loading ? 'Memproses...' : '🔥 Booking Sekarang'}
+          </button>
+        )}
       </form>
 
       <p className="text-xs text-gray-500 text-center mt-4">

@@ -9,8 +9,10 @@ import { ToastProvider } from "@/lib/context/ToastContext";
 // import RevenueAnalytics from "@/components/barbershop/RevenueAnalytics";
 import TransactionsManager from "@/components/barbershop/TransactionsManager";
 import BookingMonitor from "@/components/admin/BookingMonitor";
+import BranchManagement from "@/components/admin/BranchManagement";
+import BranchAnalytics from "@/components/admin/BranchAnalytics";
 import { useAuth } from "@/lib/auth/AuthContext";
-import { LogOut, LayoutDashboard } from "lucide-react";
+import { LogOut, LayoutDashboard, MapPin, BarChart3 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -19,6 +21,7 @@ export default function AdminDashboard() {
   const { signOut, profile } = useAuth();
   const router = useRouter();
   const [checkingOnboarding, setCheckingOnboarding] = useState(true);
+  const [activeTab, setActiveTab] = useState<'overview' | 'branches' | 'analytics'>('overview');
   const supabase = createClient();
 
   useEffect(() => {
@@ -114,41 +117,97 @@ export default function AdminDashboard() {
                 <p className="text-purple-100 text-lg">Ringkasan barbershop hari ini.</p>
               </div>
 
+              {/* Tab Navigation - PHASE 3: Multi-Location */}
+              <div className="mb-6 bg-white rounded-xl shadow-sm p-2 flex space-x-2">
+                <button
+                  onClick={() => setActiveTab('overview')}
+                  className={`flex-1 flex items-center justify-center space-x-2 px-4 py-3 rounded-lg font-medium transition ${
+                    activeTab === 'overview'
+                      ? 'bg-purple-600 text-white'
+                      : 'text-gray-600 hover:bg-gray-100'
+                  }`}
+                >
+                  <LayoutDashboard size={20} />
+                  <span>Overview</span>
+                </button>
+                <button
+                  onClick={() => setActiveTab('branches')}
+                  className={`flex-1 flex items-center justify-center space-x-2 px-4 py-3 rounded-lg font-medium transition ${
+                    activeTab === 'branches'
+                      ? 'bg-purple-600 text-white'
+                      : 'text-gray-600 hover:bg-gray-100'
+                  }`}
+                >
+                  <MapPin size={20} />
+                  <span>Branches</span>
+                </button>
+                <button
+                  onClick={() => setActiveTab('analytics')}
+                  className={`flex-1 flex items-center justify-center space-x-2 px-4 py-3 rounded-lg font-medium transition ${
+                    activeTab === 'analytics'
+                      ? 'bg-purple-600 text-white'
+                      : 'text-gray-600 hover:bg-gray-100'
+                  }`}
+                >
+                  <BarChart3 size={20} />
+                  <span>Analytics</span>
+                </button>
+              </div>
+
               <div className="space-y-6">
-                {/* Booking Monitor - Keep for basic overview */}
-                <section className="transform hover:scale-[1.01] transition-transform duration-300">
-                  <BookingMonitor />
-                </section>
+                {/* OVERVIEW TAB */}
+                {activeTab === 'overview' && (
+                  <>
+                    {/* Booking Monitor - Keep for basic overview */}
+                    <section className="transform hover:scale-[1.01] transition-transform duration-300">
+                      <BookingMonitor />
+                    </section>
 
-                {/* R0.1: Hidden Advanced Analytics */}
-                {/* 
-                <section className="transform hover:scale-[1.01] transition-transform duration-300">
-                  <KHLTracker />
-                </section>
+                    {/* R0.1: Hidden Advanced Analytics */}
+                    {/* 
+                    <section className="transform hover:scale-[1.01] transition-transform duration-300">
+                      <KHLTracker />
+                    </section>
 
-                <section className="transform hover:scale-[1.01] transition-transform duration-300">
-                  <ActionableLeads />
-                </section>
+                    <section className="transform hover:scale-[1.01] transition-transform duration-300">
+                      <ActionableLeads />
+                    </section>
 
-                <section className="transform hover:scale-[1.01] transition-transform duration-300">
-                  <RevenueAnalytics />
-                </section>
-                */}
+                    <section className="transform hover:scale-[1.01] transition-transform duration-300">
+                      <RevenueAnalytics />
+                    </section>
+                    */}
 
-                {/* Transactions Manager - Keep for basic data view */}
-                <section className="transform hover:scale-[1.01] transition-transform duration-300">
-                  <TransactionsManager />
-                </section>
+                    {/* Transactions Manager - Keep for basic data view */}
+                    <section className="transform hover:scale-[1.01] transition-transform duration-300">
+                      <TransactionsManager />
+                    </section>
 
-                {/* R0.1: Information Box */}
-                <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 text-center">
-                  <p className="text-blue-800 font-semibold mb-2">📊 Release 0.1 - Menjaga Aliran Dasar</p>
-                  <p className="text-blue-700 text-sm">
-                    Dashboard ini fokus pada informasi penting hari ini: booking, antrian, dan riwayat sederhana.
-                    <br />
-                    <span className="font-medium">Target tracking & analytics mendalam akan hadir di update berikutnya.</span>
-                  </p>
-                </div>
+                    {/* R0.1: Information Box */}
+                    <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 text-center">
+                      <p className="text-blue-800 font-semibold mb-2">📊 Release 0.1 - Menjaga Aliran Dasar</p>
+                      <p className="text-blue-700 text-sm">
+                        Dashboard ini fokus pada informasi penting hari ini: booking, antrian, dan riwayat sederhana.
+                        <br />
+                        <span className="font-medium">Target tracking & analytics mendalam akan hadir di update berikutnya.</span>
+                      </p>
+                    </div>
+                  </>
+                )}
+
+                {/* BRANCHES TAB - PHASE 3 */}
+                {activeTab === 'branches' && (
+                  <section className="transform hover:scale-[1.01] transition-transform duration-300">
+                    <BranchManagement />
+                  </section>
+                )}
+
+                {/* ANALYTICS TAB - PHASE 3 */}
+                {activeTab === 'analytics' && (
+                  <section className="transform hover:scale-[1.01] transition-transform duration-300">
+                    <BranchAnalytics />
+                  </section>
+                )}
               </div>
             </main>
 
