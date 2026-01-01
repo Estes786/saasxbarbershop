@@ -53,7 +53,9 @@
 - ✅ **Booking Monitor** - Lihat booking hari ini dengan status jelas
 - ✅ **Transactions Manager** - Riwayat transaksi sederhana
 - ✅ **Queue Overview** - Status antrian real-time
-- 🏢 **Multi-Location Support** - Manage multiple branches (Phase 1 Complete)
+- 🏢 **Multi-Location Support** - Manage multiple branches (✅ Phase 1 Complete - Database Schema Ready)
+- ⏳ **Branch Management APIs** - Phase 2: Backend APIs (Next)
+- ⏳ **Branch Management UI** - Phase 3: Frontend Components (Next)
 - ℹ️ **Advanced Analytics** - Coming in R0.2 (setelah aliran stabil)
 
 ---
