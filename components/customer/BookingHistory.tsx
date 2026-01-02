@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Calendar, Clock, User, Star, MapPin } from 'lucide-react';
+import useSWR from 'swr';
 
 interface Booking {
   id: string;
@@ -25,43 +26,44 @@ interface BookingHistoryProps {
   customerPhone: string;
 }
 
-export default function BookingHistory({ customerPhone }: BookingHistoryProps) {
+// ✅ SWR Fetcher for bookings - with caching
+const bookingsFetcher = async (customerPhone: string): Promise<Booking[]> => {
   const supabase = createClient();
-  const [bookings, setBookings] = useState<Booking[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data, error } = await supabase
+    .from('bookings')
+    .select(`
+      id,
+      booking_date,
+      status,
+      queue_number,
+      customer_notes,
+      rating,
+      feedback,
+      service_catalog (service_name, base_price),
+      capsters (capster_name)
+    `)
+    .eq('customer_phone', customerPhone)
+    .order('booking_date', { ascending: false });
+
+  if (error) throw error;
+  return data || [];
+};
+
+export default function BookingHistory({ customerPhone }: BookingHistoryProps) {
   const [filter, setFilter] = useState<'all' | 'pending' | 'confirmed' | 'completed' | 'cancelled'>('all');
 
-  useEffect(() => {
-    loadBookings();
-  }, []);
-
-  async function loadBookings() {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('bookings')
-        .select(`
-          id,
-          booking_date,
-          status,
-          queue_number,
-          customer_notes,
-          rating,
-          feedback,
-          service_catalog (service_name, base_price),
-          capsters (capster_name)
-        `)
-        .eq('customer_phone', customerPhone)
-        .order('booking_date', { ascending: false });
-
-      if (error) throw error;
-      setBookings(data || []);
-    } catch (err: any) {
-      console.error('Error loading bookings:', err);
-    } finally {
-      setLoading(false);
+  // ✅ Use SWR for automatic caching and revalidation
+  const { data: bookings = [], isLoading: loading, error, mutate } = useSWR<Booking[]>(
+    customerPhone ? `bookings-${customerPhone}` : null,
+    () => bookingsFetcher(customerPhone),
+    {
+      revalidateOnFocus: true, // Refresh when user comes back
+      dedupingInterval: 5000, // Cache for 5 seconds
+      onError: (err) => {
+        console.error('Error loading bookings:', err);
+      }
     }
-  }
+  );
 
   const filteredBookings = filter === 'all' 
     ? bookings 

@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useToast } from '@/lib/context/ToastContext';
-import { Calendar, Clock, User, MessageSquare, CheckCircle, MapPin } from 'lucide-react';
+import { Calendar, Clock, User, MessageSquare, CheckCircle, MapPin, Sparkles } from 'lucide-react';
 import BranchSelector from './BranchSelector';
 import useSWR from 'swr';
 import { ServicesSkeleton, CapstersSkeleton } from '../ui/Skeleton';
@@ -31,12 +31,12 @@ interface BookingFormProps {
   customerName?: string;
 }
 
-// ✅ SWR Fetcher functions - Separate for type safety
+// ✅ Optimized SWR Fetcher functions
 const servicesFetcher = async (branchId: string): Promise<Service[]> => {
   const supabase = createClient();
   const { data, error } = await supabase
     .from('service_catalog')
-    .select('*')
+    .select('id, service_name, base_price, duration_minutes, description')
     .eq('is_active', true)
     .eq('branch_id', branchId)
     .order('display_order');
@@ -56,7 +56,6 @@ const capstersFetcher = async (branchId: string): Promise<Capster[]> => {
   
   if (error) throw error;
   
-  // Transform data to match Capster interface
   return (data || []).map((capster: any) => ({
     id: capster.id,
     capster_id: capster.id,
@@ -84,39 +83,57 @@ export default function BookingFormOptimized({ customerPhone, customerName }: Bo
     customer_notes: ''
   });
 
-  // ✅ OPTIMIZATION 1: Parallel data fetching with SWR
-  const { data: services = [], isLoading: servicesLoading, error: servicesError } = useSWR<Service[]>(
+  // ✅ SWR with aggressive caching for better UX
+  const { data: services = [], isLoading: servicesLoading } = useSWR<Service[]>(
     formData.branch_id ? `services-${formData.branch_id}` : null,
     () => servicesFetcher(formData.branch_id),
     {
       revalidateOnFocus: false,
-      dedupingInterval: 60000, // Cache for 1 minute
+      revalidateOnReconnect: false,
+      dedupingInterval: 300000, // 5 minutes cache
       onError: (err) => {
         console.error('Error loading services:', err);
-        showToast('error', 'Gagal memuat layanan');
+        showToast('error', 'Gagal memuat layanan. Silakan refresh halaman.');
       }
     }
   );
 
-  const { data: capsters = [], isLoading: capstersLoading, error: capstersError } = useSWR<Capster[]>(
+  const { data: capsters = [], isLoading: capstersLoading } = useSWR<Capster[]>(
     formData.branch_id ? `capsters-${formData.branch_id}` : null,
     () => capstersFetcher(formData.branch_id),
     {
       revalidateOnFocus: false,
-      dedupingInterval: 60000, // Cache for 1 minute
+      revalidateOnReconnect: false,
+      dedupingInterval: 300000, // 5 minutes cache
       onError: (err) => {
         console.error('Error loading capsters:', err);
-        showToast('error', 'Gagal memuat capster');
+        showToast('error', 'Gagal memuat capster. Silakan refresh halaman.');
       }
     }
   );
 
-  // ✅ OPTIMIZATION 2: Memoized submit handler
+  // ✅ Memoized computed values
+  const selectedService = useMemo(
+    () => services.find(s => s.id === formData.service_id),
+    [services, formData.service_id]
+  );
+
+  const selectedCapster = useMemo(
+    () => capsters.find(c => c.id === formData.capster_id),
+    [capsters, formData.capster_id]
+  );
+
+  const isFormComplete = useMemo(
+    () => formData.branch_id && formData.service_id && formData.capster_id && formData.booking_date,
+    [formData]
+  );
+
+  // ✅ Optimized submit handler with better error handling
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.branch_id || !formData.service_id || !formData.capster_id || !formData.booking_date) {
-      showToast('error', 'Mohon lengkapi semua data termasuk pilih cabang');
+    if (!isFormComplete) {
+      showToast('error', 'Mohon lengkapi semua data booking');
       return;
     }
 
@@ -125,14 +142,14 @@ export default function BookingFormOptimized({ customerPhone, customerName }: Bo
     try {
       const bookingDateTime = new Date(`${formData.booking_date}T${formData.booking_time}`);
 
-      // Determine service tier based on selected service price
-      const currentService = services.find((s) => s.id === formData.service_id);
-      const basePrice = currentService?.base_price || 0;
+      // Determine service tier
+      const basePrice = selectedService?.base_price || 0;
       const serviceTier = basePrice >= 50000 ? 'Premium' 
                         : basePrice >= 25000 ? 'Mastery'
                         : 'Basic';
 
-      const { data, error } = await (supabase as any)
+      // ⚡ OPTIMIZED: Use single query with proper error handling
+      const { error } = await (supabase as any)
         .from('bookings')
         .insert({
           customer_phone: customerPhone,
@@ -146,16 +163,23 @@ export default function BookingFormOptimized({ customerPhone, customerName }: Bo
           customer_notes: formData.customer_notes,
           status: 'pending',
           booking_source: 'online'
-        })
-        .select()
-        .single();
+        });
 
-      if (error) throw error;
+      if (error) {
+        // Better error messages
+        if (error.message.includes('duplicate')) {
+          throw new Error('Anda sudah memiliki booking di waktu tersebut');
+        } else if (error.message.includes('capster')) {
+          throw new Error('Capster tidak tersedia di waktu tersebut');
+        } else {
+          throw error;
+        }
+      }
 
       setSuccess(true);
-      showToast('success', 'Booking berhasil dibuat! 🎉');
+      showToast('success', '🎉 Booking berhasil dibuat!');
       
-      // Reset form after 3 seconds
+      // Reset form
       setTimeout(() => {
         setFormData({
           branch_id: '',
@@ -170,38 +194,49 @@ export default function BookingFormOptimized({ customerPhone, customerName }: Bo
 
     } catch (err: any) {
       console.error('Error creating booking:', err);
-      showToast('error', 'Gagal membuat booking: ' + err.message);
+      showToast('error', err.message || 'Gagal membuat booking. Silakan coba lagi.');
     } finally {
       setLoading(false);
     }
-  }, [formData, services, customerPhone, customerName, supabase, showToast]);
+  }, [formData, selectedService, customerPhone, customerName, isFormComplete, showToast, supabase]);
 
-  const selectedService = services.find(s => s.id === formData.service_id);
-  const selectedCapster = capsters.find(c => c.id === formData.capster_id);
-
+  // Success screen
   if (success) {
     return (
-      <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl p-8 text-center animate-fade-in">
-        <CheckCircle className="w-20 h-20 text-green-500 mx-auto mb-4 animate-bounce" />
-        <h2 className="text-3xl font-bold text-gray-800 mb-4">Booking Berhasil!</h2>
-        <p className="text-gray-600 mb-2">Nomor Antrian Anda akan muncul di dashboard</p>
-        <p className="text-sm text-gray-500">Kami akan mengirimkan notifikasi via WhatsApp</p>
+      <div className="max-w-2xl mx-auto bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl shadow-2xl p-8 text-center animate-fade-in border-2 border-purple-200">
+        <div className="bg-white rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6 shadow-lg">
+          <CheckCircle className="w-16 h-16 text-green-500 animate-bounce" />
+        </div>
+        <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
+          Booking Berhasil!
+        </h2>
+        <p className="text-gray-700 mb-2 font-medium">✅ Booking Anda telah dikonfirmasi</p>
+        <p className="text-sm text-gray-600 mb-4">Nomor antrian akan muncul di halaman Riwayat</p>
+        <div className="bg-white rounded-xl p-4 shadow-md inline-block">
+          <p className="text-xs text-gray-500 mb-1">Booking untuk:</p>
+          <p className="font-bold text-purple-600">{customerName}</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl p-4 sm:p-8">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">Booking Online 🔥</h2>
+    <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-8 border border-gray-100">
+      <div className="mb-6 text-center sm:text-left">
+        <div className="flex items-center justify-center sm:justify-start mb-2">
+          <Sparkles className="w-6 h-6 text-purple-600 mr-2" />
+          <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            Booking Online
+          </h2>
+        </div>
         <p className="text-gray-600 text-sm sm:text-base">Pilih layanan dan capster favorit Anda</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-        {/* Branch Selection - OPTIMIZED */}
-        <div className="tap-target-area">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            <MapPin className="w-4 h-4 inline mr-2" />
+      <form onSubmit={handleSubmit} className="space-y-5">
+        {/* Branch Selection */}
+        <div className="space-y-2">
+          <label className="flex items-center text-sm font-semibold text-gray-700">
+            <MapPin className="w-4 h-4 mr-2 text-purple-600" />
             Pilih Cabang
           </label>
           <BranchSelector
@@ -210,33 +245,29 @@ export default function BookingFormOptimized({ customerPhone, customerName }: Bo
               setFormData({ 
                 ...formData, 
                 branch_id: branchId,
-                service_id: '', // Reset service when branch changes
-                capster_id: ''  // Reset capster when branch changes
+                service_id: '',
+                capster_id: ''
               });
             }}
           />
         </div>
 
-        {/* Service Selection - WITH SKELETON */}
+        {/* Service Selection */}
         {formData.branch_id && (
-          <div className="tap-target-area">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              <User className="w-4 h-4 inline mr-2" />
+          <div className="space-y-2 animate-fade-in">
+            <label className="flex items-center text-sm font-semibold text-gray-700">
+              <User className="w-4 h-4 mr-2 text-purple-600" />
               Pilih Layanan
             </label>
             
             {servicesLoading ? (
               <ServicesSkeleton />
-            ) : servicesError ? (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-center text-red-600 text-sm">
-                Gagal memuat layanan. Silakan refresh halaman.
-              </div>
             ) : (
-              <>
+              <div className="space-y-2">
                 <select
                   value={formData.service_id}
                   onChange={(e) => setFormData({ ...formData, service_id: e.target.value })}
-                  className="w-full px-4 py-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-base touch-manipulation"
+                  className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-base font-medium transition-all hover:border-purple-300"
                   required
                 >
                   <option value="">Pilih layanan...</option>
@@ -247,33 +278,29 @@ export default function BookingFormOptimized({ customerPhone, customerName }: Bo
                   ))}
                 </select>
                 {selectedService && (
-                  <p className="text-sm text-gray-500 mt-2">{selectedService.description}</p>
+                  <p className="text-xs text-gray-500 px-2">{selectedService.description}</p>
                 )}
-              </>
+              </div>
             )}
           </div>
         )}
 
-        {/* Capster Selection - WITH SKELETON */}
+        {/* Capster Selection */}
         {formData.branch_id && (
-          <div className="tap-target-area">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              <User className="w-4 h-4 inline mr-2" />
+          <div className="space-y-2 animate-fade-in">
+            <label className="flex items-center text-sm font-semibold text-gray-700">
+              <User className="w-4 h-4 mr-2 text-purple-600" />
               Pilih Capster
             </label>
             
             {capstersLoading ? (
               <CapstersSkeleton />
-            ) : capstersError ? (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-center text-red-600 text-sm">
-                Gagal memuat capster. Silakan refresh halaman.
-              </div>
             ) : (
-              <>
+              <div className="space-y-2">
                 <select
                   value={formData.capster_id}
                   onChange={(e) => setFormData({ ...formData, capster_id: e.target.value })}
-                  className="w-full px-4 py-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-base touch-manipulation"
+                  className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-base font-medium transition-all hover:border-purple-300"
                   required
                 >
                   <option value="">Pilih capster...</option>
@@ -287,131 +314,134 @@ export default function BookingFormOptimized({ customerPhone, customerName }: Bo
                     ))
                   )}
                 </select>
-                {selectedCapster && (
-                  <p className="text-sm text-gray-500 mt-2">
-                    Capster: {selectedCapster.capster_name} 
-                    {selectedCapster.specialization && ` - ${selectedCapster.specialization}`}
-                  </p>
-                )}
-              </>
+              </div>
             )}
           </div>
         )}
 
-        {/* Date Selection - MOBILE OPTIMIZED */}
+        {/* Date & Time Selection */}
         {formData.branch_id && !servicesLoading && !capstersLoading && (
-          <div className="tap-target-area">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            <Calendar className="w-4 h-4 inline mr-2" />
-            Tanggal Booking
-          </label>
-          <input
-            type="date"
-            value={formData.booking_date}
-            onChange={(e) => setFormData({ ...formData, booking_date: e.target.value })}
-            min={new Date().toISOString().split('T')[0]}
-            className="w-full px-4 py-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-base touch-manipulation"
-            required
-          />
-        </div>
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-fade-in">
+              <div className="space-y-2">
+                <label className="flex items-center text-sm font-semibold text-gray-700">
+                  <Calendar className="w-4 h-4 mr-2 text-purple-600" />
+                  Tanggal
+                </label>
+                <input
+                  type="date"
+                  value={formData.booking_date}
+                  onChange={(e) => setFormData({ ...formData, booking_date: e.target.value })}
+                  min={new Date().toISOString().split('T')[0]}
+                  className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-base font-medium transition-all hover:border-purple-300"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="flex items-center text-sm font-semibold text-gray-700">
+                  <Clock className="w-4 h-4 mr-2 text-purple-600" />
+                  Waktu
+                </label>
+                <select
+                  value={formData.booking_time}
+                  onChange={(e) => setFormData({ ...formData, booking_time: e.target.value })}
+                  className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-base font-medium transition-all hover:border-purple-300"
+                  required
+                >
+                  {Array.from({ length: 11 }, (_, i) => i + 9).map((hour) => (
+                    <option key={hour} value={`${hour.toString().padStart(2, '0')}:00`}>
+                      {hour}:00
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Notes */}
+            <div className="space-y-2">
+              <label className="flex items-center text-sm font-semibold text-gray-700">
+                <MessageSquare className="w-4 h-4 mr-2 text-purple-600" />
+                Catatan (Opsional)
+              </label>
+              <textarea
+                value={formData.customer_notes}
+                onChange={(e) => setFormData({ ...formData, customer_notes: e.target.value })}
+                placeholder="Contoh: Mau model rambut undercut, fade samping..."
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-base transition-all hover:border-purple-300 resize-none"
+                rows={3}
+              />
+            </div>
+          </>
         )}
 
-        {/* Time Selection - MOBILE OPTIMIZED */}
-        {formData.branch_id && !servicesLoading && !capstersLoading && (
-          <div className="tap-target-area">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            <Clock className="w-4 h-4 inline mr-2" />
-            Waktu Booking
-          </label>
-          <select
-            value={formData.booking_time}
-            onChange={(e) => setFormData({ ...formData, booking_time: e.target.value })}
-            className="w-full px-4 py-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-base touch-manipulation"
-            required
-          >
-            {Array.from({ length: 11 }, (_, i) => i + 9).map((hour) => (
-              <option key={hour} value={`${hour.toString().padStart(2, '0')}:00`}>
-                {hour}:00
-              </option>
-            ))}
-          </select>
-        </div>
-        )}
-
-        {/* Customer Notes - MOBILE OPTIMIZED */}
-        {formData.branch_id && !servicesLoading && !capstersLoading && (
-          <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            <MessageSquare className="w-4 h-4 inline mr-2" />
-            Catatan (Opsional)
-          </label>
-          <textarea
-            value={formData.customer_notes}
-            onChange={(e) => setFormData({ ...formData, customer_notes: e.target.value })}
-            placeholder="Contoh: Mau model rambut undercut, fade samping..."
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-base touch-manipulation"
-            rows={3}
-          />
-        </div>
-        )}
-
-        {/* Summary - OPTIMIZED DISPLAY */}
-        {selectedService && selectedCapster && formData.booking_date && (
-          <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-xl border border-purple-200 animate-fade-in">
-            <h3 className="font-semibold text-purple-900 mb-3 text-sm sm:text-base">Ringkasan Booking:</h3>
-            <ul className="text-xs sm:text-sm text-purple-800 space-y-2">
-              <li className="flex items-start">
-                <span className="font-semibold mr-2">Layanan:</span>
-                <span>{selectedService.service_name}</span>
-              </li>
-              <li className="flex items-start">
-                <span className="font-semibold mr-2">Capster:</span>
-                <span>{selectedCapster.capster_name}</span>
-              </li>
-              <li className="flex items-start">
-                <span className="font-semibold mr-2">Tanggal:</span>
-                <span>{new Date(formData.booking_date).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
-              </li>
-              <li className="flex items-start">
-                <span className="font-semibold mr-2">Waktu:</span>
-                <span>{formData.booking_time}</span>
-              </li>
-              <li className="flex items-start">
-                <span className="font-semibold mr-2">Durasi:</span>
-                <span>~{selectedService.duration_minutes} menit</span>
-              </li>
-              <li className="flex items-start">
-                <span className="font-semibold mr-2 text-purple-900">Total Harga:</span>
-                <span className="font-bold text-purple-900">Rp {selectedService.base_price.toLocaleString()}</span>
-              </li>
-            </ul>
+        {/* Summary */}
+        {isFormComplete && selectedService && selectedCapster && (
+          <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-5 rounded-xl border-2 border-purple-200 shadow-md animate-fade-in">
+            <h3 className="font-bold text-purple-900 mb-3 flex items-center">
+              <Sparkles className="w-5 h-5 mr-2" />
+              Ringkasan Booking
+            </h3>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-700">Layanan:</span>
+                <span className="font-semibold text-gray-900">{selectedService.service_name}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-700">Capster:</span>
+                <span className="font-semibold text-gray-900">{selectedCapster.capster_name}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-700">Tanggal:</span>
+                <span className="font-semibold text-gray-900">
+                  {new Date(formData.booking_date).toLocaleDateString('id-ID', { 
+                    day: 'numeric', 
+                    month: 'long', 
+                    year: 'numeric' 
+                  })}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-700">Waktu:</span>
+                <span className="font-semibold text-gray-900">{formData.booking_time}</span>
+              </div>
+              <div className="flex justify-between pt-2 border-t border-purple-200">
+                <span className="text-purple-900 font-bold">Total:</span>
+                <span className="text-lg font-bold text-purple-900">
+                  Rp {selectedService.base_price.toLocaleString()}
+                </span>
+              </div>
+            </div>
           </div>
         )}
 
-        {/* Submit Button - MOBILE OPTIMIZED */}
+        {/* Submit Button */}
         {formData.branch_id && !servicesLoading && !capstersLoading && (
           <button
             type="submit"
-            disabled={loading}
-            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 sm:py-5 rounded-xl font-semibold text-base sm:text-lg hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none touch-manipulation tap-target"
+            disabled={loading || !isFormComplete}
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-5 rounded-xl font-bold text-lg shadow-lg hover:shadow-2xl transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
           >
             {loading ? (
               <span className="flex items-center justify-center">
-                <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
+                <svg className="animate-spin h-6 w-6 mr-3" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                Memproses...
+                Memproses Booking...
               </span>
             ) : (
-              '🔥 Booking Sekarang'
+              <span className="flex items-center justify-center">
+                <Sparkles className="w-5 h-5 mr-2" />
+                Booking Sekarang
+              </span>
             )}
           </button>
         )}
       </form>
 
-      <p className="text-xs text-gray-500 text-center mt-4">
-        *Nomor antrian akan diberikan otomatis setelah booking dikonfirmasi
+      <p className="text-xs text-gray-500 text-center mt-6">
+        ⚡ Booking akan diproses dalam beberapa detik
       </p>
     </div>
   );
