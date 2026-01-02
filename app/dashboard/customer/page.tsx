@@ -4,7 +4,7 @@ import { AuthGuard } from "@/components/shared/AuthGuard";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { LogOut, User, Gift, Calendar, History } from "lucide-react";
 import LoyaltyTracker from "@/components/customer/LoyaltyTracker";
-import BookingForm from "@/components/customer/BookingForm";
+import BookingFormOptimized from "@/components/customer/BookingFormOptimized";
 import BookingHistory from "@/components/customer/BookingHistory";
 import { useState, useEffect } from "react";
 
@@ -126,7 +126,7 @@ export default function CustomerDashboard() {
             {activeTab === 'booking' && (
               <div>
                 {profile?.customer_phone ? (
-                  <BookingForm 
+                  <BookingFormOptimized 
                     customerPhone={profile.customer_phone} 
                     customerName={profile.customer_name}
                   />
