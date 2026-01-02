@@ -1,71 +1,81 @@
 const { createClient } = require('@supabase/supabase-js');
 
 const supabaseUrl = 'https://qwqmhvwqeynnyxaecqzw.supabase.co';
-const supabaseServiceKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF3cW1odndxZXlubnl4YWVjcXp3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NTk0NTYxOCwiZXhwIjoyMDgxNTIxNjE4fQ.pBkPeldz1NW0qCI17RHnCWVaGqmCCbrvmuWlo2skpbk';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF3cW1odndxZXlubnl4YWVjcXp3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU5NDU2MTgsImV4cCI6MjA4MTUyMTYxOH0.mKN2LQxDwcV3QmebUB-ytfLQMgWROA7xVu60kAY-LJs';
 
-const supabase = createClient(supabaseUrl, supabaseServiceKey);
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 async function checkDatabase() {
-  console.log('🔍 Checking Database Status...\n');
-  console.log('=' .repeat(70));
+  console.log('🔍 CHECKING BALIK.LAGI DATABASE...\n');
   
-  const tables = [
-    'user_profiles',
-    'barbershop_transactions',
-    'barbershop_customers',
-    'barbershop_analytics_daily',
-    'barbershop_actionable_leads',
-    'barbershop_campaign_tracking',
-    'bookings'
-  ];
+  // Check branches
+  console.log('📍 BRANCHES:');
+  const { data: branches, error: branchError } = await supabase
+    .from('branches')
+    .select('*');
   
-  console.log('\n📊 Tables Status:\n');
-  
-  for (const table of tables) {
-    try {
-      const { data, error, count } = await supabase
-        .from(table)
-        .select('*', { count: 'exact', head: true });
-      
-      if (error) {
-        if (error.code === '42P01') {
-          console.log(`❌ ${table.padEnd(35)} - NOT EXISTS`);
-        } else {
-          console.log(`⚠️  ${table.padEnd(35)} - Error: ${error.message}`);
-        }
-      } else {
-        console.log(`✅ ${table.padEnd(35)} - EXISTS (${count || 0} rows)`);
-      }
-    } catch (err) {
-      console.log(`⚠️  ${table.padEnd(35)} - Exception: ${err.message}`);
-    }
+  if (branchError) {
+    console.log('❌ Error fetching branches:', branchError.message);
+  } else {
+    console.log(`✅ Found ${branches.length} branches`);
+    branches.forEach(b => console.log(`   - ${b.branch_name} (${b.branch_code})`));
   }
   
-  console.log('\n' + '=' .repeat(70));
-  console.log('\n🔑 Testing Authentication...\n');
+  // Check service_catalog
+  console.log('\n🛠️  SERVICE CATALOG:');
+  const { data: services, error: serviceError } = await supabase
+    .from('service_catalog')
+    .select('*');
   
-  // Test user creation
-  try {
-    const { data, error } = await supabase.auth.admin.listUsers();
-    
-    if (error) {
-      console.log(`❌ Auth Error: ${error.message}`);
-    } else {
-      console.log(`✅ Auth Working - ${data.users.length} users found`);
-      
-      if (data.users.length > 0) {
-        console.log('\n👥 Recent Users:');
-        data.users.slice(0, 5).forEach(user => {
-          console.log(`   - ${user.email || user.phone || 'No email'} (${user.id.substring(0, 8)}...)`);
-        });
-      }
-    }
-  } catch (err) {
-    console.log(`❌ Auth Exception: ${err.message}`);
+  if (serviceError) {
+    console.log('❌ Error fetching services:', serviceError.message);
+  } else {
+    console.log(`✅ Found ${services.length} services`);
+    services.forEach(s => console.log(`   - ${s.service_name} (Rp ${s.price})`));
   }
   
-  console.log('\n' + '=' .repeat(70));
-  console.log('\n✅ Database check complete!\n');
+  // Check capsters
+  console.log('\n✂️  CAPSTERS:');
+  const { data: capsters, error: capsterError } = await supabase
+    .from('capsters')
+    .select('*');
+  
+  if (capsterError) {
+    console.log('❌ Error fetching capsters:', capsterError.message);
+  } else {
+    console.log(`✅ Found ${capsters.length} capsters`);
+    capsters.forEach(c => console.log(`   - ${c.capster_name} (Branch: ${c.branch_id || 'N/A'})`));
+  }
+  
+  // Check bookings
+  console.log('\n📅 BOOKINGS:');
+  const { data: bookings, error: bookingError } = await supabase
+    .from('bookings')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(5);
+  
+  if (bookingError) {
+    console.log('❌ Error fetching bookings:', bookingError.message);
+  } else {
+    console.log(`✅ Found ${bookings.length} recent bookings`);
+    bookings.forEach(b => {
+      console.log(`   - ${b.customer_name} | ${b.service_name} | ${b.status}`);
+    });
+  }
+  
+  // Check customers
+  console.log('\n👥 CUSTOMERS:');
+  const { data: customers, error: customerError } = await supabase
+    .from('customers')
+    .select('*')
+    .limit(5);
+  
+  if (customerError) {
+    console.log('❌ Error fetching customers:', customerError.message);
+  } else {
+    console.log(`✅ Found ${customers.length} customers`);
+  }
 }
 
 checkDatabase().catch(console.error);

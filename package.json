@@ -13,6 +13,7 @@
     "@radix-ui/react-dialog": "^1.1.15",
     "@supabase/auth-helpers-nextjs": "^0.15.0",
     "@supabase/ssr": "^0.8.0",
+    "axios": "^1.13.2",
     "clsx": "^2.1.0",
     "date-fns": "^3.0.6",
     "dotenv": "^17.2.3",

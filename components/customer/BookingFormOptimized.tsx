@@ -128,7 +128,7 @@ export default function BookingFormOptimized({ customerPhone, customerName }: Bo
     [formData]
   );
 
-  // ✅ Optimized submit handler with better error handling
+  // ✅ FIXED: Optimized submit handler with customer auto-creation
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -148,8 +148,35 @@ export default function BookingFormOptimized({ customerPhone, customerName }: Bo
                         : basePrice >= 25000 ? 'Mastery'
                         : 'Basic';
 
-      // ⚡ OPTIMIZED: Use single query with proper error handling
-      const { error } = await (supabase as any)
+      // 🔧 FIX: Create or update customer in barbershop_customers first
+      // This is REQUIRED because bookings table has foreign key constraint
+      console.log('Creating/updating customer in barbershop_customers...');
+      const { error: customerError } = await (supabase as any)
+        .from('barbershop_customers')
+        .upsert({
+          customer_phone: customerPhone,
+          customer_name: customerName || 'Guest',
+          customer_area: 'Online', // Default area for online bookings
+          total_visits: 0,
+          total_revenue: 0,
+          average_atv: 0,
+          customer_segment: 'New',
+          lifetime_value: 0,
+          coupon_count: 0,
+          coupon_eligible: false,
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'customer_phone',
+          ignoreDuplicates: true
+        });
+
+      if (customerError) {
+        console.error('Error creating customer:', customerError);
+        // Don't throw - try booking anyway since customer might already exist
+      }
+
+      // ⚡ OPTIMIZED: Create booking with proper error handling
+      const { error: bookingError } = await (supabase as any)
         .from('bookings')
         .insert({
           customer_phone: customerPhone,
@@ -165,14 +192,16 @@ export default function BookingFormOptimized({ customerPhone, customerName }: Bo
           booking_source: 'online'
         });
 
-      if (error) {
+      if (bookingError) {
         // Better error messages
-        if (error.message.includes('duplicate')) {
+        if (bookingError.message.includes('duplicate')) {
           throw new Error('Anda sudah memiliki booking di waktu tersebut');
-        } else if (error.message.includes('capster')) {
+        } else if (bookingError.message.includes('capster')) {
           throw new Error('Capster tidak tersedia di waktu tersebut');
+        } else if (bookingError.message.includes('foreign key')) {
+          throw new Error('Data tidak valid. Silakan refresh halaman dan coba lagi.');
         } else {
-          throw error;
+          throw bookingError;
         }
       }
 
