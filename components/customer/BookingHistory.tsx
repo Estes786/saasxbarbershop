@@ -8,44 +8,62 @@ import useSWR from 'swr';
 interface Booking {
   id: string;
   booking_date: string;
+  booking_time: string;
   status: string;
   queue_number: number | null;
   customer_notes: string | null;
   rating: number | null;
   feedback: string | null;
+  total_price: number;
   service_catalog: {
     service_name: string;
     base_price: number;
-  };
+  } | null;
   capsters: {
     capster_name: string;
-  };
+  } | null;
 }
 
 interface BookingHistoryProps {
   customerPhone: string;
 }
 
-// ✅ SWR Fetcher for bookings - with caching
+// ✅ FIXED: SWR Fetcher for bookings with proper joins
 const bookingsFetcher = async (customerPhone: string): Promise<Booking[]> => {
   const supabase = createClient();
+  
+  // 🔧 FIX: Proper join syntax for Supabase
   const { data, error } = await supabase
     .from('bookings')
     .select(`
       id,
       booking_date,
+      booking_time,
       status,
       queue_number,
       customer_notes,
       rating,
       feedback,
-      service_catalog (service_name, base_price),
-      capsters (capster_name)
+      total_price,
+      service_id,
+      capster_id,
+      service_catalog!bookings_service_id_fkey (
+        service_name,
+        base_price
+      ),
+      capsters!bookings_capster_id_fkey (
+        capster_name
+      )
     `)
     .eq('customer_phone', customerPhone)
-    .order('booking_date', { ascending: false });
+    .order('booking_date', { ascending: false })
+    .order('booking_time', { ascending: false });
 
-  if (error) throw error;
+  if (error) {
+    console.error('Error fetching bookings:', error);
+    throw error;
+  }
+  
   return data || [];
 };
 
@@ -155,10 +173,7 @@ export default function BookingHistory({ customerPhone }: BookingHistoryProps) {
                 </div>
                 <div className="flex items-center text-sm text-gray-600">
                   <Clock className="w-4 h-4 mr-2" />
-                  {new Date(booking.booking_date).toLocaleTimeString('id-ID', {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                  })}
+                  {booking.booking_time || 'N/A'}
                 </div>
               </div>
 
@@ -194,7 +209,7 @@ export default function BookingHistory({ customerPhone }: BookingHistoryProps) {
 
               <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center">
                 <span className="text-sm font-semibold text-gray-700">
-                  Rp {booking.service_catalog?.base_price?.toLocaleString()}
+                  Rp {(booking.total_price || booking.service_catalog?.base_price || 0).toLocaleString()}
                 </span>
               </div>
             </div>
