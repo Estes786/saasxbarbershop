@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { Calendar, Clock, User, Star, MapPin } from 'lucide-react';
+import { Calendar, Clock, User, Star, MapPin, RefreshCw, AlertCircle } from 'lucide-react';
 import useSWR from 'swr';
 
 interface Booking {
@@ -28,60 +28,77 @@ interface BookingHistoryProps {
   customerPhone: string;
 }
 
-// ✅ FIXED: SWR Fetcher for bookings with proper joins
+// 🔧 Normalize phone number (remove +62, leading 0, spaces)
+const normalizePhone = (phone: string): string => {
+  return phone.replace(/^\+?62/, '0').replace(/\s/g, '').replace(/-/g, '');
+};
+
+// ✅ OPTIMIZED: SWR Fetcher with multiple phone formats
 const bookingsFetcher = async (customerPhone: string): Promise<Booking[]> => {
   const supabase = createClient();
   
-  // 🔧 FIX: Proper join syntax for Supabase
+  // Try multiple phone formats
+  const normalized = normalizePhone(customerPhone);
+  const withPlus62 = '+62' + normalized.substring(1);
+  const phoneVariants = [customerPhone, normalized, withPlus62];
+  
+  console.log('🔍 Searching bookings with phone variants:', phoneVariants);
+  
+  // 🔧 FIX: Use alternative join syntax (simpler and more reliable)
   const { data, error } = await supabase
     .from('bookings')
     .select(`
-      id,
-      booking_date,
-      booking_time,
-      status,
-      queue_number,
-      customer_notes,
-      rating,
-      feedback,
-      total_price,
-      service_id,
-      capster_id,
-      service_catalog!bookings_service_id_fkey (
-        service_name,
-        base_price
-      ),
-      capsters!bookings_capster_id_fkey (
-        capster_name
-      )
+      *,
+      service_catalog:service_id (service_name, base_price),
+      capsters:capster_id (capster_name)
     `)
-    .eq('customer_phone', customerPhone)
+    .in('customer_phone', phoneVariants)
     .order('booking_date', { ascending: false })
     .order('booking_time', { ascending: false });
 
   if (error) {
-    console.error('Error fetching bookings:', error);
+    console.error('❌ Error fetching bookings:', error);
     throw error;
   }
   
+  console.log(`✅ Found ${data?.length || 0} bookings`);
   return data || [];
 };
 
 export default function BookingHistory({ customerPhone }: BookingHistoryProps) {
   const [filter, setFilter] = useState<'all' | 'pending' | 'confirmed' | 'completed' | 'cancelled'>('all');
+  const [lastSync, setLastSync] = useState<Date>(new Date());
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // ✅ Use SWR for automatic caching and revalidation
+  // ✅ Use SWR with optimized settings
   const { data: bookings = [], isLoading: loading, error, mutate } = useSWR<Booking[]>(
-    customerPhone ? `bookings-${customerPhone}` : null,
+    customerPhone ? `bookings-${normalizePhone(customerPhone)}` : null,
     () => bookingsFetcher(customerPhone),
     {
-      revalidateOnFocus: true, // Refresh when user comes back
-      dedupingInterval: 5000, // Cache for 5 seconds
+      revalidateOnFocus: true, // Auto-refresh when tab becomes active
+      revalidateOnReconnect: true, // Auto-refresh when reconnect
+      dedupingInterval: 2000, // Prevent duplicate requests within 2s
+      onSuccess: () => {
+        setLastSync(new Date());
+        setIsRefreshing(false);
+      },
       onError: (err) => {
-        console.error('Error loading bookings:', err);
+        console.error('❌ Error loading bookings:', err);
+        setIsRefreshing(false);
       }
     }
   );
+
+  // Log when component mounts
+  useEffect(() => {
+    console.log('📖 BookingHistory mounted with phone:', customerPhone);
+  }, [customerPhone]);
+
+  // Manual refresh function
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await mutate();
+  };
 
   const filteredBookings = filter === 'all' 
     ? bookings 
@@ -111,14 +128,57 @@ export default function BookingHistory({ customerPhone }: BookingHistoryProps) {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
-        <div className="animate-pulse">Loading history...</div>
+      <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="animate-pulse space-y-4">
+          <div className="h-12 bg-gray-200 rounded-lg"></div>
+          <div className="h-32 bg-gray-200 rounded-lg"></div>
+          <div className="h-32 bg-gray-200 rounded-lg"></div>
+          <div className="h-32 bg-gray-200 rounded-lg"></div>
+        </div>
+        <p className="text-center text-gray-500 mt-4 text-sm">
+          Memuat riwayat booking...
+        </p>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="bg-red-50 border-2 border-red-200 rounded-2xl shadow-xl p-8 text-center">
+        <AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
+        <h3 className="text-xl font-semibold text-red-700 mb-2">Gagal Memuat Riwayat</h3>
+        <p className="text-red-600 mb-4">{error.message || 'Terjadi kesalahan'}</p>
+        <button
+          onClick={handleRefresh}
+          className="px-6 py-3 bg-red-600 text-white rounded-xl font-medium hover:bg-red-700 transition-colors"
+        >
+          Coba Lagi
+        </button>
       </div>
     );
   }
 
   return (
     <div className="space-y-4">
+      {/* Header with refresh button */}
+      <div className="flex justify-between items-center bg-white rounded-lg p-4 shadow-sm">
+        <div>
+          <h3 className="font-bold text-gray-800">Riwayat Booking</h3>
+          <p className="text-xs text-gray-500">
+            Terakhir diperbarui: {lastSync.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
+          </p>
+        </div>
+        <button
+          onClick={handleRefresh}
+          disabled={isRefreshing}
+          className="p-2 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50"
+          title="Refresh"
+        >
+          <RefreshCw className={`w-5 h-5 text-gray-600 ${isRefreshing ? 'animate-spin' : ''}`} />
+        </button>
+      </div>
+
       {/* Filter Tabs */}
       <div className="flex space-x-2 bg-white rounded-lg p-1 shadow-sm overflow-x-auto">
         {['all', 'pending', 'confirmed', 'completed', 'cancelled'].map((status) => (
@@ -132,6 +192,11 @@ export default function BookingHistory({ customerPhone }: BookingHistoryProps) {
             }`}
           >
             {status === 'all' ? 'Semua' : getStatusText(status)}
+            {status === 'all' && bookings.length > 0 && (
+              <span className="ml-2 bg-white text-purple-600 px-2 py-0.5 rounded-full text-xs font-bold">
+                {bookings.length}
+              </span>
+            )}
           </button>
         ))}
       </div>
@@ -140,8 +205,18 @@ export default function BookingHistory({ customerPhone }: BookingHistoryProps) {
       {filteredBookings.length === 0 ? (
         <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
           <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-xl font-semibold text-gray-700 mb-2">Belum Ada Booking</h3>
-          <p className="text-gray-500">Mulai booking sekarang untuk melihat riwayat</p>
+          <h3 className="text-xl font-semibold text-gray-700 mb-2">
+            {filter === 'all' ? 'Belum Ada Booking' : `Tidak ada booking ${getStatusText(filter)}`}
+          </h3>
+          <p className="text-gray-500 mb-4">
+            {filter === 'all' 
+              ? 'Mulai booking sekarang untuk melihat riwayat' 
+              : `Belum ada booking dengan status ${getStatusText(filter)}`}
+          </p>
+          <div className="text-xs text-gray-400 bg-gray-50 p-3 rounded-lg inline-block">
+            <p className="font-mono">📱 Phone: {customerPhone}</p>
+            <p className="font-mono">🔍 Normalized: {normalizePhone(customerPhone)}</p>
+          </div>
         </div>
       ) : (
         <div className="space-y-4">

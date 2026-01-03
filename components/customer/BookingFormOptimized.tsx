@@ -151,7 +151,7 @@ export default function BookingFormOptimized({ customerPhone, customerName }: Bo
     [formData]
   );
 
-  // ✅ FIXED: Optimized submit handler with customer auto-creation
+  // ✅ OPTIMIZED: Submit handler with progress feedback
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -161,6 +161,7 @@ export default function BookingFormOptimized({ customerPhone, customerName }: Bo
     }
 
     setLoading(true);
+    console.log('🚀 Starting booking process...');
 
     try {
       const bookingDateTime = new Date(`${formData.booking_date}T${formData.booking_time}`);
@@ -171,15 +172,14 @@ export default function BookingFormOptimized({ customerPhone, customerName }: Bo
                         : basePrice >= 25000 ? 'Mastery'
                         : 'Basic';
 
-      // 🔧 FIX: Create or update customer in barbershop_customers first
-      // This is REQUIRED because bookings table has foreign key constraint
-      console.log('Creating/updating customer in barbershop_customers...');
+      // 🔧 Step 1: Create or update customer (with progress feedback)
+      console.log('1️⃣ Creating/updating customer...');
       const { error: customerError } = await (supabase as any)
         .from('barbershop_customers')
         .upsert({
           customer_phone: customerPhone,
           customer_name: customerName || 'Guest',
-          customer_area: 'Online', // Default area for online bookings
+          customer_area: 'Online',
           total_visits: 0,
           total_revenue: 0,
           average_atv: 0,
@@ -194,21 +194,30 @@ export default function BookingFormOptimized({ customerPhone, customerName }: Bo
         });
 
       if (customerError) {
-        console.error('Error creating customer:', customerError);
-        // Don't throw - try booking anyway since customer might already exist
+        console.warn('⚠️ Customer upsert warning:', customerError);
+      } else {
+        console.log('✅ Customer ready');
       }
 
-      // ⚡ OPTIMIZED: Create booking with proper error handling
-      // 🔧 FIX: Use proper date format (DATE type expects 'YYYY-MM-DD', not ISO string)
-      const { error: bookingError } = await (supabase as any)
+      // 🔧 Step 2: Create booking (with detailed logging)
+      console.log('2️⃣ Creating booking...');
+      console.log('📋 Booking data:', {
+        customer_phone: customerPhone,
+        service_id: formData.service_id,
+        capster_id: formData.capster_id,
+        booking_date: formData.booking_date,
+        booking_time: formData.booking_time,
+      });
+
+      const { data: newBooking, error: bookingError } = await (supabase as any)
         .from('bookings')
         .insert({
           customer_phone: customerPhone,
           customer_name: customerName || 'Guest',
-          branch_id: formData.branch_id || null, // NULL if no branch selected
+          branch_id: formData.branch_id || null,
           service_id: formData.service_id,
           capster_id: formData.capster_id,
-          booking_date: formData.booking_date, // Just date string 'YYYY-MM-DD'
+          booking_date: formData.booking_date,
           booking_time: formData.booking_time,
           service_tier: serviceTier,
           customer_notes: formData.customer_notes,
@@ -216,9 +225,12 @@ export default function BookingFormOptimized({ customerPhone, customerName }: Bo
           booking_source: 'online',
           total_price: basePrice,
           estimated_duration_minutes: selectedService?.duration_minutes || 30
-        });
+        })
+        .select()
+        .single();
 
       if (bookingError) {
+        console.error('❌ Booking error:', bookingError);
         // Better error messages
         if (bookingError.message.includes('duplicate')) {
           throw new Error('Anda sudah memiliki booking di waktu tersebut');
@@ -231,10 +243,13 @@ export default function BookingFormOptimized({ customerPhone, customerName }: Bo
         }
       }
 
+      console.log('✅ Booking created successfully:', newBooking);
+
+      // 🎉 Success!
       setSuccess(true);
-      showToast('success', '🎉 Booking berhasil dibuat!');
+      showToast('success', '🎉 Booking berhasil dibuat! Cek tab Riwayat.');
       
-      // Reset form
+      // Reset form after 2 seconds
       setTimeout(() => {
         setFormData({
           branch_id: '',
@@ -245,10 +260,10 @@ export default function BookingFormOptimized({ customerPhone, customerName }: Bo
           customer_notes: ''
         });
         setSuccess(false);
-      }, 3000);
+      }, 2000);
 
     } catch (err: any) {
-      console.error('Error creating booking:', err);
+      console.error('💥 Booking failed:', err);
       showToast('error', err.message || 'Gagal membuat booking. Silakan coba lagi.');
     } finally {
       setLoading(false);
@@ -468,26 +483,36 @@ export default function BookingFormOptimized({ customerPhone, customerName }: Bo
 
         {/* Submit Button - Always show when data loaded */}
         {!servicesLoading && !capstersLoading && (
-          <button
-            type="submit"
-            disabled={loading || !isFormComplete}
-            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-5 rounded-xl font-bold text-lg shadow-lg hover:shadow-2xl transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
-          >
-            {loading ? (
-              <span className="flex items-center justify-center">
-                <svg className="animate-spin h-6 w-6 mr-3" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Memproses Booking...
-              </span>
-            ) : (
-              <span className="flex items-center justify-center">
-                <Sparkles className="w-5 h-5 mr-2" />
-                Booking Sekarang
-              </span>
+          <>
+            <button
+              type="submit"
+              disabled={loading || !isFormComplete}
+              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-5 rounded-xl font-bold text-lg shadow-lg hover:shadow-2xl transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
+            >
+              {loading ? (
+                <span className="flex items-center justify-center">
+                  <svg className="animate-spin h-6 w-6 mr-3" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Memproses Booking...
+                </span>
+              ) : (
+                <span className="flex items-center justify-center">
+                  <Sparkles className="w-5 h-5 mr-2" />
+                  Booking Sekarang
+                </span>
+              )}
+            </button>
+            
+            {/* Progress hints */}
+            {loading && (
+              <div className="text-center text-sm text-gray-500 animate-pulse">
+                <p>⏳ Mohon tunggu sebentar...</p>
+                <p className="text-xs mt-1">Booking Anda sedang diproses</p>
+              </div>
             )}
-          </button>
+          </>
         )}
       </form>
 
