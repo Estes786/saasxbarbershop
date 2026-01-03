@@ -1,80 +1,90 @@
 const { createClient } = require('@supabase/supabase-js');
 
-const supabaseUrl = 'https://qwqmhvwqeynnyxaecqzw.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF3cW1odndxZXlubnl4YWVjcXp3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU5NDU2MTgsImV4cCI6MjA4MTUyMTYxOH0.mKN2LQxDwcV3QmebUB-ytfLQMgWROA7xVu60kAY-LJs';
-
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = createClient(
+  'https://qwqmhvwqeynnyxaecqzw.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF3cW1odndxZXlubnl4YWVjcXp3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NTk0NTYxOCwiZXhwIjoyMDgxNTIxNjE4fQ.pBkPeldz1NW0qCI17RHnCWVaGqmCCbrvmuWlo2skpbk'
+);
 
 async function checkDatabase() {
-  console.log('🔍 CHECKING BALIK.LAGI DATABASE...\n');
+  console.log('🔍 Checking database schema...\n');
+
+  // Check barbershop_customers table
+  const { data: customers, error: customersError } = await supabase
+    .from('barbershop_customers')
+    .select('customer_phone, customer_name')
+    .limit(5);
   
-  // Check branches
-  console.log('📍 BRANCHES:');
-  const { data: branches, error: branchError } = await supabase
-    .from('branches')
-    .select('*');
-  
-  if (branchError) {
-    console.log('❌ Error fetching branches:', branchError.message);
-  } else {
-    console.log(`✅ Found ${branches.length} branches`);
-    branches.forEach(b => console.log(`   - ${b.branch_name} (${b.branch_code})`));
-  }
-  
-  // Check service_catalog
-  console.log('\n🛠️  SERVICE CATALOG:');
-  const { data: services, error: serviceError } = await supabase
+  console.log('👥 barbershop_customers:', customers ? `✅ ${customers.length} records` : `❌ Error: ${customersError?.message}`);
+
+  // Check service_catalog table
+  const { data: services, error: servicesError } = await supabase
     .from('service_catalog')
-    .select('*');
+    .select('id, service_name, base_price, branch_id')
+    .eq('is_active', true);
   
-  if (serviceError) {
-    console.log('❌ Error fetching services:', serviceError.message);
-  } else {
-    console.log(`✅ Found ${services.length} services`);
-    services.forEach(s => console.log(`   - ${s.service_name} (Rp ${s.price})`));
+  console.log('💇 service_catalog:', services ? `✅ ${services.length} active services` : `❌ Error: ${servicesError?.message}`);
+  if (services && services.length > 0) {
+    console.log('   Sample:', services[0]);
   }
-  
-  // Check capsters
-  console.log('\n✂️  CAPSTERS:');
-  const { data: capsters, error: capsterError } = await supabase
+
+  // Check capsters table
+  const { data: capsters, error: capstersError } = await supabase
     .from('capsters')
-    .select('*');
+    .select('id, capster_name, status, is_available, branch_id');
   
-  if (capsterError) {
-    console.log('❌ Error fetching capsters:', capsterError.message);
-  } else {
-    console.log(`✅ Found ${capsters.length} capsters`);
-    capsters.forEach(c => console.log(`   - ${c.capster_name} (Branch: ${c.branch_id || 'N/A'})`));
+  console.log('💈 capsters:', capsters ? `✅ ${capsters.length} capsters` : `❌ Error: ${capstersError?.message}`);
+  if (capsters && capsters.length > 0) {
+    console.log('   Available:', capsters.filter(c => c.is_available).length);
+    console.log('   Approved:', capsters.filter(c => c.status === 'approved').length);
+    console.log('   Sample:', capsters[0]);
   }
-  
-  // Check bookings
-  console.log('\n📅 BOOKINGS:');
-  const { data: bookings, error: bookingError } = await supabase
+
+  // Check bookings table
+  const { data: bookings, error: bookingsError } = await supabase
     .from('bookings')
     .select('*')
     .order('created_at', { ascending: false })
-    .limit(5);
+    .limit(3);
   
-  if (bookingError) {
-    console.log('❌ Error fetching bookings:', bookingError.message);
-  } else {
-    console.log(`✅ Found ${bookings.length} recent bookings`);
-    bookings.forEach(b => {
-      console.log(`   - ${b.customer_name} | ${b.service_name} | ${b.status}`);
+  console.log('📅 bookings:', bookings ? `✅ ${bookings.length} recent bookings` : `❌ Error: ${bookingsError?.message}`);
+  if (bookings && bookings.length > 0) {
+    console.log('   Latest booking:', {
+      customer_name: bookings[0].customer_name,
+      service_id: bookings[0].service_id,
+      capster_id: bookings[0].capster_id,
+      status: bookings[0].status,
+      booking_date: bookings[0].booking_date
     });
   }
+
+  // Test a booking insert (dry run)
+  console.log('\n🧪 Testing booking insert constraints...');
+  const testPhone = '+6281234567890';
+  const testName = 'Test Customer';
   
-  // Check customers
-  console.log('\n👥 CUSTOMERS:');
-  const { data: customers, error: customerError } = await supabase
-    .from('customers')
-    .select('*')
-    .limit(5);
+  // First ensure customer exists
+  const { error: upsertError } = await supabase
+    .from('barbershop_customers')
+    .upsert({
+      customer_phone: testPhone,
+      customer_name: testName,
+      customer_area: 'Online',
+      total_visits: 0,
+      total_revenue: 0,
+      average_atv: 0,
+      customer_segment: 'New',
+      lifetime_value: 0,
+      coupon_count: 0,
+      coupon_eligible: false
+    }, {
+      onConflict: 'customer_phone',
+      ignoreDuplicates: true
+    });
   
-  if (customerError) {
-    console.log('❌ Error fetching customers:', customerError.message);
+  if (upsertError) {
+    console.log('   ❌ Customer upsert failed:', upsertError.message);
   } else {
-    console.log(`✅ Found ${customers.length} customers`);
+    console.log('   ✅ Customer upsert succeeded');
   }
 }
 

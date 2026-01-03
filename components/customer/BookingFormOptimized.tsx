@@ -58,12 +58,12 @@ const servicesFetcher = async (branchId: string): Promise<Service[]> => {
 const capstersFetcher = async (branchId: string): Promise<Capster[]> => {
   const supabase = createClient();
   
-  // 🔧 FIX: Support NULL branch_id AND selected branch - also show approved capsters
+  // 🔧 FIX: Support NULL branch_id AND selected branch - only show approved capsters
   let query = supabase
     .from('capsters')
     .select('id, capster_name, specialization, branch_id, status')
     .eq('is_available', true)
-    .in('status', ['approved', 'pending']); // Show both approved and pending capsters
+    .eq('status', 'approved'); // Only show approved capsters for faster queries
   
   // Only filter by branch_id if it's not empty
   if (branchId && branchId !== '') {

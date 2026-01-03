@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'balik-lagi',
+      name: 'webapp',
       script: 'npm',
       args: 'run dev',
       env: {
