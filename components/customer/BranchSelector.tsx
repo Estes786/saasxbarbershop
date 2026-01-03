@@ -104,6 +104,39 @@ export default function BranchSelector({ selectedBranchId, onSelectBranch }: Bra
       </div>
 
       <div className="p-5 space-y-3">
+        {/* 🆕 NEW: "All Branches" option for NULL branch support */}
+        <button
+          onClick={() => onSelectBranch('')}
+          className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
+            selectedBranchId === '' || !selectedBranchId
+              ? 'border-purple-500 bg-purple-50 shadow-md'
+              : 'border-gray-200 hover:border-purple-300 hover:bg-purple-25'
+          }`}
+        >
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <div className="flex items-center space-x-2 mb-2">
+                <h4 className="font-bold text-gray-900">🌐 Semua Cabang</h4>
+                {(selectedBranchId === '' || !selectedBranchId) && (
+                  <CheckCircle2 size={20} className="text-purple-600" />
+                )}
+              </div>
+              <p className="text-xs text-purple-600 font-medium mb-3">Lihat semua layanan & capster</p>
+              
+              <div className="space-y-2 text-sm">
+                <div className="flex items-start space-x-2">
+                  <MapPin size={14} className="text-gray-400 mt-0.5 flex-shrink-0" />
+                  <p className="text-gray-600">Pilihan dari semua lokasi tersedia</p>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Users size={14} className="text-gray-400" />
+                  <p className="text-gray-600">Semua capster tersedia</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </button>
+        
         {branches.map((branch) => {
           const isSelected = selectedBranchId === branch.id;
           const capsterCount = capsterCounts[branch.id] || 0;
@@ -153,7 +186,14 @@ export default function BranchSelector({ selectedBranchId, onSelectBranch }: Bra
         })}
       </div>
 
-      {selectedBranchId && (
+      {(selectedBranchId === '' || !selectedBranchId) && (
+        <div className="p-4 bg-purple-50 border-t border-purple-100">
+          <p className="text-sm text-purple-800 text-center font-medium">
+            ✅ Semua layanan & capster dipilih! Lanjutkan untuk memilih.
+          </p>
+        </div>
+      )}
+      {selectedBranchId && selectedBranchId !== '' && (
         <div className="p-4 bg-green-50 border-t border-green-100">
           <p className="text-sm text-green-800 text-center font-medium">
             ✅ Cabang dipilih! Lanjutkan untuk memilih capster.

@@ -34,12 +34,22 @@ interface BookingFormProps {
 // ✅ Optimized SWR Fetcher functions
 const servicesFetcher = async (branchId: string): Promise<Service[]> => {
   const supabase = createClient();
-  const { data, error } = await supabase
+  
+  // 🔧 FIX: Support NULL branch_id AND selected branch
+  let query = supabase
     .from('service_catalog')
     .select('id, service_name, base_price, duration_minutes, description')
-    .eq('is_active', true)
-    .eq('branch_id', branchId)
-    .order('display_order');
+    .eq('is_active', true);
+  
+  // Only filter by branch_id if it's not empty
+  if (branchId && branchId !== '') {
+    query = query.or(`branch_id.eq.${branchId},branch_id.is.null`);
+  } else {
+    // If no branch selected, show all services (including NULL branches)
+    query = query.is('branch_id', null);
+  }
+  
+  const { data, error } = await query.order('display_order');
   
   if (error) throw error;
   return data || [];
@@ -47,12 +57,23 @@ const servicesFetcher = async (branchId: string): Promise<Service[]> => {
 
 const capstersFetcher = async (branchId: string): Promise<Capster[]> => {
   const supabase = createClient();
-  const { data, error } = await supabase
+  
+  // 🔧 FIX: Support NULL branch_id AND selected branch - also show approved capsters
+  let query = supabase
     .from('capsters')
-    .select('id, capster_name, specialization, branch_id')
+    .select('id, capster_name, specialization, branch_id, status')
     .eq('is_available', true)
-    .eq('branch_id', branchId)
-    .order('capster_name');
+    .in('status', ['approved', 'pending']); // Show both approved and pending capsters
+  
+  // Only filter by branch_id if it's not empty
+  if (branchId && branchId !== '') {
+    query = query.or(`branch_id.eq.${branchId},branch_id.is.null`);
+  } else {
+    // If no branch selected, show all capsters (including NULL branches)
+    query = query.is('branch_id', null);
+  }
+  
+  const { data, error } = await query.order('capster_name');
   
   if (error) throw error;
   
@@ -74,8 +95,9 @@ export default function BookingFormOptimized({ customerPhone, customerName }: Bo
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  // 🔧 FIX: Set default branch to empty string (shows all services/capsters)
   const [formData, setFormData] = useState({
-    branch_id: '',
+    branch_id: '', // Empty = show all branches
     service_id: '',
     capster_id: '',
     booking_date: '',
@@ -84,8 +106,9 @@ export default function BookingFormOptimized({ customerPhone, customerName }: Bo
   });
 
   // ✅ SWR with aggressive caching for better UX
+  // 🔧 FIX: Dynamic key based on branch_id to refresh when branch changes
   const { data: services = [], isLoading: servicesLoading } = useSWR<Service[]>(
-    formData.branch_id ? `services-${formData.branch_id}` : null,
+    `services-${formData.branch_id || 'all'}`, // Dynamic key
     () => servicesFetcher(formData.branch_id),
     {
       revalidateOnFocus: false,
@@ -99,7 +122,7 @@ export default function BookingFormOptimized({ customerPhone, customerName }: Bo
   );
 
   const { data: capsters = [], isLoading: capstersLoading } = useSWR<Capster[]>(
-    formData.branch_id ? `capsters-${formData.branch_id}` : null,
+    `capsters-${formData.branch_id || 'all'}`, // Dynamic key
     () => capstersFetcher(formData.branch_id),
     {
       revalidateOnFocus: false,
@@ -124,7 +147,7 @@ export default function BookingFormOptimized({ customerPhone, customerName }: Bo
   );
 
   const isFormComplete = useMemo(
-    () => formData.branch_id && formData.service_id && formData.capster_id && formData.booking_date,
+    () => formData.service_id && formData.capster_id && formData.booking_date, // branch_id optional
     [formData]
   );
 
@@ -176,20 +199,23 @@ export default function BookingFormOptimized({ customerPhone, customerName }: Bo
       }
 
       // ⚡ OPTIMIZED: Create booking with proper error handling
+      // 🔧 FIX: Use proper date format (DATE type expects 'YYYY-MM-DD', not ISO string)
       const { error: bookingError } = await (supabase as any)
         .from('bookings')
         .insert({
           customer_phone: customerPhone,
           customer_name: customerName || 'Guest',
-          branch_id: formData.branch_id,
+          branch_id: formData.branch_id || null, // NULL if no branch selected
           service_id: formData.service_id,
           capster_id: formData.capster_id,
-          booking_date: bookingDateTime.toISOString(),
+          booking_date: formData.booking_date, // Just date string 'YYYY-MM-DD'
           booking_time: formData.booking_time,
           service_tier: serviceTier,
           customer_notes: formData.customer_notes,
           status: 'pending',
-          booking_source: 'online'
+          booking_source: 'online',
+          total_price: basePrice,
+          estimated_duration_minutes: selectedService?.duration_minutes || 30
         });
 
       if (bookingError) {
@@ -281,75 +307,71 @@ export default function BookingFormOptimized({ customerPhone, customerName }: Bo
           />
         </div>
 
-        {/* Service Selection */}
-        {formData.branch_id && (
-          <div className="space-y-2 animate-fade-in">
-            <label className="flex items-center text-sm font-semibold text-gray-700">
-              <User className="w-4 h-4 mr-2 text-purple-600" />
-              Pilih Layanan
-            </label>
-            
-            {servicesLoading ? (
-              <ServicesSkeleton />
-            ) : (
-              <div className="space-y-2">
-                <select
-                  value={formData.service_id}
-                  onChange={(e) => setFormData({ ...formData, service_id: e.target.value })}
-                  className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-base font-medium transition-all hover:border-purple-300"
-                  required
-                >
-                  <option value="">Pilih layanan...</option>
-                  {services.map((service) => (
-                    <option key={service.id} value={service.id}>
-                      {service.service_name} - Rp {service.base_price.toLocaleString()} ({service.duration_minutes} menit)
+        {/* Service Selection - Always show */}
+        <div className="space-y-2 animate-fade-in">
+          <label className="flex items-center text-sm font-semibold text-gray-700">
+            <User className="w-4 h-4 mr-2 text-purple-600" />
+            Pilih Layanan
+          </label>
+          
+          {servicesLoading ? (
+            <ServicesSkeleton />
+          ) : (
+            <div className="space-y-2">
+              <select
+                value={formData.service_id}
+                onChange={(e) => setFormData({ ...formData, service_id: e.target.value })}
+                className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-base font-medium transition-all hover:border-purple-300"
+                required
+              >
+                <option value="">Pilih layanan...</option>
+                {services.map((service) => (
+                  <option key={service.id} value={service.id}>
+                    {service.service_name} - Rp {service.base_price.toLocaleString()} ({service.duration_minutes} menit)
+                  </option>
+                ))}
+              </select>
+              {selectedService && (
+                <p className="text-xs text-gray-500 px-2">{selectedService.description}</p>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Capster Selection - Always show */}
+        <div className="space-y-2 animate-fade-in">
+          <label className="flex items-center text-sm font-semibold text-gray-700">
+            <User className="w-4 h-4 mr-2 text-purple-600" />
+            Pilih Capster
+          </label>
+          
+          {capstersLoading ? (
+            <CapstersSkeleton />
+          ) : (
+            <div className="space-y-2">
+              <select
+                value={formData.capster_id}
+                onChange={(e) => setFormData({ ...formData, capster_id: e.target.value })}
+                className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-base font-medium transition-all hover:border-purple-300"
+                required
+              >
+                <option value="">Pilih capster...</option>
+                {capsters.length === 0 ? (
+                  <option disabled>Tidak ada capster tersedia</option>
+                ) : (
+                  capsters.map((capster) => (
+                    <option key={capster.id} value={capster.id}>
+                      {capster.capster_name} {capster.specialization && `- ${capster.specialization}`}
                     </option>
-                  ))}
-                </select>
-                {selectedService && (
-                  <p className="text-xs text-gray-500 px-2">{selectedService.description}</p>
+                  ))
                 )}
-              </div>
-            )}
-          </div>
-        )}
+              </select>
+            </div>
+          )}
+        </div>
 
-        {/* Capster Selection */}
-        {formData.branch_id && (
-          <div className="space-y-2 animate-fade-in">
-            <label className="flex items-center text-sm font-semibold text-gray-700">
-              <User className="w-4 h-4 mr-2 text-purple-600" />
-              Pilih Capster
-            </label>
-            
-            {capstersLoading ? (
-              <CapstersSkeleton />
-            ) : (
-              <div className="space-y-2">
-                <select
-                  value={formData.capster_id}
-                  onChange={(e) => setFormData({ ...formData, capster_id: e.target.value })}
-                  className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-base font-medium transition-all hover:border-purple-300"
-                  required
-                >
-                  <option value="">Pilih capster...</option>
-                  {capsters.length === 0 ? (
-                    <option disabled>Tidak ada capster tersedia</option>
-                  ) : (
-                    capsters.map((capster) => (
-                      <option key={capster.id} value={capster.id}>
-                        {capster.capster_name} {capster.specialization && `- ${capster.specialization}`}
-                      </option>
-                    ))
-                  )}
-                </select>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Date & Time Selection */}
-        {formData.branch_id && !servicesLoading && !capstersLoading && (
+        {/* Date & Time Selection - Always show when services/capsters loaded */}
+        {!servicesLoading && !capstersLoading && (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-fade-in">
               <div className="space-y-2">
@@ -444,8 +466,8 @@ export default function BookingFormOptimized({ customerPhone, customerName }: Bo
           </div>
         )}
 
-        {/* Submit Button */}
-        {formData.branch_id && !servicesLoading && !capstersLoading && (
+        {/* Submit Button - Always show when data loaded */}
+        {!servicesLoading && !capstersLoading && (
           <button
             type="submit"
             disabled={loading || !isFormComplete}
