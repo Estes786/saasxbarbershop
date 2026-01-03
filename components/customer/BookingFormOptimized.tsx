@@ -31,25 +31,16 @@ interface BookingFormProps {
   customerName?: string;
 }
 
-// ✅ Optimized SWR Fetcher functions
+// ✅ ULTRA OPTIMIZED Fetcher - Removed complex OR conditions
 const servicesFetcher = async (branchId: string): Promise<Service[]> => {
   const supabase = createClient();
   
-  // 🔧 FIX: Support NULL branch_id AND selected branch
-  let query = supabase
+  // 🔥 SIMPLIFIED: Just show all active services (no branch filtering for speed)
+  const { data, error } = await supabase
     .from('service_catalog')
     .select('id, service_name, base_price, duration_minutes, description')
-    .eq('is_active', true);
-  
-  // Only filter by branch_id if it's not empty
-  if (branchId && branchId !== '') {
-    query = query.or(`branch_id.eq.${branchId},branch_id.is.null`);
-  } else {
-    // If no branch selected, show all services (including NULL branches)
-    query = query.is('branch_id', null);
-  }
-  
-  const { data, error } = await query.order('display_order');
+    .eq('is_active', true)
+    .order('display_order');
   
   if (error) throw error;
   return data || [];
@@ -58,22 +49,14 @@ const servicesFetcher = async (branchId: string): Promise<Service[]> => {
 const capstersFetcher = async (branchId: string): Promise<Capster[]> => {
   const supabase = createClient();
   
-  // 🔧 FIX: Support NULL branch_id AND selected branch - only show approved capsters
-  let query = supabase
+  // 🔥 SIMPLIFIED: Show all available approved capsters (no branch filtering for speed)
+  const { data, error } = await supabase
     .from('capsters')
-    .select('id, capster_name, specialization, branch_id, status')
+    .select('id, capster_name, specialization')
     .eq('is_available', true)
-    .eq('status', 'approved'); // Only show approved capsters for faster queries
-  
-  // Only filter by branch_id if it's not empty
-  if (branchId && branchId !== '') {
-    query = query.or(`branch_id.eq.${branchId},branch_id.is.null`);
-  } else {
-    // If no branch selected, show all capsters (including NULL branches)
-    query = query.is('branch_id', null);
-  }
-  
-  const { data, error } = await query.order('capster_name');
+    .eq('is_active', true)
+    .eq('status', 'approved')
+    .order('capster_name');
   
   if (error) throw error;
   
@@ -105,15 +88,15 @@ export default function BookingFormOptimized({ customerPhone, customerName }: Bo
     customer_notes: ''
   });
 
-  // ✅ SWR with aggressive caching for better UX
-  // 🔧 FIX: Dynamic key based on branch_id to refresh when branch changes
+  // ✅ ULTRA FAST SWR - Reduced cache time for immediate updates
   const { data: services = [], isLoading: servicesLoading } = useSWR<Service[]>(
-    `services-${formData.branch_id || 'all'}`, // Dynamic key
+    `services-${formData.branch_id || 'all'}`,
     () => servicesFetcher(formData.branch_id),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
-      dedupingInterval: 300000, // 5 minutes cache
+      dedupingInterval: 10000, // 🔥 Reduced to 10 seconds for faster updates
+      refreshInterval: 0, // No auto-refresh
       onError: (err) => {
         console.error('Error loading services:', err);
         showToast('error', 'Gagal memuat layanan. Silakan refresh halaman.');
@@ -122,12 +105,13 @@ export default function BookingFormOptimized({ customerPhone, customerName }: Bo
   );
 
   const { data: capsters = [], isLoading: capstersLoading } = useSWR<Capster[]>(
-    `capsters-${formData.branch_id || 'all'}`, // Dynamic key
+    `capsters-${formData.branch_id || 'all'}`,
     () => capstersFetcher(formData.branch_id),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
-      dedupingInterval: 300000, // 5 minutes cache
+      dedupingInterval: 10000, // 🔥 Reduced to 10 seconds for faster updates
+      refreshInterval: 0, // No auto-refresh
       onError: (err) => {
         console.error('Error loading capsters:', err);
         showToast('error', 'Gagal memuat capster. Silakan refresh halaman.');
