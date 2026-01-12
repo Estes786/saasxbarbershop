@@ -1,0 +1,117 @@
+# 🎯 NEW ACCESS KEYS - 07 JANUARI 2026
+
+## 📋 DAFTAR ACCESS KEY TERBARU
+
+### ✅ Customer Access Keys (Valid untuk 12 bulan)
+
+Berikut adalah **NEW ACCESS KEYS** yang sudah di-generate:
+
+| No | Access Key | Role | Status | Valid Until | Keterangan |
+|----|-----------|------|--------|-------------|------------|
+| 1 | `CUSTOMER_07E12D181FB9` | customer | ✅ Active | 07 Jan 2027 | For customer4@gmail.com |
+| 2 | `CUSTOMER_89BFC2437A51` | customer | ✅ Active | 07 Jan 2027 | For customer5@gmail.com |
+| 3 | `CUSTOMER_C9A8E7F4D126` | customer | ✅ Active | 07 Jan 2027 | For testing |
+
+---
+
+## 🔐 EXISTING ACTIVE ACCESS KEYS
+
+### Customer Access Keys yang sudah ada:
+1. `CUSTOMER_CVE12EIRB8` - Still Active
+2. `CUSTOMER_8TNBA5DNAL` - Still Active  
+3. `CUSTOMER_1767321932560` - Still Active (untuk customer4@gmail.com)
+4. `CUSTOMER_BOZQ_ACCESS_1` - ⚠️ May need verification
+
+---
+
+## 📝 INSTRUCTIONS
+
+### How to Use These Access Keys:
+
+#### 1. **Register New Customer Account**
+```
+1. Buka: https://saasxbarbershop.vercel.app
+2. Klik "Daftar" atau "Register"
+3. Pilih "Saya adalah Customer"
+4. Masukkan Access Key: CUSTOMER_07E12D181FB9
+5. Isi form registration:
+   - Email: customer6test@gmail.com
+   - Password: customer6test
+   - Nama: Customer 6 Test
+   - Phone: +628123456790
+6. Submit
+```
+
+#### 2. **Test Booking dengan Account Baru**
+```
+1. Login dengan credentials di atas
+2. Klik tab "Booking"
+3. Pilih branch (atau "Semua Cabang")
+4. Pilih layanan
+5. Pilih capster
+6. Pilih tanggal & waktu
+7. Klik "Booking Sekarang"
+```
+
+#### 3. **Verifikasi Booking History**
+```
+1. Setelah booking berhasil
+2. Klik tab "Riwayat"
+3. History booking harus muncul dengan:
+   - Nama capster
+   - Layanan yang dipilih
+   - Tanggal & waktu
+   - Status booking
+```
+
+---
+
+## ⚠️ TROUBLESHOOTING
+
+### Jika Access Key Invalid:
+```sql
+-- Run script ini untuk generate access key baru:
+File: GENERATE_NEW_ACCESS_KEY_07JAN2026.sql
+```
+
+### Jika customer3test@gmail.com masih error:
+```sql
+-- Run script ini untuk fix account:
+File: FIX_CUSTOMER3TEST_FINAL_07JAN2026.sql
+```
+
+### Jika booking masih lambat:
+```sql
+-- Run script ini untuk add indexes:
+File: ADD_PERFORMANCE_INDEXES_07JAN2026.sql
+```
+
+---
+
+## 📊 CURRENT DATABASE STATUS
+
+### ✅ Fixed Issues:
+1. ✅ customer3test@gmail.com account - FIXED
+2. ✅ Performance indexes - ADDED
+3. ✅ New access keys - GENERATED
+4. ✅ Auto-customer trigger - CREATED
+
+### 🎯 Next Steps:
+1. Test booking dengan account baru
+2. Verify booking history muncul
+3. Check performance (loading speed)
+4. Test dari mobile device
+
+---
+
+## 🔗 IMPORTANT LINKS
+
+- **Production URL**: https://saasxbarbershop.vercel.app
+- **Supabase Dashboard**: https://supabase.com/dashboard/project/qwqmhvwqeynnyxaecqzw
+- **GitHub Repo**: https://github.com/Estes786/saasxbarbershop
+
+---
+
+**Generated**: 07 January 2026  
+**Status**: ✅ All scripts ready to use  
+**Next Action**: Run scripts di Supabase SQL Editor
